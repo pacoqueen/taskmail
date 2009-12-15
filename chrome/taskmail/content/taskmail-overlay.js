@@ -225,18 +225,14 @@ function refreshTaskLink() {
 
 function refreshMailLink() {
   // TODO iteration sur les mails
-  var taskID    = document.getElementById("taskList").selectedItem.getAttribute("pk");
-  var tree = document.getElementById("threadTree");
-  // parcours tout les taches et regarde s'il existe une tache liée
-  var column = tree.columns.getNamedColumn("colTask");
-  for (var i = 0; i < gDBView.rowCount; i++) {
-    var mailKey = gDBView.getKeyAt(i);
-    var text = getMailTextLink(taskID, mailKey);
-    var temp = tree.view.getCellText(i, column);
-    //tree.view.setCellValue(i, column, "aze");
-    //tree.view.setCellValue(i, column, "qsd");
-    tree.treeBoxObject.invalidateCell(i, column);
-  }  
+  var selectedTask = document.getElementById("taskList").selectedItem;
+  if (selectedTask != null) {
+    var taskID    = selectedTask.getAttribute("pk");
+    var tree = document.getElementById("threadTree");
+    // parcours tout les taches et regarde s'il existe une tache liée
+    var column = tree.columns.getNamedColumn("colTask");
+    tree.treeBoxObject.invalidateColumn(column);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -244,6 +240,7 @@ function refreshMailLink() {
 //
 
 function getTaskList () {
+  var currentMsgFolder = GetLoadedMsgFolder();
   var viewFilter = document.getElementById("viewFilter").selectedItem.value
   if (viewFilter == 2) {
     // recherche par mail
@@ -252,12 +249,14 @@ function getTaskList () {
       alert('pas de mail sélectionné');
       return;
     }
-    consoleService.logStringMessage(mailId);
+    var selectedMail = GetSelectedIndices(gDBView);
+    if (selectedMail == null || selectedMail.length == 0) return;
+    var selectedMailKey = gDBView.getKeyAt(selectedMail[0]);
+    //consoleService.logStringMessage(selectedMailKey);
     var stateFilter = document.getElementById("stateFilter").selectedItem.value;
-    tbirdsqlite.getTaskListSQLite(mailId, null, stateFilter, fillTaskList);
+    tbirdsqlite.getTaskListSQLite(selectedMailKey, currentMsgFolder.name, stateFilter, fillTaskList);
   } else {
     var recur = viewFilter == 1;
-    var currentMsgFolder = GetLoadedMsgFolder();
     // évite erreur sur "dossier locaux"
     if (currentMsgFolder != null) {
       // il faut charger les liens avant les taches
@@ -310,11 +309,12 @@ function viewFilterChange () {
   var viewFilter = document.getElementById("viewFilter").selectedItem.value;
   if (viewFilter == 2) {
     // recherche par mail
+    // il faut supprimer le refreshTaskLink et le remettre pour qui soit en 2°
+    document.getElementById("threadTree").removeEventListener("select", refreshTaskLink, false);
     document.getElementById("threadTree").addEventListener("select", refreshList, false);
-    document.getElementById("folderTree").removeEventListener("select", refreshList, false);
+    document.getElementById("threadTree").addEventListener("select", refreshTaskLink, false);
   } else {
     document.getElementById("threadTree").removeEventListener("select", refreshList, false);
-    document.getElementById("folderTree").addEventListener("select", refreshList, false);
   }
   refreshList();
 }
@@ -421,7 +421,7 @@ function _makeRowList(pk, titleInput, stateInput, folderName) {
 }
 
 function init() {
-  var folder = document.getElementById("folderTree").addEventListener("select", refreshList, false);
+  document.getElementById("folderTree").addEventListener("select", refreshList, false);
   document.getElementById("threadTree").addEventListener("select", refreshTaskLink, false);
   document.getElementById("taskList").addEventListener("select", refreshMailLink, false);
 }
@@ -454,6 +454,23 @@ function displayMessageID () {
 }
 
 function test () {
-  refreshTaskLink();
+  var newMailListener = {  
+      itemAdded: function(item) {     
+      alert("Got mail.  Look at item's properties for more details.");  
+      var hdr = item.QueryInterface(Components.interfaces.nsIMsgDBHdr);  
+      },
+      folderRenamed: function (aOrigFolder, aNewFolder) {
+      alert("renamed");
+      },
+      itemEvent: function (aItem, aEvent, aData){
+        alert('goi was here');
+      }
+  }  
+    
+  var notificationService =  
+  Components.classes["@mozilla.org/messenger/msgnotificationservice;1"]  
+  .getService(Components.interfaces.nsIMsgFolderNotificationService);  
+  consoleService.logStringMessage(notificationService.hasListeners);
+  notificationService.addListener(newMailListener);   
+  consoleService.logStringMessage(notificationService.hasListeners);
 }
-

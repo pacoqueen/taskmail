@@ -7,7 +7,7 @@ var tbirdsqlite = {
     try {
       // recherche par mail (donc non recurssive)
       if (mailId != null) {
-        sql = "select tasks.rowid, title, state from tasks, links where tasks.folderName = links.folder and tasks.rowid = links.taskId and links.mailId = :mailId";
+        sql = "select tasks.rowid, title, state from tasks, links where tasks.folderName = links.folder and tasks.rowid = links.taskId and links.folder = :folderName and links.mailId = :mailId";
         // quelque soit le type de recherche (email ou folder) on applique le filtre d'état
         if (stateFilter != "") {
           var stateExp = "";
@@ -20,7 +20,8 @@ var tbirdsqlite = {
           sql += " and state in (" + stateExp + ")";
         }   
         stat = this.dbConnection.createStatement(sql);
-        stat.bindStringParameter(0, mailId);
+        stat.bindStringParameter(0, folderName);
+        stat.bindStringParameter(1, mailId);
       // sinon recherche par folder
       } else {
         sql = "select tasks.rowid, title, state from tasks where folderName = :folderName";
