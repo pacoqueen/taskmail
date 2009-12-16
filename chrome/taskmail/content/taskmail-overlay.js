@@ -425,19 +425,21 @@ function init() {
   document.getElementById("threadTree").addEventListener("select", refreshTaskLink, false);
   document.getElementById("taskList").addEventListener("select", refreshMailLink, false);
   
+  /*
   var renameFolderListener = {  
       itemAdded: function(item) {
       alert("Got mail.  Look at item's properties for more details.");  
       var hdr = item.QueryInterface(Components.interfaces.nsIMsgDBHdr);  
       },
-      folderRenamed: function (nsIMsgFolder aOrigFolder, nsIMsgFolder aNewFolder) {
+      folderRenamed: function (aOrigFolder, aNewFolder) {
         alert('goi was here');
       } 	
   }  
     
   var notificationService = Components.classes["@mozilla.org/messenger/msgnotificationservice;1"].
     getService(Components.interfaces.nsIMsgFolderNotificationService);  
-  notificationService.addListener(renameFolderListener);   
+  notificationService.addListener(renameFolderListener);
+  */   
 }
 
 // besoin de passer par le load de la fenêtre sinon ça plante thunderbird (peut-être UI pas prête)
