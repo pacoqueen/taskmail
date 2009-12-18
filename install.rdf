@@ -5,10 +5,10 @@
 	<RDF:Description about="urn:mozilla:install-manifest">
 		<em:aboutURL>chrome://taskmail/content/about.xul</em:aboutURL>
 		<em:creator>toto</em:creator>
-		<em:description></em:description>
+		<em:description>tasks and emails management</em:description>
 		<em:homepageURL></em:homepageURL>
 		<em:iconURL></em:iconURL>
-		<em:id>takmail@free.fr</em:id>
+		<em:id>taskmail@free.fr</em:id>
 		<em:name>taskmail</em:name>
 		<em:version>0.1.0</em:version>
 		<em:updateURL></em:updateURL>
