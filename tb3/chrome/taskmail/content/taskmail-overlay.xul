@@ -7,7 +7,7 @@
 	<script type='application/x-javascript'  src='chrome://taskmail/content/taskmail-column.js'/>
   	
   <!-- ajoute une entrée au menu contextuel de la liste des mails -->
-  <menupopup id="threadPaneContext">
+  <menupopup id="mailContext">
     <menuitem label="Lier à la tache"  accesskey="L" oncommand="linkTask()"/>
     <menuitem label="Aller à la tache suivante" accesskey="A" oncommand="showLinkedTask()"/>
     <menuseparator/>
@@ -74,7 +74,7 @@
   		
   		<hbox>
   			<spacer flex="1"/>
-  				<button label="test"    oncommand="test()"/>
+  				<button label="test"    oncommand="alert('dasn {cac')"/>
 				<menulist  id="stateFilter"  oncommand="stateFilterChange()">
 					<menupopup>
 						<menuitem label="active"    value="12"/>

@@ -10,75 +10,74 @@ function linkTask() {
   // TODO gérer la sélection de plusieurs emails
   // TODO gérer pas de tache sélectionné
   var tree = document.getElementById("threadTree");
-  var mailIndices = GetSelectedIndices(gDBView);
+  //tree.db.getIndicesForSelection(count, indices);
+ //var mailIndices = GetSelectedIndices(gDBView);
   //consoleService.logStringMessage(mailIndices);
-  var mailKey = gDBView.getKeyAt(mailIndices[0]);
+  var mailKey = gDBView.keyForFirstSelectedMessage;
+  //var mailKey = gDBView.getKeyAt(mailIndices[0]);
   var listBox = document.getElementById("taskList");
   var taskId = listBox.selectedItem.getAttribute("pk");
-  var folder = GetLoadedMsgFolder().name;
+  var folder = GetSelectedMsgFolders()[0].name;
   tbirdsqlite.linkTaskSQLite(taskId, folder, mailKey);
   //consoleService.logStringMessage(link done tache="+taskId+",mail="+mailId);
 }
 
 function showLinkedTask() {
-  // recupere l'index des mails sélectionné et leur key
-  var mailIndices = GetSelectedIndices(gDBView);
-  // TODO sélection possible de plusieurs mails !
-  var mailKey = gDBView.getKeyAt(mailIndices[0]);
+	// récupére la key du 1° email selectionné
+	var mailKey = gDBView.keyForFirstSelectedMessage;
 	// recupére les ID de taches liées au mail
 	var TaskIDs = getTaskIDFromMailID(mailKey);
 	// recupére les index des taches associées
-  var taskIndex = getTaskIndexFromTaskID(TaskIDs);
-  // identifie l'index de la tache suivante
-  if (taskIndex.length > 0) {
-    var founded = false;
-    for (var i = 0; i < taskIndex.length; i++) {
-      if (document.getElementById("taskList").selectedIndex == taskIndex[i]) {
-        founded = true;
-        break;
-      }
-    }
-    if (founded) {
-      if (i == taskIndex.length - 1) {
-        i = -1;
-      }
-    } else {
-      i = -1;
-    }
-    document.getElementById("taskList").selectedIndex = taskIndex[i+1];
-  }
+	var taskIndex = getTaskIndexFromTaskID(TaskIDs);
+	// identifie l'index de la tache suivante
+	if (taskIndex.length > 0) {
+		var founded = false;
+		for (var i = 0; i < taskIndex.length; i++) {
+			if (document.getElementById("taskList").selectedIndex == taskIndex[i]) {
+				founded = true;
+				break;
+			}
+		}
+		if (founded) {
+			if (i == taskIndex.length - 1) {
+				i = -1;
+			}
+		} else {
+			i = -1;
+		}
+		document.getElementById("taskList").selectedIndex = taskIndex[i+1];
+	}
 }
 
 function showLinkedMail() {
-  var taskID    = document.getElementById("taskList").selectedItem.getAttribute("pk");
-  // recupére les keys de mail liés à la tache
-  var keysMails = getMailKeysFromTaskID(taskID);
-  var mailIndices = getMailIndexFromMailKey(keysMails);
-  /// identifie le mail suivant
-  if (mailIndices.length > 0) {
-    var selectedMail = GetSelectedIndices(gDBView);
-    if (selectedMail.length > 0) {
-      var founded = false;
-      for (var i = 0; i < mailIndices.length; i++) {
-        // on prend le 1° mail sélectionné
-        if (selectedMail[0] == mailIndices[i]) {
-          founded = true;
-          break;
-        }
-      }
-      if (founded) {
-        if (i == mailIndices.length - 1) {
-          i = -1;
-        }
-      } else {
-        i = -1;
-      }
-    } else {
-        i = -1;
-    }
-    // annnule la précédente sélection
-    gDBView.selection.select(mailIndices[i+1]);
-  }
+	var taskID    = document.getElementById("taskList").selectedItem.getAttribute("pk");
+	// recupére les keys de mail liés à la tache
+	var keysMails = getMailKeysFromTaskID(taskID);
+	if (keysMails.length > 0) {
+		// si la tache selectionnée a au moins un mail lié
+		var i = -1;
+		try {
+			var selectedMailKey = gDBView.keyForFirstSelectedMessage;
+			var founded = false;
+			// identifie le mail suivant
+			for (var i = 0; i < keysMails.length; i++) {
+				// on prend le 1° mail sélectionné
+				if (selectedMailKey == keysMails[i]) {
+				founded = true;
+				break;
+				}
+			}
+			if (founded) {
+			if (i == keysMails.length - 1) {
+			i = -1;
+			}
+			} else {
+			i = -1;
+		}
+		} catch (err) {
+		}
+		gDBView.selectMsgByKey(keysMails[i+1]);
+	}
 }
 
 var mailKeysLinks = new Array();
@@ -210,10 +209,9 @@ function getMailTextLink (taskID, selectedMailKey) {
   return text;
 }
 
+// TODO
 function refreshTaskLink() {
-  var selectedMail = GetSelectedIndices(gDBView);
-  if (selectedMail == null || selectedMail.length == 0) return;
-  var selectedMailKey = gDBView.getKeyAt(selectedMail[0]);
+  var selectedMailKey = gDBView.keyForFirstSelectedMessage;
   // parcours tout les taches et regarde s'il existe une tache liée
   var listBox = document.getElementById("taskList");
   for (var i = 0; i < listBox.getRowCount(); i++) {
@@ -240,7 +238,7 @@ function refreshMailLink() {
 //
 
 function getTaskList () {
-  var currentMsgFolder = GetLoadedMsgFolder();
+  var currentMsgFolder = GetSelectedMsgFolders()[0];
   var viewFilter = document.getElementById("viewFilter").selectedItem.value
   if (viewFilter == 2) {
     // recherche par mail
@@ -264,6 +262,8 @@ function getTaskList () {
       getTaskListRec(currentMsgFolder, recur);
     }
   }
+  // refresh link
+  refreshTaskLink();
 }
 
 function getTaskListRec (folder, recur) {
@@ -273,17 +273,15 @@ function getTaskListRec (folder, recur) {
 
   // récupére les sous folders si possible et si demandé
   if (folder.hasSubFolders && recur) {
-    var subFolders = folder.GetSubFolders();
-    var done = false;
-    while (!done) {
-      var subfolder = subFolders.currentItem().QueryInterface(Components.interfaces.nsIMsgFolder); 
-      try { 
-        getTaskListRec(subfolder, recur);
-        subFolders.next();
-      } catch (e) {
-        done = true;
-      }
-    }
+	var subFolders = folder.subFolders;
+	try {
+		while (subFolders.hasMoreElements()) {
+			var subFolder = subFolders.getNext();
+				getTaskListRec(subFolder, recur);
+		}
+	} catch (e) {
+		alert(e);
+	}
   }
 }
 
@@ -347,7 +345,7 @@ function saveTask() {
   var titleInput = document.getElementById("taskTitle").value;
   var stateInput = document.getElementById("taskState").selectedItem.value;
   var desc       = document.getElementById("taskDesc").value;
-  var currentMsgFolder = GetLoadedMsgFolder();
+  var currentMsgFolder = GetSelectedMsgFolders()[0];
   var folderName = currentMsgFolder.name;
   
   if (addOrUpdate == "add") {
@@ -407,13 +405,16 @@ function _makeRowList(pk, titleInput, stateInput, folderName) {
   //cell.setAttribute('value', value2 );
   row.appendChild( cell );
 
+  /*
   var selectedMail = GetSelectedIndices(gDBView);
   var selectedMailKey = null;
   if (selectedMail != null && selectedMail.length > 0) {
     selectedMailKey = gDBView.getKeyAt(selectedMail[0]);
   }
-  var linkText = getTaskTextLink(pk, selectedMailKey);
-
+  */
+  var linkText = getTaskTextLink(pk, gDBView.db.keyForFirstSelectedMessage);
+  var linkText = "";
+	
   cell = document.createElement('listcell');
   cell.setAttribute('label', linkText);
   row.appendChild( cell );
@@ -425,21 +426,31 @@ function init() {
   document.getElementById("threadTree").addEventListener("select", refreshTaskLink, false);
   document.getElementById("taskList").addEventListener("select", refreshMailLink, false);
   
-  /*
-  var renameFolderListener = {  
-      itemAdded: function(item) {
+  var newMailListener = {  
+      itemAdded: function(item) {     
       alert("Got mail.  Look at item's properties for more details.");  
       var hdr = item.QueryInterface(Components.interfaces.nsIMsgDBHdr);  
       },
       folderRenamed: function (aOrigFolder, aNewFolder) {
+      alert("renamed");
+      },
+      itemEvent: function (aItem, aEvent, aData){
         alert('goi was here');
-      } 	
-  }  
-    
-  var notificationService = Components.classes["@mozilla.org/messenger/msgnotificationservice;1"].
-    getService(Components.interfaces.nsIMsgFolderNotificationService);  
-  notificationService.addListener(renameFolderListener);
-  */   
+      },
+      itemDeleted: function (aItem) {
+        alert('delete');
+      },
+      itemMoveCopyCompleted: function (aMove, 
+                               aSrcItems, 
+                               aDestFolder) {
+        alert('movecopy');
+      }
+	}
+	
+ var notificationService =  
+     Components.classes["@mozilla.org/messenger/msgnotificationservice;1"]  
+     .getService(Components.interfaces.nsIMsgFolderNotificationService);  
+     notificationService.addListener(newMailListener, notificationService.folderRenamed);	
 }
 
 // besoin de passer par le load de la fenêtre sinon ça plante thunderbird (peut-être UI pas prête)
@@ -467,26 +478,4 @@ function displayMessageID () {
   // messgeURI=mailbox-message://nobody@Local%20Folders/Trash#143700885
   // messageID=50826FCACE4318438E8AF53FD716466701E595A36F@exdruembetl003.eq1etl.local
   // conclusion : même messgeID. l'uri elle est différente.
-}
-
-function test () {
-  var newMailListener = {  
-      itemAdded: function(item) {     
-      alert("Got mail.  Look at item's properties for more details.");  
-      var hdr = item.QueryInterface(Components.interfaces.nsIMsgDBHdr);  
-      },
-      folderRenamed: function (aOrigFolder, aNewFolder) {
-      alert("renamed");
-      },
-      itemEvent: function (aItem, aEvent, aData){
-        alert('goi was here');
-      }
-  }  
-    
-  var notificationService =  
-  Components.classes["@mozilla.org/messenger/msgnotificationservice;1"]  
-  .getService(Components.interfaces.nsIMsgFolderNotificationService);  
-  consoleService.logStringMessage(notificationService.hasListeners);
-  notificationService.addListener(newMailListener);   
-  consoleService.logStringMessage(notificationService.hasListeners);
 }
