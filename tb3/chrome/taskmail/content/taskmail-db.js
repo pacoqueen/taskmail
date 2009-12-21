@@ -4,6 +4,8 @@ const Ci = Components.interfaces;
 var tbirdsqlite = {
    
    getTaskListSQLite: function (mailId, folderName, stateFilter, fillFunction) {
+    var sql = ""; 
+	var stat;
     try {
       // recherche par mail (donc non recurssive)
       if (mailId != null) {
@@ -118,8 +120,8 @@ var tbirdsqlite = {
    getLinkSQLite: function (folderName) {
     //consoleService.logStringMessage("getLinkSQLite, folderName="+folderName);
     try {
-      sql = "select mailId, taskId from links, tasks where links.folder = tasks.folderName and links.taskId = tasks.rowid and tasks.folderName = :folderName";
-      stat = this.dbConnection.createStatement(sql);
+      var sql = "select mailId, taskId from links, tasks where links.folder = tasks.folderName and links.taskId = tasks.rowid and tasks.folderName = :folderName";
+      var stat = this.dbConnection.createStatement(sql);
       stat.bindStringParameter(0, folderName);
       var i = 0;
        while (stat.executeStep()) {

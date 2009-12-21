@@ -23,30 +23,32 @@ function linkTask() {
 }
 
 function showLinkedTask() {
-	// récupére la key du 1° email selectionné
-	var mailKey = gDBView.keyForFirstSelectedMessage;
-	// recupére les ID de taches liées au mail
-	var TaskIDs = getTaskIDFromMailID(mailKey);
-	// recupére les index des taches associées
-	var taskIndex = getTaskIndexFromTaskID(TaskIDs);
-	// identifie l'index de la tache suivante
-	if (taskIndex.length > 0) {
-		var founded = false;
-		for (var i = 0; i < taskIndex.length; i++) {
-			if (document.getElementById("taskList").selectedIndex == taskIndex[i]) {
-				founded = true;
-				break;
+	try {
+		// récupére la key du 1° email selectionné
+		var mailKey = gDBView.keyForFirstSelectedMessage;
+		// recupére les ID de taches liées au mail
+		var TaskIDs = getTaskIDFromMailID(mailKey);
+		// recupére les index des taches associées
+		var taskIndex = getTaskIndexFromTaskID(TaskIDs);
+		// identifie l'index de la tache suivante
+		if (taskIndex.length > 0) {
+			var founded = false;
+			for (var i = 0; i < taskIndex.length; i++) {
+				if (document.getElementById("taskList").selectedIndex == taskIndex[i]) {
+					founded = true;
+					break;
+				}
 			}
-		}
-		if (founded) {
-			if (i == taskIndex.length - 1) {
+			if (founded) {
+				if (i == taskIndex.length - 1) {
+					i = -1;
+				}
+			} else {
 				i = -1;
 			}
-		} else {
-			i = -1;
+			document.getElementById("taskList").selectedIndex = taskIndex[i+1];
 		}
-		document.getElementById("taskList").selectedIndex = taskIndex[i+1];
-	}
+	} catch (err) {}
 }
 
 function showLinkedMail() {
@@ -63,19 +65,18 @@ function showLinkedMail() {
 			for (var i = 0; i < keysMails.length; i++) {
 				// on prend le 1° mail sélectionné
 				if (selectedMailKey == keysMails[i]) {
-				founded = true;
-				break;
+					founded = true;
+					break;
 				}
 			}
 			if (founded) {
-			if (i == keysMails.length - 1) {
-			i = -1;
-			}
+				if (i == keysMails.length - 1) {
+					i = -1;
+				}
 			} else {
-			i = -1;
-		}
-		} catch (err) {
-		}
+				i = -1;
+			}
+		} catch (err) {}
 		gDBView.selectMsgByKey(keysMails[i+1]);
 	}
 }
@@ -209,16 +210,18 @@ function getMailTextLink (taskID, selectedMailKey) {
   return text;
 }
 
-// TODO
 function refreshTaskLink() {
-  var selectedMailKey = gDBView.keyForFirstSelectedMessage;
-  // parcours tout les taches et regarde s'il existe une tache liée
-  var listBox = document.getElementById("taskList");
-  for (var i = 0; i < listBox.getRowCount(); i++) {
-    var row = listBox.getItemAtIndex(i);
-    var text = getTaskTextLink(row.getAttribute("pk"), selectedMailKey);
-    row.lastChild.setAttribute("label",text);
-  }
+	var selectedMailKey = null;
+	try {
+		selectedMailKey = gDBView.keyForFirstSelectedMessage;
+	} catch (err) {}
+	// parcours tout les taches et regarde s'il existe une tache liée
+	var listBox = document.getElementById("taskList");
+	for (var i = 0; i < listBox.getRowCount(); i++) {
+		var row = listBox.getItemAtIndex(i);
+		var text = getTaskTextLink(row.getAttribute("pk"), selectedMailKey);
+		row.lastChild.setAttribute("label",text);
+	}
 }
 
 function refreshMailLink() {
@@ -242,17 +245,12 @@ function getTaskList () {
   var viewFilter = document.getElementById("viewFilter").selectedItem.value
   if (viewFilter == 2) {
     // recherche par mail
-    var mailId = GetFirstSelectedMessage();
-    if (mailId == null) {
-      alert('pas de mail sélectionné');
-      return;
-    }
-    var selectedMail = GetSelectedIndices(gDBView);
-    if (selectedMail == null || selectedMail.length == 0) return;
-    var selectedMailKey = gDBView.getKeyAt(selectedMail[0]);
-    //consoleService.logStringMessage(selectedMailKey);
-    var stateFilter = document.getElementById("stateFilter").selectedItem.value;
-    tbirdsqlite.getTaskListSQLite(selectedMailKey, currentMsgFolder.name, stateFilter, fillTaskList);
+	try {
+		var selectedMailKey = gDBView.keyForFirstSelectedMessage;
+		//consoleService.logStringMessage(selectedMailKey);
+		var stateFilter = document.getElementById("stateFilter").selectedItem.value;
+		tbirdsqlite.getTaskListSQLite(selectedMailKey, currentMsgFolder.name, stateFilter, fillTaskList);
+	} catch (err) {}
   } else {
     var recur = viewFilter == 1;
     // évite erreur sur "dossier locaux"
@@ -264,6 +262,7 @@ function getTaskList () {
   }
   // refresh link
   refreshTaskLink();
+  refreshMailLink();
 }
 
 function getTaskListRec (folder, recur) {
@@ -279,9 +278,7 @@ function getTaskListRec (folder, recur) {
 			var subFolder = subFolders.getNext();
 				getTaskListRec(subFolder, recur);
 		}
-	} catch (e) {
-		alert(e);
-	}
+	} catch (e) {}
   }
 }
 
@@ -405,14 +402,7 @@ function _makeRowList(pk, titleInput, stateInput, folderName) {
   //cell.setAttribute('value', value2 );
   row.appendChild( cell );
 
-  /*
-  var selectedMail = GetSelectedIndices(gDBView);
-  var selectedMailKey = null;
-  if (selectedMail != null && selectedMail.length > 0) {
-    selectedMailKey = gDBView.getKeyAt(selectedMail[0]);
-  }
-  */
-  var linkText = getTaskTextLink(pk, gDBView.db.keyForFirstSelectedMessage);
+  // le text du lien sera setté plus tard
   var linkText = "";
 	
   cell = document.createElement('listcell');
