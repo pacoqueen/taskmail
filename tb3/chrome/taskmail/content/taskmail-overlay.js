@@ -17,7 +17,7 @@ function linkTask() {
   //var mailKey = gDBView.getKeyAt(mailIndices[0]);
   var listBox = document.getElementById("taskList");
   var taskId = listBox.selectedItem.getAttribute("pk");
-  var folder = GetSelectedMsgFolders()[0].name;
+  var folder = GetSelectedMsgFolders()[0];
   tbirdsqlite.linkTaskSQLite(taskId, folder, mailKey);
   //consoleService.logStringMessage(link done tache="+taskId+",mail="+mailId);
 }
@@ -249,14 +249,14 @@ function getTaskList () {
 		var selectedMailKey = gDBView.keyForFirstSelectedMessage;
 		//consoleService.logStringMessage(selectedMailKey);
 		var stateFilter = document.getElementById("stateFilter").selectedItem.value;
-		tbirdsqlite.getTaskListSQLite(selectedMailKey, currentMsgFolder.name, stateFilter, fillTaskList);
+		tbirdsqlite.getTaskListSQLite(selectedMailKey, currentMsgFolder, stateFilter, fillTaskList);
 	} catch (err) {}
   } else {
     var recur = viewFilter == 1;
     // évite erreur sur "dossier locaux"
     if (currentMsgFolder != null) {
       // il faut charger les liens avant les taches
-      tbirdsqlite.getLinkSQLite(currentMsgFolder.name);
+      tbirdsqlite.getLinkSQLite(currentMsgFolder);
       getTaskListRec(currentMsgFolder, recur);
     }
   }
@@ -268,7 +268,7 @@ function getTaskList () {
 function getTaskListRec (folder, recur) {
   var folderName = folder.name;
   var stateFilter = document.getElementById("stateFilter").selectedItem.value;
-  tbirdsqlite.getTaskListSQLite(null, folderName, stateFilter, fillTaskList);
+  tbirdsqlite.getTaskListSQLite(null, folder, stateFilter, fillTaskList);
 
   // récupére les sous folders si possible et si demandé
   if (folder.hasSubFolders && recur) {
@@ -343,10 +343,9 @@ function saveTask() {
   var stateInput = document.getElementById("taskState").selectedItem.value;
   var desc       = document.getElementById("taskDesc").value;
   var currentMsgFolder = GetSelectedMsgFolders()[0];
-  var folderName = currentMsgFolder.name;
   
   if (addOrUpdate == "add") {
-    tbirdsqlite.addTaskSQLite(idInput, titleInput, stateInput, desc, folderName);
+    tbirdsqlite.addTaskSQLite(idInput, titleInput, stateInput, desc, currentMsgFolder);
   } else {
     tbirdsqlite.updateTaskSQLite(idInput, titleInput, stateInput, desc);
   }
@@ -469,3 +468,12 @@ function displayMessageID () {
   // messageID=50826FCACE4318438E8AF53FD716466701E595A36F@exdruembetl003.eq1etl.local
   // conclusion : même messgeID. l'uri elle est différente.
 }
+
+function test () {
+	var folder = GetSelectedMsgFolders()[0];
+	consoleService.logStringMessage(folder.baseMessageURI);
+}
+
+/*
+baseMessageURI = mailbox-message://nobody@Local%20Folders/_maintenance/Autom%20Tests
+*/

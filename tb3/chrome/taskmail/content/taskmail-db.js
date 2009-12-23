@@ -3,13 +3,15 @@ const Ci = Components.interfaces;
    
 var tbirdsqlite = {
    
-   getTaskListSQLite: function (mailId, folderName, stateFilter, fillFunction) {
+   getTaskListSQLite: function (mailId, folder, stateFilter, fillFunction) {
     var sql = ""; 
 	var stat;
+	var folderURI = folder.parent.baseMessageURI;
+	var folderName = folder.name;
     try {
       // recherche par mail (donc non recurssive)
       if (mailId != null) {
-        sql = "select tasks.rowid, title, state from tasks, links where tasks.folderName = links.folder and tasks.rowid = links.taskId and links.folder = :folderName and links.mailId = :mailId";
+        sql = "select tasks.rowid, title, state from tasks, links where tasks.folderURI = links.folderURI and tasks.folderName = links.folderName and tasks.rowid = links.taskId and ans links.folderURI = :folderURI and links.folderName = :folderName and links.mailId = :mailId";
         // quelque soit le type de recherche (email ou folder) on applique le filtre d'état
         if (stateFilter != "") {
           var stateExp = "";
@@ -22,11 +24,12 @@ var tbirdsqlite = {
           sql += " and state in (" + stateExp + ")";
         }   
         stat = this.dbConnection.createStatement(sql);
-        stat.bindStringParameter(0, folderName);
-        stat.bindStringParameter(1, mailId);
+        stat.bindStringParameter(0, folderURI);
+        stat.bindStringParameter(1, folderName);
+        stat.bindStringParameter(2, mailId);
       // sinon recherche par folder
       } else {
-        sql = "select tasks.rowid, title, state from tasks where folderName = :folderName";
+        sql = "select tasks.rowid, title, state from tasks where folderURI = :folderURI and folderName = :folderName";
         // quelque soit le type de recherche (email ou folder) on applique le filtre d'état
         if (stateFilter != "") {
           var stateExp = "";
@@ -39,7 +42,8 @@ var tbirdsqlite = {
           sql += " and state in (" + stateExp + ")";
         }   
         stat = this.dbConnection.createStatement(sql);
-        stat.bindStringParameter(0, folderName);
+        stat.bindStringParameter(0, folderURI);
+        stat.bindStringParameter(1, folderName);
       }
       while (stat.executeStep()) {
          var id    = stat.getInt32(0);
@@ -69,12 +73,15 @@ var tbirdsqlite = {
     }
    },
   
-   addTaskSQLite: function (idInput, titleInput, stateInput, desc, folderName) {
-    var stat = this.dbConnection.createStatement("insert into tasks (title, state, desc, folderName) values (:titleInput, :stateInput, :desc, :folderName)");
+   addTaskSQLite: function (idInput, titleInput, stateInput, desc, folder) {
+    var folderURI = folder.parent.baseMessageURI;
+	var folderName = folder.name;
+    var stat = this.dbConnection.createStatement("insert into tasks (title, state, desc, folderURI, folderName) values (:titleInput, :stateInput, :desc, :folderURI, :folderName)");
     stat.bindStringParameter(0,titleInput);
     stat.bindStringParameter(1,stateInput);
     stat.bindStringParameter(2,desc);
-    stat.bindStringParameter(3,folderName);
+    stat.bindStringParameter(3,folderURI);
+    stat.bindStringParameter(4,folderName);
     stat.execute();
    },
   
@@ -94,35 +101,25 @@ var tbirdsqlite = {
    },
    
    linkTaskSQLite: function (taskId, folder, mailId) {        
-    var stat = this.dbConnection.createStatement("insert into links (folder, mailId, taskId) values (:folder, :mailId, :taskId)");
-    stat.bindStringParameter(0,folder);
-    stat.bindStringParameter(1,mailId);
-    stat.bindInt32Parameter(2,taskId);
+    var stat = this.dbConnection.createStatement("insert into links (folderURI, folderName, mailId, taskId) values (:folderURI, :folderName, :mailId, :taskId)");
+	var folderURI = folder.parent.baseMessageURI;
+	var folderName = folder.name;
+    stat.bindStringParameter(0,folderURI);
+    stat.bindStringParameter(1,folderName);
+    stat.bindStringParameter(2,mailId);
+    stat.bindInt32Parameter(3,taskId);
     stat.execute();
    },
    
-   hasTaskSQLite: function (folder, mailId) {
-    var result = false;
-    try {
-      sql = "select 1 from links where links.folder = :folder and links.mailId = :mailId";
-      stat = this.dbConnection.createStatement(sql);
-      stat.bindStringParameter(0, folder);
-      stat.bindStringParameter(1, mailId);
-      if (stat.executeStep()) {
-        result = true;
-      }
-    } catch (err) {
-      alert(err);
-    }
-    return result;
-   },
-
-   getLinkSQLite: function (folderName) {
+   getLinkSQLite: function (folder) {
     //consoleService.logStringMessage("getLinkSQLite, folderName="+folderName);
     try {
-      var sql = "select mailId, taskId from links, tasks where links.folder = tasks.folderName and links.taskId = tasks.rowid and tasks.folderName = :folderName";
+      var sql = "select mailId, taskId from links, tasks where links.folderURI = tasks.folderURI and links.folderName = tasks.folderName and links.taskId = tasks.rowid and tasks.folderURI = :folderURI and tasks.folderName = :folderName";
       var stat = this.dbConnection.createStatement(sql);
-      stat.bindStringParameter(0, folderName);
+	  var folderURI = folder.parent.baseMessageURI;
+	  var folderName = folder.name;
+      stat.bindStringParameter(0, folderURI);
+      stat.bindStringParameter(1, folderName);
       var i = 0;
        while (stat.executeStep()) {
          mailKeysLinks[i] = stat.getInt32(0);
@@ -146,8 +143,8 @@ var tbirdsqlite = {
    /* la pk de la table est le rowid interne de sqlite */
    dbSchema: {  
       tables: {  
-        tasks:"title TEXT NOT NULL, state TEXT, desc TEXT, folderName TEST",
-        links:"taskId NUMBER, mailId TEXT"
+        tasks:"folderURI TEXT, folderName TEST, title TEXT NOT NULL, state TEXT, desc TEXT",
+        links:"folderURI TEXT, folderName TEXT, mailId TEXT, taskId NUMBER"
      }  
    },  
    
