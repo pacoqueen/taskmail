@@ -168,7 +168,20 @@ var tbirdsqlite = {
      this.dbConnection = dbConnection;  
    },
    
-  _dbCreate: function(aDBService, aDBFile) {  
+   reprise: function (folder) {
+    var folderURI = folder.parent.baseMessageURI;
+	var folderName = folder.name;
+    var stat = this.dbConnection.createStatement("update tasks set folderURI = :folderURI where folderName = :folderName");
+    stat.bindStringParameter(0,folderURI);
+    stat.bindStringParameter(1,folderName);
+    stat.execute();
+    var stat2 = this.dbConnection.createStatement("update links set folderURI = :folderURI where folderName = :folderName");
+    stat2.bindStringParameter(0,folderURI);
+    stat2.bindStringParameter(1,folderName);
+    stat2.execute();
+   },
+
+   _dbCreate: function(aDBService, aDBFile) {  
      var dbConnection = aDBService.openDatabase(aDBFile);  
      this._dbCreateTables(dbConnection);  
      return dbConnection;  
@@ -180,3 +193,4 @@ var tbirdsqlite = {
   }
 };
 window.addEventListener("load", function(e) { tbirdsqlite.onLoad(e); }, false); 
+

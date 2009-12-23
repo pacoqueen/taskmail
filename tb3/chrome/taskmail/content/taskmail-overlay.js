@@ -469,8 +469,20 @@ function displayMessageID () {
   // conclusion : même messgeID. l'uri elle est différente.
 }
 
-function test () {
-	var folder = GetSelectedMsgFolders()[0];
+function reprise (folder) {
+	if (folder == null) {
+		folder = GetSelectedMsgFolders()[0];
+	}
+	tbirdsqlite.reprise(folder);
+	if (folder.hasSubFolders) {
+		var subFolders = folder.subFolders;
+		try {
+			while (subFolders.hasMoreElements()) {
+				var subFolder = subFolders.getNext();
+					tbirdsqlite.reprise(subFolder);
+			}
+		} catch (e) {}
+	}
 	consoleService.logStringMessage(folder.baseMessageURI);
 }
 
