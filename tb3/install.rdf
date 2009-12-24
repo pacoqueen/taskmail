@@ -3,7 +3,7 @@
   <Description about="urn:mozilla:install-manifest">
     <em:id>{cac84739-63d2-445d-a128-8099bf4bc06a}</em:id>
     <em:type>2</em:type>
-    <em:name>task and mail</em:name>
+    <em:name>task & mail</em:name>
     <em:version>0.1</em:version>
     <em:creator>gilles orsini</em:creator>
     <em:contributor></em:contributor>
@@ -15,5 +15,7 @@
         <em:maxVersion>3.0.0.*</em:maxVersion>
       </Description>
     </em:targetApplication>
+	
+	<em:homepageURL>http://taskmail.sourceforge.net</em:homepageURL>
   </Description>
 </RDF>
