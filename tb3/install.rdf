@@ -3,9 +3,9 @@
   <Description about="urn:mozilla:install-manifest">
     <em:id>{cac84739-63d2-445d-a128-8099bf4bc06a}</em:id>
     <em:type>2</em:type>
-    <em:name>OneTaskOneMail dans {xxxxx</em:name>
+    <em:name>task and mail</em:name>
     <em:version>0.1</em:version>
-    <em:creator>gilles orsini dans {xxxxx</em:creator>
+    <em:creator>gilles orsini</em:creator>
     <em:contributor></em:contributor>
     <em:description>email-oriented task management</em:description>
     <em:targetApplication>
