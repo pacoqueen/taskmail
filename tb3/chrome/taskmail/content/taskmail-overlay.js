@@ -363,6 +363,7 @@ function removeTask() {
   var pk = listBox.selectedItem.getAttribute("pk");  
   tbirdsqlite.removeTaskSQLite(pk);
   refreshList();
+  refreshMailLink();
 }
 
 function fillTaskDetail(id, title, state, desc) {
@@ -421,7 +422,7 @@ function init() {
       var hdr = item.QueryInterface(Components.interfaces.nsIMsgDBHdr);  
       },
       folderRenamed: function (aOrigFolder, aNewFolder) {
-      alert("renamed");
+		tbirdsqlite.renameFolderSQLite(aOrigFolder, aNewFolder);
       },
       itemEvent: function (aItem, aEvent, aData){
         alert('goi was here');

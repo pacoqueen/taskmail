@@ -98,6 +98,9 @@ var tbirdsqlite = {
     var stat = this.dbConnection.createStatement("delete from tasks where rowid = :pk");
     stat.bindInt32Parameter(0,pk);
     stat.execute();
+    var stat2 = this.dbConnection.createStatement("delete from links where taskId = :pk");
+    stat2.bindInt32Parameter(0,pk);
+    stat2.execute();
    },
    
    linkTaskSQLite: function (taskId, folder, mailId) {        
@@ -132,6 +135,50 @@ var tbirdsqlite = {
     }
    },
 
+   renameFolderSQLite: function (aOrigFolder, aNewFolder) {
+	// folder rename then subFolders rename
+    var stat = null;
+	try {
+		this.dbConnection.beginTransaction();
+		var origFolderName = aOrigFolder.name;
+		// le origFolder n'a pas d'attribut parent
+		var newFolderName  = aNewFolder.name;
+		var newFolderURI   = aNewFolder.parent.baseMessageURI;
+		var origSubFolderURI = newFolderURI + "/" + origFolderName;
+		var newSubFolderURI  = newFolderURI + "/" + newFolderName;
+		
+		var sql = "update tasks set folderName = :newFolderName where folderURI = :newFolderURI and folderName = :origFolderName";
+		stat2 = this.dbConnection.createStatement(sql);
+		stat2.bindStringParameter(0, newFolderName);
+		stat2.bindStringParameter(1, newFolderURI);
+		stat2.bindStringParameter(2, origFolderName);
+		stat2.execute();
+		
+		sql = "update links set folderName = :newFolderName where folderURI = :newFolderURI and folderName = :origFolderName";
+		stat3 = this.dbConnection.createStatement(sql);
+		stat3.bindStringParameter(0, newFolderName);
+		stat3.bindStringParameter(1, newFolderURI);
+		stat3.bindStringParameter(2, origFolderName);
+		stat3.execute();
+
+		sql = "update tasks set folderURI = replace(folderURI, :origSubFolderURI, :newSubFolderURI) where folderURI like :origSubFolderURI";
+		stat4 = this.dbConnection.createStatement(sql);
+		stat4.bindStringParameter(1, origSubFolderURI + "%");
+		stat4.execute();
+		
+		sql = "update links set folderURI = replace(folderURI, :origSubFolderURI, :newSubFolderURI) where folderURI = :origSubFolderURI";
+		stat5 = this.dbConnection.createStatement(sql);
+		stat5.bindStringParameter(0, newSubFolderURI);
+		stat5.bindStringParameter(1, origSubFolderURI + "%");
+		stat5.execute();
+	} catch (err) {
+		this.dbConnection.rollbackTransaction();
+		Components.utils.reportError("renameFolder" + err);
+	} finally {
+		this.dbConnection.commitTransaction();
+	}
+   },
+   
    onLoad: function() {  
      // initialization code  
      this.initialized = true;  
