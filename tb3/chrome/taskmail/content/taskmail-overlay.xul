@@ -74,7 +74,7 @@
   		
   		<hbox>
   			<spacer flex="1"/>
-  				<button label="test"    oncommand="reprise()"/>
+  				<button label="test"    oncommand="displayMessageID()"/>
 				<menulist  id="stateFilter"  oncommand="stateFilterChange()">
 					<menupopup>
 						<menuitem label="active"    value="12"/>

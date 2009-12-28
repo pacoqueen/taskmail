@@ -455,19 +455,24 @@ var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
 // Tests
 
 function displayMessageID () {
+	/*
 	var messageArray={};
 	messageArray=GetSelectedMessages();
-  var messageURI = messageArray[0];
-  var header = messenger.msgHdrFromURI(messageURI);
+	var messageURI = messageArray[0];
+	var header = messenger.msgHdrFromURI(messageURI);
 	var messageID = header.messageId;
-  // avant modif
-  // messgeURI=mailbox-message://nobody@Local%20Folders/Inbox#3587310
-  // messageID=50826FCACE4318438E8AF53FD716466701E595A36F@exdruembetl003.eq1etl.local
-  Components.utils.reportError("messgeURI="+messageURI+"\n"+"messageID ="+messageID);
+	*/
+	// avant modif
+	// messgeURI=mailbox-message://nobody@Local%20Folders/Inbox#3587310
+	// messageID=50826FCACE4318438E8AF53FD716466701E595A36F@exdruembetl003.eq1etl.local
+	//Components.utils.reportError("messgeURI="+messageURI+"\n"+"messageID ="+messageID);
 	// après déplacement de l'email
-  // messgeURI=mailbox-message://nobody@Local%20Folders/Trash#143700885
-  // messageID=50826FCACE4318438E8AF53FD716466701E595A36F@exdruembetl003.eq1etl.local
-  // conclusion : même messgeID. l'uri elle est différente.
+	// messgeURI=mailbox-message://nobody@Local%20Folders/Trash#143700885
+	// messageID=50826FCACE4318438E8AF53FD716466701E595A36F@exdruembetl003.eq1etl.local
+	// conclusion : même messgeID. l'uri elle est différente.
+
+  	var folder = GetSelectedMsgFolders()[0];
+	consoleService.logStringMessage(folder.baseMessageURI);
 }
 
 function reprise (folder) {

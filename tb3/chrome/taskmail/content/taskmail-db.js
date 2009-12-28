@@ -144,8 +144,6 @@ var tbirdsqlite = {
 		// le origFolder n'a pas d'attribut parent
 		var newFolderName  = aNewFolder.name;
 		var newFolderURI   = aNewFolder.parent.baseMessageURI;
-		var origSubFolderURI = newFolderURI + "/" + origFolderName;
-		var newSubFolderURI  = newFolderURI + "/" + newFolderName;
 		
 		var sql = "update tasks set folderName = :newFolderName where folderURI = :newFolderURI and folderName = :origFolderName";
 		stat2 = this.dbConnection.createStatement(sql);
@@ -160,6 +158,9 @@ var tbirdsqlite = {
 		stat3.bindStringParameter(1, newFolderURI);
 		stat3.bindStringParameter(2, origFolderName);
 		stat3.execute();
+
+		var origSubFolderURI = aOrigFolder.baseMessageURI;
+		var newSubFolderURI  = aOrigFolder.baseMessageURI;
 
 		sql = "update tasks set folderURI = replace(folderURI, :origSubFolderURI, :newSubFolderURI) where folderURI like :origSubFolderURI";
 		stat4 = this.dbConnection.createStatement(sql);
