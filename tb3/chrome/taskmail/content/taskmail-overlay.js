@@ -434,13 +434,17 @@ function init() {
                                aSrcItems, 
                                aDestFolder) {
         alert('movecopy');
-      }
+      },
+	  folderDeleted: function (aFolder) {
+		// sur un vidage de corbeille, on recoit 2 folderDeleted , le 
+		consoleService.logStringMessage(aFolder.name);
+	  }
 	}
 	
  var notificationService =  
      Components.classes["@mozilla.org/messenger/msgnotificationservice;1"]  
      .getService(Components.interfaces.nsIMsgFolderNotificationService);  
-     notificationService.addListener(newMailListener, notificationService.folderRenamed);	
+     //notificationService.addListener(newMailListener, notificationService.folderRenamed | notificationService.folderDeleted);	 
 }
 
 // besoin de passer par le load de la fenêtre sinon ça plante thunderbird (peut-être UI pas prête)
