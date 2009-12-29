@@ -136,8 +136,7 @@ var tbirdsqlite = {
    },
 
    renameFolderSQLite: function (aOrigFolder, aNewFolder) {
-	// folder rename then subFolders rename
-    var stat = null;
+	// rename folder then rename subFolders
 	try {
 		this.dbConnection.beginTransaction();
 		var origFolderName = aOrigFolder.name;
@@ -160,17 +159,20 @@ var tbirdsqlite = {
 		stat3.execute();
 
 		var origSubFolderURI = aOrigFolder.baseMessageURI;
-		var newSubFolderURI  = aOrigFolder.baseMessageURI;
+		var newSubFolderURI  = aNewFolder.baseMessageURI;
 
-		sql = "update tasks set folderURI = replace(folderURI, :origSubFolderURI, :newSubFolderURI) where folderURI like :origSubFolderURI";
+		sql = "update tasks set folderURI = replace(folderURI, :old, :new) where folderURI like :like";
 		stat4 = this.dbConnection.createStatement(sql);
-		stat4.bindStringParameter(1, origSubFolderURI + "%");
+		stat4.bindStringParameter(0, origSubFolderURI);
+		stat4.bindStringParameter(1, newSubFolderURI);
+		stat4.bindStringParameter(2, origSubFolderURI + "%");
 		stat4.execute();
 		
-		sql = "update links set folderURI = replace(folderURI, :origSubFolderURI, :newSubFolderURI) where folderURI = :origSubFolderURI";
+		sql = "update links set folderURI = replace(folderURI, :old, :new) where folderURI like :like";
 		stat5 = this.dbConnection.createStatement(sql);
-		stat5.bindStringParameter(0, newSubFolderURI);
-		stat5.bindStringParameter(1, origSubFolderURI + "%");
+		stat5.bindStringParameter(0, origSubFolderURI);
+		stat5.bindStringParameter(1, newSubFolderURI);
+		stat5.bindStringParameter(2, origSubFolderURI + "%");
 		stat5.execute();
 	} catch (err) {
 		this.dbConnection.rollbackTransaction();
