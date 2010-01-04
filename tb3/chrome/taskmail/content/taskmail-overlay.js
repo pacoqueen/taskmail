@@ -499,7 +499,9 @@ function reprise (folder) {
 				var subFolder = subFolders.getNext();
 					tbirdsqlite.reprise(subFolder);
 			}
-		} catch (e) {}
+		} catch (e) {
+			consoleService.logStringMessage(e);
+		}
 	}
 	consoleService.logStringMessage(folder.baseMessageURI);
 }

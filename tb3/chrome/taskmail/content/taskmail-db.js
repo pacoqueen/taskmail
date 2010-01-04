@@ -255,17 +255,15 @@ var tbirdsqlite = {
    },
    
    reprise: function (folder) {
-    var folderURI = folder.baseMessageURI;
-	var folderName = folder.name;
     var stat = this.dbConnection.createStatement("update tasks set folderURI = :folderURI where folderURI = :URI and folderName = :folderName");
     stat.bindStringParameter(0,folder.baseMessageURI);
     stat.bindStringParameter(1,folder.parent.baseMessageURI);
-	stat.bindStringParameter(1,folder.name);
+	stat.bindStringParameter(2,folder.name);
     stat.execute();
     var stat2 = this.dbConnection.createStatement("update links set folderURI = :folderURI where folderURI = :URI and folderName = :folderName");
     stat.bindStringParameter(0,folder.baseMessageURI);
     stat.bindStringParameter(1,folder.parent.baseMessageURI);
-	stat.bindStringParameter(1,folder.name);
+	stat.bindStringParameter(2,folder.name);
     stat2.execute();
    },
 
