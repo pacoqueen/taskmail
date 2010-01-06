@@ -218,6 +218,75 @@ var tbirdsqlite = {
 		}
 	},
    
+	/**
+	* @param aMsgs An array of the message headers about to be deleted
+	*/
+	msgsDeletedSQLite: function(aMsgs) {
+		try {
+			var TASK_SQL = "delete from tasks where rowid in (select taskId from links where folderURI = :URI and mailId = :ID)";
+			var LINK_SQL = "delete from links where folderURI = :URI and mailId = :ID";
+			for (var i = 0; i < aMsgs.length; i++) {
+				var msgKey = aMsgs[i].messageKey;
+				var folderURI = aMsgs[i].folder.baseMessageURI;
+				var stat = this.dbConnection.createStatement(TASK_SQL);
+				stat.bindStringParameter(0, folderURI);
+				stat.bindStringParameter(1, msgKey);
+				stat.execute();
+				
+				var stat2 = this.dbConnection.createStatement(LINK_SQL);
+				stat2.bindStringParameter(0, folderURI);
+				stat2.bindStringParameter(1, msgKey);
+				stat2.execute();
+			}
+		} catch (err) {
+			this.dbConnection.rollbackTransaction();
+			Components.utils.reportError("msgsDeletedSQLite" + err);
+		} finally {
+			this.dbConnection.commitTransaction();
+		}
+	},
+	
+	/**
+	 * @param aSrcMsgs An array of the message headers in the source folder
+	 * @param aDestFolder The folder these messages were moved to.
+	 * @param aDestMsgs Present only for local folder moves, it provides the list
+	 *        of target message headers.
+	 */
+	msgsMoveCopyCompletedSQLite: function(aSrcMsgs, aDestFolder, aDestMsgs){
+		try {
+			var TASK_SQL = "update tasks set folderURI = :NEW_URI where rowid in (select taskId from links where folderURI = :OLD_URI and mailId = :OLD_ID)";
+			var LINK_SQL = "update links set folderURI = :NEW_URI, mailId = :NEW_MSG_KEY where folderURI = :OLD_URI and mailId = :OLD_MSG_KEY";
+			var enum = aSrcMsgs.enumerate();
+			while (enum.hasNext()) {
+				var temp = enum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
+				consoleService.logStringMessage(temp.folder.baseMessageURI);				
+			}
+			/*
+			for (var i = 0; i < aSrcMsgs.length; i++) {
+				var srcMsgURI = aSrcMsgs.QueryElementAt(i, nsIMsgDBHdr).folder.baseMessageURI;
+				var destURI = aDestFolder.baseMessageURI;
+				var destMsgKey = aDestMsgs[i].messageKey;
+				var stat = this.dbConnection.createStatement(TASK_SQL);
+				stat.bindStringParameter(0, srcMsgURI);
+				stat.bindStringParameter(1, destURI);
+				stat.bindStringParameter(2, destMsgKey);
+				stat.execute();
+				
+				var stat2 = this.dbConnection.createStatement(LINK_SQL);
+				stat2.bindStringParameter(0, srcMsgURI);
+				stat2.bindStringParameter(1, destURI);
+				stat2.bindStringParameter(2, destMsgKey);
+				stat2.execute();
+			}
+			*/
+		} catch (err) {
+			this.dbConnection.rollbackTransaction();
+			Components.utils.reportError("msgsDeletedSQLite" + err);
+		} finally {
+			this.dbConnection.commitTransaction();
+		}
+	},
+   
    onLoad: function() {  
      // initialization code  
      this.initialized = true;  
