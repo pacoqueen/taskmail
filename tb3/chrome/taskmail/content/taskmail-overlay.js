@@ -437,14 +437,14 @@ function init() {
 		                                aSrcMsgs,
 										aDestFolder,
 										aDestMsgs){
-			/*if (aMove) {
+			if (aMove) {
 				tbirdsqlite.msgsMoveCopyCompletedSQLite(aSrcMsgs,
 										   aDestFolder,
 										   aDestMsgs);
-			}*/
+			}
 		},
 		msgsDeleted: function(aMsgs) {
-			consoleService.logStringMessage("msgsDeleted");
+			tbirdsqlite.msgsDeletedSQLite(aMsgs);
 		}
 	}
 

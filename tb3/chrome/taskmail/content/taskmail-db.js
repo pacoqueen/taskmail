@@ -168,14 +168,15 @@ var tbirdsqlite = {
 		this.dbConnection.beginTransaction();
 		
 		var folderURI = aFolder.baseMessageURI;
+		consoleService.logStringMessage("deleteFolderSQLite"+folderURI);
 
 		var sql = "delete from tasks where folderURI = :URI";
-		stat2 = this.dbConnection.createStatement(sql);
+		var stat2 = this.dbConnection.createStatement(sql);
 		stat2.bindStringParameter(0, folderURI);
 		stat2.execute();
 		
 		sql = "delete from links where folderURI = :URI";
-		stat3 = this.dbConnection.createStatement(sql);
+		var stat3 = this.dbConnection.createStatement(sql);
 		stat3.bindStringParameter(0, folderURI);
 		stat3.execute();
 		
@@ -225,9 +226,12 @@ var tbirdsqlite = {
 		try {
 			var TASK_SQL = "delete from tasks where rowid in (select taskId from links where folderURI = :URI and mailId = :ID)";
 			var LINK_SQL = "delete from links where folderURI = :URI and mailId = :ID";
-			for (var i = 0; i < aMsgs.length; i++) {
-				var msgKey = aMsgs[i].messageKey;
-				var folderURI = aMsgs[i].folder.baseMessageURI;
+			var msgEnum = aMsgs.enumerate();
+			while (msgEnum.hasMoreElements()) {
+				var msg = msgEnum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
+				var msgKey = msg.messageKey;
+				var folderURI = msg.folder.baseMessageURI;
+				consoleService.logStringMessage("msgsDeletedSQLite"+folderURI+","+msgKey);
 				var stat = this.dbConnection.createStatement(TASK_SQL);
 				stat.bindStringParameter(0, folderURI);
 				stat.bindStringParameter(1, msgKey);
@@ -256,34 +260,35 @@ var tbirdsqlite = {
 		try {
 			var TASK_SQL = "update tasks set folderURI = :NEW_URI where rowid in (select taskId from links where folderURI = :OLD_URI and mailId = :OLD_ID)";
 			var LINK_SQL = "update links set folderURI = :NEW_URI, mailId = :NEW_MSG_KEY where folderURI = :OLD_URI and mailId = :OLD_MSG_KEY";
-			var enum = aSrcMsgs.enumerate();
-			while (enum.hasNext()) {
-				var temp = enum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
-				consoleService.logStringMessage(temp.folder.baseMessageURI);				
-			}
-			/*
-			for (var i = 0; i < aSrcMsgs.length; i++) {
-				var srcMsgURI = aSrcMsgs.QueryElementAt(i, nsIMsgDBHdr).folder.baseMessageURI;
-				var destURI = aDestFolder.baseMessageURI;
-				var destMsgKey = aDestMsgs[i].messageKey;
+			
+			var srcEnum = aSrcMsgs.enumerate();
+			var destEnum = aDestMsgs.enumerate();
+			
+			while (srcEnum.hasMoreElements()) {
+				var srcMsg = srcEnum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
+				var destMsg = destEnum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
+
+				consoleService.logStringMessage("msgsMoveCopyCompletedSQLite"+destMsg.folder.baseMessageURI+","+
+				                                srcMsg.folder.baseMessageURI+","+srcMsg.messageKey);
+				
 				var stat = this.dbConnection.createStatement(TASK_SQL);
-				stat.bindStringParameter(0, srcMsgURI);
-				stat.bindStringParameter(1, destURI);
-				stat.bindStringParameter(2, destMsgKey);
+				stat.bindStringParameter(0, destMsg.folder.baseMessageURI);
+				stat.bindStringParameter(1, srcMsg.folder.baseMessageURI);
+				stat.bindStringParameter(2, srcMsg.messageKey);
 				stat.execute();
 				
 				var stat2 = this.dbConnection.createStatement(LINK_SQL);
-				stat2.bindStringParameter(0, srcMsgURI);
-				stat2.bindStringParameter(1, destURI);
-				stat2.bindStringParameter(2, destMsgKey);
+				stat2.bindStringParameter(0, destMsg.folder.baseMessageURI);
+				stat2.bindStringParameter(1, destMsg.messageKey);
+				stat2.bindStringParameter(2, srcMsg.folder.baseMessageURI);
+				stat2.bindStringParameter(3, srcMsg.messageKey);
 				stat2.execute();
 			}
-			*/
 		} catch (err) {
-			this.dbConnection.rollbackTransaction();
+			//this.dbConnection.rollbackTransaction();
 			Components.utils.reportError("msgsDeletedSQLite" + err);
 		} finally {
-			this.dbConnection.commitTransaction();
+			//this.dbConnection.commitTransaction();
 		}
 	},
    
