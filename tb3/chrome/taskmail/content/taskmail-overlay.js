@@ -124,17 +124,23 @@ function getTaskIDFromMailID(mailKey) {
   return result;
 }
 
+/**
+ * Détermine les clé de mail correspondant à la tache spécifiée.
+ */
 function getMailKeysFromTaskID(taskID) {
-  var result = new Array();
-  var nbResult = 0;
-  for (var i = 0; i < taskIdLinks.length; i++) {
-   if (taskIdLinks[i] == taskID) {
-    result[nbResult] = mailKeysLinks[i];
-    nbResult += 1;
-   }
-  }
-  //consoleService.logStringMessage(result);
-  return result;
+	var result = null;
+	var nbResult = 0;
+	for (var i = 0; i < taskIdLinks.length; i++) {
+		if (taskIdLinks[i] == taskID) {
+			if (result == null) {
+				result = new Array();
+			}
+		result[nbResult] = mailKeysLinks[i];
+		nbResult += 1;
+		}
+	}
+	//consoleService.logStringMessage(result);
+	return result;
 }
 
 // recupére les index des taches dont les pk sont fournies
@@ -288,15 +294,15 @@ function emptyList() {
   }
 }
 
-function refreshList () {
-  //consoleService.logStringMessage("refreshList");
+function refreshTaskList () {
+  //consoleService.logStringMessage("refreshTaskList");
   // le refresh du folder est lancé avant l'handler de la colonne des emails.
   emptyList();
   getTaskList();
 }
 
 function stateFilterChange () {
-  refreshList();  
+  refreshTaskList();  
 }
 
 function viewFilterChange () {
@@ -305,12 +311,12 @@ function viewFilterChange () {
     // recherche par mail
     // il faut supprimer le refreshTaskLink et le remettre pour qui soit en 2°
     document.getElementById("threadTree").removeEventListener("select", refreshTaskLink, false);
-    document.getElementById("threadTree").addEventListener("select", refreshList, false);
+    document.getElementById("threadTree").addEventListener("select", refreshTaskList, false);
     document.getElementById("threadTree").addEventListener("select", refreshTaskLink, false);
   } else {
-    document.getElementById("threadTree").removeEventListener("select", refreshList, false);
+    document.getElementById("threadTree").removeEventListener("select", refreshTaskList, false);
   }
-  refreshList();
+  refreshTaskList();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -348,7 +354,7 @@ function saveTask() {
   } else {
     tbirdsqlite.updateTaskSQLite(idInput, titleInput, stateInput, desc);
   }
-  refreshList();
+  refreshTaskList();
   cancelSaveTask();  
 }
 
@@ -361,8 +367,25 @@ function removeTask() {
   var listBox = document.getElementById("taskList");
   var pk = listBox.selectedItem.getAttribute("pk");  
   tbirdsqlite.removeTaskSQLite(pk);
-  refreshList();
+  refreshTaskList();
   refreshMailLink();
+}
+
+/**
+ * déplace un tache dans un nouveau folder
+ * @todo gérer le cas où la destination = le folder d'origine
+ */
+function moveTask (aDestFolder) {
+	var taskId = document.popupNode.getAttribute("pk");
+	// si pas de task sélectionnée, on ne fait rien.
+	if (taskId == "") return;
+	// si la tache a un lien, on ne fait rien.
+	if (getMailKeysFromTaskID(taskId) != null) {
+		alert('déplacement de tache avec lien non gérer.');
+		return;
+	}
+	tbirdsqlite.taskMoveSQLite(taskId, aDestFolder);
+	refreshTaskList();
 }
 
 function fillTaskDetail(id, title, state, desc) {
@@ -404,11 +427,12 @@ function _makeRowList(pk, titleInput, stateInput) {
   cell = document.createElement('listcell');
   cell.setAttribute('label', linkText);
   row.appendChild( cell );
+  
   return row;
 }
 
 function init() {
-  document.getElementById("folderTree").addEventListener("select", refreshList, false);
+  document.getElementById("folderTree").addEventListener("select", refreshTaskList, false);
   document.getElementById("threadTree").addEventListener("select", refreshTaskLink, false);
   document.getElementById("taskList").addEventListener("select", refreshMailLink, false);
   

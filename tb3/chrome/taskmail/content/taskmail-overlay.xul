@@ -17,12 +17,24 @@
 		<splitter/>
   	<vbox flex="0.5">
     	<menupopup id="row-menu">
-        <menuitem label="ajouter"                             oncommand="beginAddTask()"/>
-        <menuitem label="modifier"                            oncommand="beginUpdateTask()"/>
-        <menuitem label="supprimer"                           oncommand="removeTask()"/>
-        <menuitem label="Lier au mail"          accesskey="L" oncommand="linkTask()"/>
-        <menuitem label="Aller au mail suivant" accesskey="A" oncommand="showLinkedMail()"/>
-      </menupopup>
+			<menuitem label="ajouter"                             oncommand="beginAddTask()"/>
+			<menuitem label="modifier"                            oncommand="beginUpdateTask()"/>
+			<menuitem label="supprimer"                           oncommand="removeTask()"/>
+			<menuitem label="Lier au mail"          accesskey="L" oncommand="linkTask()"/>
+			<menuitem label="Aller au mail suivant" accesskey="A" oncommand="showLinkedMail()"/>
+			<menu id="taskContext-moveMenu"
+			label="déplacer vers"
+			accesskey="D"
+			oncommand="moveTask(event.target._folder)">
+				<menupopup id="taskContext-fileHereMenu"
+					type="folder"
+					mode="filing"
+					showFileHereLabel="true"
+					showRecent="false"
+					fileHereLabel="ici"
+					fileHereAccessKey="I"/>
+			</menu>
+		</menupopup>
       
       <listbox id="taskList" ondblclick="beginUpdateTask()" context="row-menu">
   			<listhead>

@@ -291,6 +291,23 @@ var tbirdsqlite = {
 			//this.dbConnection.commitTransaction();
 		}
 	},
+	
+	/**
+	 * @param aSrcFolder  A source folder from to move the task
+	 * @param aTask       A task to move
+	 * @param aDestFolder A destination folder
+	 * 
+	 * @todo  Pas encore de gestion du déplacement de tache avec des liens.
+	 *        Gérer plusieurs taches
+	 */
+	taskMoveSQLite: function(aTaskID, aDestFolder) {
+		var SQL = "update tasks set folderURI = :NEW_URI where rowid = :TASK_ID";
+		var stat = this.dbConnection.createStatement(SQL);
+		stat.bindStringParameter(0, aDestFolder.baseMessageURI);
+		stat.bindStringParameter(1, aTaskID);
+		stat.execute();
+		consoleService.logStringMessage("taskMoveSQLite " + aTaskID + " dans " + aDestFolder.baseMessageURI);
+	},
    
    onLoad: function() {  
      // initialization code  
