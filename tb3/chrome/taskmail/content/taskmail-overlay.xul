@@ -9,6 +9,7 @@
   <!-- ajoute une entrée au menu contextuel de la liste des mails -->
   <menupopup id="mailContext">
     <menuitem label="Lier à la tache"  accesskey="L" oncommand="linkTask()"/>
+    <menuitem label="Délier les taches"  accesskey="D" oncommand="unlinkTask()"/>
     <menuitem label="Aller à la tache suivante" accesskey="A" oncommand="showLinkedTask()"/>
     <menuseparator/>
   </menupopup>
@@ -21,6 +22,7 @@
 			<menuitem label="modifier"                            oncommand="beginUpdateTask()"/>
 			<menuitem label="supprimer"                           oncommand="removeTask()"/>
 			<menuitem label="Lier au mail"          accesskey="L" oncommand="linkTask()"/>
+			<menuitem label="Délier des mails"      accesskey="D" oncommand="unlinkTask()"/>
 			<menuitem label="Aller au mail suivant" accesskey="A" oncommand="showLinkedMail()"/>
 			<menu id="taskContext-moveMenu"
 			label="déplacer vers"
@@ -36,7 +38,7 @@
 			</menu>
 		</menupopup>
       
-      <listbox id="taskList" ondblclick="beginUpdateTask()" context="row-menu">
+      <listbox id="taskList" ondblclick="beginUpdateTask()" context="row-menu" seltype="multiple">
   			<listhead>
   				<listheader label="Etat"/>
   				<listheader label="Titre"/>

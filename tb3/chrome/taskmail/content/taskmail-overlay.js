@@ -22,6 +22,21 @@ function linkTask() {
   //consoleService.logStringMessage(link done tache="+taskId+",mail="+mailId);
 }
 
+/**
+ * détruit tous les liens entre les emails sélectionnés et les taches sélectionnées.
+ * @return void
+ */
+function unlinkTask() {
+	// parcours tous les messages sélectionnés pour trouver les taches liées dans celles sélectionnés
+	// var mailKey = GetSelectedMessages(); // provoque un plantage
+	var temp = gFolderDisplay.selectedMessages; // OK un objet msg
+	var temp2 = gDBView.numSelected; // OK
+	var listBox = document.getElementById("taskList");
+	var temp4 = listBox.selectedItems;
+	var temp3 = null;
+	//tbirdsqlite.unlinkTaskSQLite();
+}
+
 function showLinkedTask() {
 	try {
 		// récupére la key du 1° email selectionné
@@ -452,7 +467,7 @@ function init() {
 				// si problème on alerte mais le déplacement de message est déjà fait donc on laisse faire.
 				// @todo voir comment empecher le déplacement
 				if (!moveable) {
-					alert('déplacement de message problématique. Il existe un email qui a perdu une tache. Il est possible d''annuler la dernière opération.');
+					alert('déplacement de message problématique. Il existe un email qui a perdu une tache. Il est possible d\'annuler la dernière opération.');
 				}
 				tbirdsqlite.msgsMoveCopyCompletedSQLite(aSrcMsgs,
 									                    aDestFolder,

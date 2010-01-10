@@ -11,7 +11,8 @@ var tbirdsqlite = {
       // recherche par mail (donc non recurssive)
       if (mailId != null) {
         sql = "select tasks.rowid, title, state from tasks, links where tasks.folderURI = links.folderURI and tasks.rowid = links.taskId and links.folderURI = :folderURI and links.mailId = :mailId";
-        // quelque soit le type de recherche (email ou folder) on applique le filtre d'état
+        // quelque soit le type de recherche (email ou folder) on applique le
+		// filtre d'état
         if (stateFilter != "") {
           var stateExp = "";
           for (var i = 0; i < stateFilter.length; i++) {
@@ -28,7 +29,8 @@ var tbirdsqlite = {
       // sinon recherche par folder
       } else {
         sql = "select tasks.rowid, title, state from tasks where folderURI = :folderURI";
-        // quelque soit le type de recherche (email ou folder) on applique le filtre d'état
+        // quelque soit le type de recherche (email ou folder) on applique le
+		// filtre d'état
         if (stateFilter != "") {
           var stateExp = "";
           for (var i = 0; i < stateFilter.length; i++) {
@@ -107,8 +109,24 @@ var tbirdsqlite = {
     stat.execute();
    },
    
+   /**
+    * détruit les lients
+    * @param msgs un array de msg. doit être de même longeur que tasks
+    * @param tasks un array de task. doit être de même longeur que tasks 
+    * @return
+    */
+   unlinkSQLite: function (msgs, tasks) {
+	   var stat = this.dbConnection.createStatement("delete links where folderURI = :URI and mailId = MAIL_ID and and taskId = :TASK_ID");
+	   for ( var i = 0; i < msgs.length; i++) {
+		   stat.bindStringParameter(0, msgs[i].folder.baseMessageURI);
+		   stat.bindStringParameter(1, msgs[i].messageURI);
+		   stat.bindInt32Parameter (2, tasks[i]);
+		   stat.execute();
+	   }
+   },
+   
    getLinkSQLite: function (folder) {
-    //consoleService.logStringMessage("getLinkSQLite, folderName="+folderName);
+    // consoleService.logStringMessage("getLinkSQLite, folderName="+folderName);
     try {
       var sql = "select mailId, taskId from links, tasks where links.folderURI = tasks.folderURI and links.taskId = tasks.rowid and tasks.folderURI = :folderURI";
       var stat = this.dbConnection.createStatement(sql);
@@ -160,9 +178,9 @@ var tbirdsqlite = {
    },
    
    /**
-    * Efface un folder cad les taches et liens associés.
-	* n'efface pas les sous folder car l'event folderDeleted est appelé plusieurs fois
-	*/
+	 * Efface un folder cad les taches et liens associés. n'efface pas les sous
+	 * folder car l'event folderDeleted est appelé plusieurs fois
+	 */
    deleteFolderSQLite: function (aFolder) {
 	try {
 		this.dbConnection.beginTransaction();
@@ -220,8 +238,9 @@ var tbirdsqlite = {
 	},
    
 	/**
-	* @param aMsgs An array of the message headers about to be deleted
-	*/
+	 * @param aMsgs
+	 *            An array of the message headers about to be deleted
+	 */
 	msgsDeletedSQLite: function(aMsgs) {
 		try {
 			var TASK_SQL = "delete from tasks where rowid in (select taskId from links where folderURI = :URI and mailId = :ID)";
@@ -251,10 +270,13 @@ var tbirdsqlite = {
 	},
 	
 	/**
-	 * @param aSrcMsgs An array of the message headers in the source folder
-	 * @param aDestFolder The folder these messages were moved to.
-	 * @param aDestMsgs Present only for local folder moves, it provides the list
-	 *        of target message headers.
+	 * @param aSrcMsgs
+	 *            An array of the message headers in the source folder
+	 * @param aDestFolder
+	 *            The folder these messages were moved to.
+	 * @param aDestMsgs
+	 *            Present only for local folder moves, it provides the list of
+	 *            target message headers.
 	 */
 	msgsMoveCopyCompletedSQLite: function(aSrcMsgs, aDestFolder, aDestMsgs){
 		try {
@@ -285,20 +307,23 @@ var tbirdsqlite = {
 				stat2.execute();
 			}
 		} catch (err) {
-			//this.dbConnection.rollbackTransaction();
+			// this.dbConnection.rollbackTransaction();
 			Components.utils.reportError("msgsDeletedSQLite" + err);
 		} finally {
-			//this.dbConnection.commitTransaction();
+			// this.dbConnection.commitTransaction();
 		}
 	},
 	
 	/**
-	 * @param aSrcFolder  A source folder from to move the task
-	 * @param aTask       A task to move
-	 * @param aDestFolder A destination folder
+	 * @param aSrcFolder
+	 *            A source folder from to move the task
+	 * @param aTask
+	 *            A task to move
+	 * @param aDestFolder
+	 *            A destination folder
 	 * 
-	 * @todo  Pas encore de gestion du déplacement de tache avec des liens.
-	 *        Gérer plusieurs taches
+	 * @todo Pas encore de gestion du déplacement de tache avec des liens. Gérer
+	 *       plusieurs taches
 	 */
 	taskMoveSQLite: function(aTaskID, aDestFolder) {
 		var SQL = "update tasks set folderURI = :NEW_URI where rowid = :TASK_ID";
@@ -310,7 +335,7 @@ var tbirdsqlite = {
 	},
    
    onLoad: function() {  
-     // initialization code  
+     // initialization code
      this.initialized = true;  
      this.dbInit();  
    },  
