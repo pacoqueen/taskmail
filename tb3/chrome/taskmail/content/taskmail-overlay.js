@@ -372,8 +372,7 @@ function removeTask() {
 }
 
 /**
- * déplace un tache dans un nouveau folder
- * @todo gérer le cas où la destination = le folder d'origine
+ * déplace un tache dans un nouveau folder si la tache n'est liée à aucun email
  */
 function moveTask (aDestFolder) {
 	var taskId = document.popupNode.getAttribute("pk");
@@ -387,6 +386,101 @@ function moveTask (aDestFolder) {
 	tbirdsqlite.taskMoveSQLite(taskId, aDestFolder);
 	refreshTaskList();
 }
+
+/**
+ * si l'email est liée à au moins une tache liée à un autre mail, one ne fait rien.
+ * @param selectedMsgs
+ */
+function msgsMovable (selectedMsgs) {
+	
+	// 1 transforme enum en Array de selected msg key
+	var selectedMsgKey = new Array();
+	var srcEnum = selectedMsgs.enumerate();
+	while (srcEnum.hasMoreElements()) {
+		var srcMsg = srcEnum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
+		selectedMsgKey.push(srcMsg.messageKey);
+	}
+	// 2 pour chaque selected msg, recupére les taches liées
+	// dès qu'un msg lié hors sélection, on stoppe
+	var stop = false;
+	for (var i = 0; i < selectedMsgKey.length && !stop; i++) {
+		var taskIDs = getTaskIDFromMailID(selectedMsgKey[i]);
+		for (var j = 0; j < taskIDs.length && !stop; j++) {
+			var msgKeys = getMailKeysFromTaskID(taskIDs[j]);
+			for (var k = 0; k < msgKeys.length && !stop; k++) {
+				if (selectedMsgKey.indexOf(msgKeys[k]) == -1) {
+					stop = true;
+				}
+			}
+		}
+	}
+	return !stop;
+}
+
+function init() {
+  document.getElementById("folderTree").addEventListener("select", refreshTaskList, false);
+  document.getElementById("threadTree").addEventListener("select", refreshTaskLink, false);
+  document.getElementById("taskList").addEventListener("select", refreshMailLink, false);
+  
+	var newMailListener = {
+		folderRenamed: function (aOrigFolder, aNewFolder) {
+			tbirdsqlite.renameFolderSQLite(aOrigFolder, aNewFolder);
+		},
+		folderDeleted: function (aFolder) {
+			// Rien lors de la suppression réelle puisque ça passe par la corbeille
+			// Une fois dans la corbeille, 1 supprimer => un event folderDeleted,  
+			// un vidage de corbeille => un event de plus pour 'corbeille'
+			// Un event par subFolder en partant du dessous.
+			// le baseMessageURI est conforme
+			// avant delete mailbox-message://nobody@Local%20Folders/toto/titi
+			// l'uri est modifié 
+			//consoleService.logStringMessage(aFolder.baseMessageURI);
+			tbirdsqlite.deleteFolderSQLite(aFolder);
+		},
+		folderMoveCopyCompleted: function (aMove,aSrcFolder,aDestFolder) {
+			// TODO Voir ce qu'on devrait faire pour une copie de folder
+			if (aMove) {
+				tbirdsqlite.moveFolderSQLite(aSrcFolder,aDestFolder);
+			}
+		},
+		msgsMoveCopyCompleted: function(aMove,
+		                                aSrcMsgs,
+										aDestFolder,
+										aDestMsgs){
+			if (aMove) {
+				var moveable = msgsMoveable(aSrcMsgs);
+				// si problème on alerte mais le déplacement de message est déjà fait donc on laisse faire.
+				// @todo voir comment empecher le déplacement
+				if (!moveable) {
+					alert('déplacement de message problématique. Il existe un email qui a perdu une tache. Il est possible d''annuler la dernière opération.');
+				}
+				tbirdsqlite.msgsMoveCopyCompletedSQLite(aSrcMsgs,
+									                    aDestFolder,
+									                    aDestMsgs);
+			}
+		},
+		msgsDeleted: function(aMsgs) {
+			tbirdsqlite.msgsDeletedSQLite(aMsgs);
+		}
+	}
+
+	var notificationService =  
+	Components.classes["@mozilla.org/messenger/msgnotificationservice;1"]  
+		.getService(Components.interfaces.nsIMsgFolderNotificationService);  
+	notificationService.addListener(newMailListener, notificationService.folderRenamed | 
+	                                                 notificationService.folderDeleted | 
+													 notificationService.folderMoveCopyCompleted |
+													 notificationService.msgsMoveCopyCompleted |
+													 notificationService.msgsDeleted);
+}
+
+// besoin de passer par le load de la fenêtre sinon ça plante thunderbird (peut-être UI pas prête)
+window.addEventListener("load", init, false);
+
+// Pour logguer
+var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
+                                 .getService(Components.interfaces.nsIConsoleService);
+
 
 function fillTaskDetail(id, title, state, desc) {
   document.getElementById("addTask").value = id;         
@@ -431,64 +525,21 @@ function _makeRowList(pk, titleInput, stateInput) {
   return row;
 }
 
-function init() {
-  document.getElementById("folderTree").addEventListener("select", refreshTaskList, false);
-  document.getElementById("threadTree").addEventListener("select", refreshTaskLink, false);
-  document.getElementById("taskList").addEventListener("select", refreshMailLink, false);
-  
-	var newMailListener = {
-		folderRenamed: function (aOrigFolder, aNewFolder) {
-			tbirdsqlite.renameFolderSQLite(aOrigFolder, aNewFolder);
-		},
-		folderDeleted: function (aFolder) {
-			// Rien lors de la suppression réelle puisque ça passe par la corbeille
-			// Une fois dans la corbeille, 1 supprimer => un event folderDeleted,  
-			// un vidage de corbeille => un event de plus pour 'corbeille'
-			// Un event par subFolder en partant du dessous.
-			// le baseMessageURI est conforme
-			// avant delete mailbox-message://nobody@Local%20Folders/toto/titi
-			// l'uri est modifié 
-			//consoleService.logStringMessage(aFolder.baseMessageURI);
-			tbirdsqlite.deleteFolderSQLite(aFolder);
-		},
-		folderMoveCopyCompleted: function (aMove,aSrcFolder,aDestFolder) {
-			// TODO Voir ce qu'on devrait faire pour une copie de folder
-			if (aMove) {
-				tbirdsqlite.moveFolderSQLite(aSrcFolder,aDestFolder);
+function _unique(array) {
+	var r = new Array();
+	o:for(var i = 0, n = array.length; i < n; i++)
+	{
+		for(var x = 0, y = r.length; x < y; x++)
+		{
+			if(r[x]==array[i])
+			{
+				continue o;
 			}
-		},
-		msgsMoveCopyCompleted: function(aMove,
-		                                aSrcMsgs,
-										aDestFolder,
-										aDestMsgs){
-			if (aMove) {
-				tbirdsqlite.msgsMoveCopyCompletedSQLite(aSrcMsgs,
-										   aDestFolder,
-										   aDestMsgs);
-			}
-		},
-		msgsDeleted: function(aMsgs) {
-			tbirdsqlite.msgsDeletedSQLite(aMsgs);
 		}
+		r[r.length] = array[i];
 	}
-
-	var notificationService =  
-	Components.classes["@mozilla.org/messenger/msgnotificationservice;1"]  
-		.getService(Components.interfaces.nsIMsgFolderNotificationService);  
-	notificationService.addListener(newMailListener, notificationService.folderRenamed | 
-	                                                 notificationService.folderDeleted | 
-													 notificationService.folderMoveCopyCompleted |
-													 notificationService.msgsMoveCopyCompleted |
-													 notificationService.msgsDeleted);
+	return r;
 }
-
-// besoin de passer par le load de la fenêtre sinon ça plante thunderbird (peut-être UI pas prête)
-window.addEventListener("load", init, false);
-
-
-// Pour logguer
-var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
-                                 .getService(Components.interfaces.nsIConsoleService);
 
 ///////////////////////////////////////////////////////////////////////////////
 // Tests
