@@ -1,13 +1,11 @@
-<?xml version="1.0"?>
-<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
-     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
   <Description about="urn:mozilla:install-manifest">
   
     <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>
     <em:name>tasks and mails</em:name>
     <em:version>0.1</em:version>
-    <em:description>Tasks and emails management</em:description>
+    <em:description>tasks and emails management in a thunderbird extension. tasks are stored in emails folder and it's possible to link an email to a task.</em:description>
     <em:creator>gilles orsini</em:creator>
 
     <!-- optional items -->
@@ -22,6 +20,6 @@
 		</Description>
 	</em:targetApplication>
 
-  </Description>
+  <em:homepageURL>https://sourceforge.net/projects/taskmail/</em:homepageURL><em:optionsURL/><em:aboutURL/><em:iconURL/><em:updateURL/><em:updateKey/><em:hidden/></Description>
 
 </RDF>

@@ -115,7 +115,7 @@ var tbirdsqlite = {
     * @param tasks un array de task. doit être de même longeur que tasks 
     * @return
     */
-   unlinkSQLite: function (msgs, tasks) {
+   unlinkTaskSQLite: function (msgs, tasks) {
 	   var stat = this.dbConnection.createStatement("delete links where folderURI = :URI and mailId = MAIL_ID and and taskId = :TASK_ID");
 	   for ( var i = 0; i < msgs.length; i++) {
 		   stat.bindStringParameter(0, msgs[i].folder.baseMessageURI);

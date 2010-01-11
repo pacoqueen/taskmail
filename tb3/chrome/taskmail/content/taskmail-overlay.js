@@ -28,13 +28,15 @@ function linkTask() {
  */
 function unlinkTask() {
 	// parcours tous les messages sélectionnés pour trouver les taches liées dans celles sélectionnés
-	// var mailKey = GetSelectedMessages(); // provoque un plantage
-	var temp = gFolderDisplay.selectedMessages; // OK un objet msg
-	var temp2 = gDBView.numSelected; // OK
+	// TODO optimisation possible en n'invocant uniquement pour les liens liées;
+	var selectedMessages = gFolderDisplay.selectedMessages; // OK un objet msg
 	var listBox = document.getElementById("taskList");
-	var temp4 = listBox.selectedItems;
-	var temp3 = null;
-	//tbirdsqlite.unlinkTaskSQLite();
+	var selectedTasks = listBox.selectedItems;
+	for (var i = 0; i < selectedMessages.length; i++) {
+		for (var j = 0; j < selectedTasks.length; j++) {
+			tbirdsqlite.unlinkTaskSQLite(selectedMessages[i],selectedTasks[j].getAttribute("pk"));
+		}
+	}
 }
 
 function showLinkedTask() {
@@ -601,4 +603,5 @@ function reprise (folder) {
 
 /*
 baseMessageURI = mailbox-message://nobody@Local%20Folders/_maintenance/Autom%20Tests
+var mailKey = GetSelectedMessages(); // provoque un plantage
 */
