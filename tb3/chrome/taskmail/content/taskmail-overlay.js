@@ -147,7 +147,7 @@ function getTaskIDFromMailID(mailKey) {
 function getMailKeysFromTaskID(taskID) {
 	var result = null;
 	var nbResult = 0;
-	for (var i = 0; i < taskIdLinks.length; i++) {
+	for (var i = 0; i < nbLinks; i++) {
 		if (taskIdLinks[i] == taskID) {
 			if (result == null) {
 				result = new Array();
@@ -203,7 +203,7 @@ function getTaskTextLink (taskID, selectedMailKey) {
   // taskID à -1 si pas de tache sélectionnée
   var direct = false;
   var undirect = false;
-  for (var j = 0; j < taskIdLinks.length; j++) {
+  for (var j = 0; j < nbLinks; j++) {
     if (taskID == taskIdLinks[j]) {
       if (selectedMailKey == mailKeysLinks[j]) {
         direct = true;
@@ -220,7 +220,7 @@ function getMailTextLink (taskID, selectedMailKey) {
   // taskID à -1 si pas de tache sélectionnée
   var direct = false;
   var undirect = false;
-  for (var j = 0; j < mailKeysLinks.length; j++) {
+  for (var j = 0; j < nbLinks; j++) {
     if (selectedMailKey == mailKeysLinks[j]) {
       if (taskID == taskIdLinks[j]) {
         direct = true;

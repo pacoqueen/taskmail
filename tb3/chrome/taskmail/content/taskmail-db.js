@@ -115,14 +115,14 @@ var tbirdsqlite = {
     * @param tasks un array de task. doit être de même longeur que tasks 
     * @return
     */
-   unlinkTaskSQLite: function (msgs, tasks) {
-	   var stat = this.dbConnection.createStatement("delete links where folderURI = :URI and mailId = MAIL_ID and and taskId = :TASK_ID");
-	   for ( var i = 0; i < msgs.length; i++) {
-		   stat.bindStringParameter(0, msgs[i].folder.baseMessageURI);
-		   stat.bindStringParameter(1, msgs[i].messageURI);
-		   stat.bindInt32Parameter (2, tasks[i]);
-		   stat.execute();
-	   }
+   unlinkTaskSQLite: function (msgs, taskId) {
+	   var stat = this.dbConnection.createStatement("delete from links where folderURI = :URI and mailId = :MAIL_ID and taskId = :TASK_ID");
+	   var folderURI = msgs.folder.baseMessageURI;
+	   var mailId = msgs.messageKey;
+	   stat.bindStringParameter(0, folderURI);
+	   stat.bindInt32Parameter(1, mailId);
+	   stat.bindInt32Parameter(2, taskId);
+	   stat.execute();
    },
    
    getLinkSQLite: function (folder) {
@@ -156,15 +156,15 @@ var tbirdsqlite = {
 		var origSubFolderURI = aOrigFolder.baseMessageURI;
 		var newSubFolderURI  = aNewFolder.baseMessageURI;
 
-		sql = "update tasks set folderURI = replace(folderURI, :old, :new) where folderURI like :like";
-		stat4 = this.dbConnection.createStatement(sql);
+		var sql = "update tasks set folderURI = replace(folderURI, :old, :new) where folderURI like :like";
+		var stat4 = this.dbConnection.createStatement(sql);
 		stat4.bindStringParameter(0, origSubFolderURI);
 		stat4.bindStringParameter(1, newSubFolderURI);
 		stat4.bindStringParameter(2, origSubFolderURI + "%");
 		stat4.execute();
 		
 		sql = "update links set folderURI = replace(folderURI, :old, :new) where folderURI like :like";
-		stat5 = this.dbConnection.createStatement(sql);
+		var stat5 = this.dbConnection.createStatement(sql);
 		stat5.bindStringParameter(0, origSubFolderURI);
 		stat5.bindStringParameter(1, newSubFolderURI);
 		stat5.bindStringParameter(2, origSubFolderURI + "%");
