@@ -1,5 +1,3 @@
-var addOrUpdate = "";
-
 var stateLabels = [ "info", "à faire", "à suivre", "attente", "fait" ] ;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -340,6 +338,9 @@ function viewFilterChange () {
 // gestion des mises à jour
 //
 
+var addOrUpdate = "";
+var addWithLink = false;
+
 function doubleClikTask(event) {
 	var box = document.getElementById("addTask");
 	if (box.collapsed) {
@@ -349,15 +350,22 @@ function doubleClikTask(event) {
 	}
 }
 
-function beginAddTask(event) {
+function beginAddTaskWithLink() {
+	beginAddTask();
+	// addWithLink après pour overrider
+	addWithLink = true;
+}
+
+function beginAddTask() {
 	// clean UI
 	fillTaskDetail("","",1,"");
 	var box = document.getElementById("addTask");
 	box.collapsed = false;
 	addOrUpdate = "add";
+	addWithLink = false;
 }
 
-function beginUpdateTask(event) {
+function beginUpdateTask() {
   // get task detail
   var listBox = document.getElementById("taskList");
   var pk = listBox.selectedItem.getAttribute("pk");
@@ -368,20 +376,28 @@ function beginUpdateTask(event) {
 	addOrUpdate = "update";
 }
 
-function saveTask() {  
+function saveTask() {
 	var idInput    = document.getElementById("addTask").value;
-  var titleInput = document.getElementById("taskTitle").value;
-  var stateInput = document.getElementById("taskState").selectedItem.value;
-  var desc       = document.getElementById("taskDesc").value;
-  var currentMsgFolder = GetSelectedMsgFolders()[0];
-  
-  if (addOrUpdate == "add") {
-    tbirdsqlite.addTaskSQLite(idInput, titleInput, stateInput, desc, currentMsgFolder);
-  } else {
-    tbirdsqlite.updateTaskSQLite(idInput, titleInput, stateInput, desc);
-  }
-  refreshTaskList();
-  cancelSaveTask();  
+  	var titleInput = document.getElementById("taskTitle").value;
+  	var stateInput = document.getElementById("taskState").selectedItem.value;
+  	var desc       = document.getElementById("taskDesc").value;
+  	var currentMsgFolder = GetSelectedMsgFolders()[0];
+	  
+  	if (addOrUpdate == "add") {
+	    tbirdsqlite.addTaskSQLite(idInput, titleInput, stateInput, desc, currentMsgFolder);
+	    if (addWithLink) {
+	    	var taskId = tbirdsqlite.dbConnection.lastInsertRowID;
+	    	var selectedMessages = gFolderDisplay.selectedMessages;
+	    	for (var i = 0; i < selectedMessages.length; i++) {
+		    	var mailKey = selectedMessages[i].messageKey;
+		    	tbirdsqlite.linkTaskSQLite(taskId, currentMsgFolder, mailKey);
+	    	}
+	    }
+  	} else {
+	    tbirdsqlite.updateTaskSQLite(idInput, titleInput, stateInput, desc);
+  	}
+  	refreshTaskList();
+  	cancelSaveTask();  
 }
 
 function cancelSaveTask() {
