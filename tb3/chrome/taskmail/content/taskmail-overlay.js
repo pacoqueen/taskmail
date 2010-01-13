@@ -340,9 +340,18 @@ function viewFilterChange () {
 // gestion des mises à jour
 //
 
+function doubleClikTask(event) {
+	var box = document.getElementById("addTask");
+	if (box.collapsed) {
+		beginUpdateTask();
+	} else {
+		cancelSaveTask();
+	}
+}
+
 function beginAddTask(event) {
-  // clean UI
-  fillTaskDetail("","",1,"");     
+	// clean UI
+	fillTaskDetail("","",1,"");
 	var box = document.getElementById("addTask");
 	box.collapsed = false;
 	addOrUpdate = "add";
