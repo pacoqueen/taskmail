@@ -433,7 +433,7 @@ function moveTask (aDestFolder) {
  * si l'email est liée à au moins une tache liée à un autre mail, one ne fait rien.
  * @param selectedMsgs
  */
-function msgsMovable (selectedMsgs) {
+function msgsMoveable (selectedMsgs) {
 	
 	// 1 transforme enum en Array de selected msg key
 	var selectedMsgKey = new Array();
