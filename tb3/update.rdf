@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<r:RDF xmlns:r="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+       xmlns="http://www.mozilla.org/2004/em-rdf#">
+<!-- Foo Widget Extension -->
+<r:Description about="urn:mozilla:extension:{b4fb60db-ac1c-4c10-b0f6-39b0b0f56ea5}">
+  <updates>
+    <r:Seq>
+      <r:li>
+        <r:Description>
+          <version>0.4</version>
+          <targetApplication>
+            <r:Description>
+              <id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</id>
+              <minVersion>3.0</minVersion>
+              <maxVersion>3.0.*</maxVersion>
+              <updateLink>https://sourceforge.net/projects/taskmail/files/taskmail-0.4.xpi/download</updateLink>
+            </r:Description>
+          </targetApplication>
+        </r:Description>
+      </r:li>
+    </r:Seq>
+  </updates>
+  <version>0.4</version>
+  <updateLink>https://sourceforge.net/projects/taskmail/files/taskmail-0.4.xpi/download</updateLink>
+</r:Description>
+</r:RDF>
