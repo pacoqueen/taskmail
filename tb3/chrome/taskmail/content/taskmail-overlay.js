@@ -18,6 +18,9 @@ function linkTask() {
   var folder = GetSelectedMsgFolders()[0];
   tbirdsqlite.linkTaskSQLite(taskId, folder, mailKey);
   //consoleService.logStringMessage(link done tache="+taskId+",mail="+mailId);
+  
+  refreshTaskList();
+  refreshMailLink();
 }
 
 /**
@@ -35,6 +38,8 @@ function unlinkTask() {
 			tbirdsqlite.unlinkTaskSQLite(selectedMessages[i],selectedTasks[j].getAttribute("pk"));
 		}
 	}
+	refreshTaskList();
+	refreshMailLink();
 }
 
 function showLinkedTask() {
@@ -246,15 +251,10 @@ function refreshTaskLink() {
 }
 
 function refreshMailLink() {
-  // TODO iteration sur les mails
-  var selectedTask = document.getElementById("taskList").selectedItem;
-  if (selectedTask != null) {
-    var taskID    = selectedTask.getAttribute("pk");
     var tree = document.getElementById("threadTree");
     // parcours tout les taches et regarde s'il existe une tache liée
     var column = tree.columns.getNamedColumn("colTask");
     tree.treeBoxObject.invalidateColumn(column);
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -467,6 +467,8 @@ function init() {
 	var newMailListener = {
 		folderRenamed: function (aOrigFolder, aNewFolder) {
 			tbirdsqlite.renameFolderSQLite(aOrigFolder, aNewFolder);
+			refreshTaskLink();
+			refreshMailLink();
 		},
 		folderDeleted: function (aFolder) {
 			// Rien lors de la suppression réelle puisque ça passe par la corbeille
@@ -499,6 +501,7 @@ function init() {
 				tbirdsqlite.msgsMoveCopyCompletedSQLite(aSrcMsgs,
 									                    aDestFolder,
 									                    aDestMsgs);
+				refreshTaskList();
 			}
 		},
 		msgsDeleted: function(aMsgs) {
