@@ -1,3 +1,8 @@
+taskmail 0.5
+
+1. refresh sur diverses actions de l'IHM.
+2. confirmation sur suppresion email et lien (pas d'undo :-))
+
 taskmail v0.4
 
 1. double clique sur tache ouvert, la referme.
