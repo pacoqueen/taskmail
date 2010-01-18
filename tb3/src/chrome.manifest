@@ -1,2 +1,3 @@
 overlay	chrome://messenger/content/messenger.xul	chrome://taskmail/content/taskmail-overlay.xul
 content	taskmail	chrome/taskmail/content/
+skin	taskmail	classic	chrome/taskmail/skin/

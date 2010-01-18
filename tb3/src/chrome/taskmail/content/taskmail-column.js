@@ -4,13 +4,7 @@ var columnHandler = {
   isString:            function() {return true;},
 
   getCellText:         function(row, col) {
-    var taskID = -1;
-    var taskSelectedItem = document.getElementById("taskList").selectedItem; 
-    if (taskSelectedItem != null) {
-      taskID = taskSelectedItem.getAttribute("pk");
-    }
-    var mailKey = gDBView.getKeyAt(row);
-    return getMailTextLink(taskID, mailKey);
+    return null;
   },
 
   getCellProperties:   function(row, col, props){},
@@ -28,7 +22,20 @@ var columnHandler = {
 		    return null;
 	    }
 	    */
-	    return null;
+  	var taskID = -1;
+    var taskSelectedItem = document.getElementById("taskList").selectedItem; 
+    if (taskSelectedItem != null) {
+      taskID = taskSelectedItem.getAttribute("pk");
+    }
+    var mailKey = gDBView.getKeyAt(row);
+    var type = getMailLinkType(taskID, mailKey);
+    var linkURI = null;
+    if (type == 2) {
+    	linkURI = "chrome://taskmail/skin/link_task_hilight.jpg";
+    } else if (type == 1) {
+    	linkURI = "chrome://taskmail/skin/link_task.jpg";
+    }
+  	return linkURI;
   },
 
   getSortLongForRow:   function(hdr) {return 0;},

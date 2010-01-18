@@ -212,7 +212,13 @@ function getMailIndexFromMailKey(mailKeys) {
 	return result;
 }
 
-function getTaskTextLink(taskID, selectedMailKey) {
+/**
+ * 
+ * @param {} taskID
+ * @param {} selectedMailKey
+ * @return 2 = lien surligné, 1 = lien, 0 = pas de lien
+ */
+function getTaskLinkType(taskID, selectedMailKey) {
 	// taskID à -1 si pas de tache sélectionnée
 	var direct = false;
 	var undirect = false;
@@ -225,11 +231,17 @@ function getTaskTextLink(taskID, selectedMailKey) {
 			}
 		}
 	}
-	var text = direct ? "<*>" : undirect ? "< >" : "";
-	return text;
+	var result = direct ? 2 : undirect ? 1 : 0;
+	return result;
 }
 
-function getMailTextLink(taskID, selectedMailKey) {
+/**
+ * 
+ * @param {} taskID
+ * @param {} selectedMailKey
+ * @return 2 = lien surligné, 1 = lien, 0 = pas de lien
+ */
+function getMailLinkType(taskID, selectedMailKey) {
 	// taskID à -1 si pas de tache sélectionnée
 	var direct = false;
 	var undirect = false;
@@ -242,8 +254,8 @@ function getMailTextLink(taskID, selectedMailKey) {
 			}
 		}
 	}
-	var text = direct ? "<*>" : undirect ? "< >" : "";
-	return text;
+	var result = direct ? 2 : undirect ? 1 : 0;
+	return result;
 }
 
 function refreshTaskLink() {
@@ -256,8 +268,15 @@ function refreshTaskLink() {
 	var listBox = document.getElementById("taskList");
 	for (var i = 0; i < listBox.getRowCount(); i++) {
 		var row = listBox.getItemAtIndex(i);
-		var text = getTaskTextLink(row.getAttribute("pk"), selectedMailKey);
-		row.lastChild.setAttribute("label", text);
+		var linkType = getTaskLinkType(row.getAttribute("pk"), selectedMailKey);
+		//row.lastChild.setAttribute("label", text);
+		var linkURL = null;
+		if (linkType == 2) {
+			linkURL = "chrome://taskmail/skin/link_mail_hilight.jpg";
+		} else if (linkType == 1) {
+			linkURL = "chrome://taskmail/skin/link_mail.jpg";
+		}
+		row.lastChild.setAttribute("image", linkURL);
 	}
 }
 
@@ -594,7 +613,9 @@ function _makeRowList(pk, titleInput, stateInput) {
 	var linkText = "";
 
 	cell = document.createElement('listcell');
-	cell.setAttribute('label', linkText);
+	cell.setAttribute('label', null);
+	cell.setAttribute('class','listcell-iconic');
+	//cell.setAttribute('image','chrome://taskmail/skin/link_mail.jpg');
 	row.appendChild(cell);
 
 	return row;
