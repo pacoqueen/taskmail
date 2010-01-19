@@ -1,3 +1,8 @@
 overlay	chrome://messenger/content/messenger.xul	chrome://taskmail/content/taskmail-overlay.xul
-content	taskmail	chrome/taskmail/content/
-skin	taskmail	classic	chrome/taskmail/skin/
+
+content	taskmail				chrome/taskmail/content/
+
+skin	taskmail		classic	chrome/taskmail/skin/
+
+locale	taskmail		en-US	chrome/taskmail/locale/fr-FR/
+locale	taskmail		fr-FR	chrome/taskmail/locale/en-US/

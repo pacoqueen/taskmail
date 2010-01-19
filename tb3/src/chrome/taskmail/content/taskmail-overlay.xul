@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
+
 <?xml-stylesheet href='chrome://taskmail/skin/taskmail-overlay.css' type='text/css'?>
+
+<!DOCTYPE overlay SYSTEM "chrome://taskmail/locale/taskmail-overlay.dtd">
+
 <overlay id="menuoverlay"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	
@@ -9,7 +13,7 @@
   	
 	<!-- ajoute une entrée au menu contextuel de la liste des mails -->
 	<menupopup id="mailContext">
-		<menuitem label="Lier à la tache"           accesskey="L" oncommand="linkTask()"/>
+		<menuitem label="&linkTask;"                accesskey="L" oncommand="linkTask()"/>
 		<menuitem label="Lier à une nouvelle tache" accesskey="N" oncommand="beginAddTaskWithLink()"/>
 		<menuitem label="Délier les taches"         accesskey="D" oncommand="unlinkTask()"/>
 		<menuitem label="Aller à la tache suivante" accesskey="A" oncommand="showLinkedTask()"/>
