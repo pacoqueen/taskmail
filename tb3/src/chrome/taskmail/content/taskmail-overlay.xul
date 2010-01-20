@@ -13,10 +13,10 @@
   	
 	<!-- ajoute une entrée au menu contextuel de la liste des mails -->
 	<menupopup id="mailContext">
-		<menuitem label="&linkTask;"                accesskey="L" oncommand="linkTask()"/>
-		<menuitem label="Lier à une nouvelle tache" accesskey="N" oncommand="beginAddTaskWithLink()"/>
-		<menuitem label="Délier les taches"         accesskey="D" oncommand="unlinkTask()"/>
-		<menuitem label="Aller à la tache suivante" accesskey="A" oncommand="showLinkedTask()"/>
+		<menuitem label="&linkTask;"    accesskey="L" oncommand="linkTask()"/>
+		<menuitem label="&linkNewTask;" accesskey="N" oncommand="beginAddTaskWithLink()"/>
+		<menuitem label="&unlinkTasks;" accesskey="D" oncommand="unlinkTask()"/>
+		<menuitem label="&goNextTask;"  accesskey="A" oncommand="showLinkedTask()"/>
 		<menuseparator/>
 	</menupopup>
 	
@@ -24,15 +24,15 @@
 		<splitter/>
 		<vbox flex="0.5">
 			<menupopup id="row-menu">
-				<menuitem label="ajouter"                             oncommand="beginAddTask()"/>
-				<menuitem label="ajouter liée"                        oncommand="beginAddTaskWithLink()"/>
-				<menuitem label="modifier"                            oncommand="beginUpdateTask()"/>
-				<menuitem label="supprimer"                           oncommand="removeTask()"/>
-				<menuitem label="Lier au mail"          accesskey="L" oncommand="linkTask()"/>
-				<menuitem label="Délier des mails"      accesskey="D" oncommand="unlinkTask()"/>
-				<menuitem label="Aller au mail suivant" accesskey="A" oncommand="showLinkedMail()"/>
+				<menuitem label="&add;"                               oncommand="beginAddTask()"/>
+				<menuitem label="&addWithLink;"                       oncommand="beginAddTaskWithLink()"/>
+				<menuitem label="&update;"                            oncommand="beginUpdateTask()"/>
+				<menuitem label="&delete;"                            oncommand="removeTask()"/>
+				<menuitem label="&linkMail;"            accesskey="L" oncommand="linkTask()"/>
+				<menuitem label="&unlinkMail;"          accesskey="D" oncommand="unlinkTask()"/>
+				<menuitem label="&goNextMail;"          accesskey="A" oncommand="showLinkedMail()"/>
 				<menu id="taskContext-moveMenu"
-					label="déplacer vers"
+					label="&moveTask;"
 					accesskey="D"
 					oncommand="moveTask(event.target._folder)">
 					<menupopup id="taskContext-fileHereMenu"
@@ -40,16 +40,16 @@
 						mode="filing"
 						showFileHereLabel="true"
 						showRecent="false"
-						fileHereLabel="ici"
+						fileHereLabel="&moveHere;"
 						fileHereAccessKey="I"/>
 				</menu>
 			</menupopup>
       
 			<listbox id="taskList" ondblclick="doubleClikTask()" context="row-menu" seltype="multiple">
 				<listhead>
-					<listheader label="Etat"/>
-					<listheader label="Titre"/>
-					<listheader tooltiptext="lien avec un mail" class="listheader-icon taskColumnHeader"/>
+					<listheader label="&state;"/>
+					<listheader label="&title;"/>
+					<listheader tooltiptext="&linkMailHeader;" class="listheader-icon taskColumnHeader"/>
 				</listhead>
 				<listcols>
 					<listcol/>
@@ -66,22 +66,22 @@
 					</columns>
 					<rows>
 						<row>
-							<label value="titre :" control="taskTitle"/>
+							<label value="&title; :" control="taskTitle"/>
 							<textbox id="taskTitle" flex="1"/>
 						</row>
 						<row>
-							<label value="descriptif :" command="taskDesc"/>
+							<label value="&detail; :" command="taskDesc"/>
 							<textbox id="taskDesc" multiline="true" flex="1" rows="5" />
 						</row>			
 						<row>		
-							<label value="état :"/>
+							<label value="&state; :"/>
 							<menulist  id="taskState">
 								<menupopup>
-									<menuitem label="info"     value="0"/>
-									<menuitem label="à faire"  value="1"/>
-									<menuitem label="à suivre" value="2"/>
-									<menuitem label="attente"  value="3"/>
-									<menuitem label="fait"     value="4"/>
+									<menuitem label="&infoState;"     value="0"/>
+									<menuitem label="&toDoState;"     value="1"/>
+									<menuitem label="&toFollowState;" value="2"/>
+									<menuitem label="&waitingState;"  value="3"/>
+									<menuitem label="&doneState;"     value="4"/>
 								</menupopup>
 							</menulist>
 						</row>
@@ -89,8 +89,8 @@
 				</grid>
 				<hbox>
 					<spacer flex="1"/>
-					<button label="sauver"  oncommand="saveTask()"/>
-					<button label="annuler" oncommand="cancelSaveTask()"/>
+					<button label="&save;"  oncommand="saveTask()"/>
+					<button label="&cancel;" oncommand="cancelSaveTask()"/>
 				</hbox>
 			</vbox>
   		
@@ -99,18 +99,18 @@
 				<!--<button label="reprise"    oncommand="reprise()"/>-->
 				<menulist  id="stateFilter"  oncommand="stateFilterChange()">
 					<menupopup>
-						<menuitem label="active"    value="12"/>
-						<menuitem label="à faire"   value="1"/>
-						<menuitem label="à suivre"  value="2"/>
-						<menuitem label="en cours"  value="1230"/>
-						<menuitem label="tout"      value=""/>
+						<menuitem label="&activeStateFilter;"   value="12"/>
+						<menuitem label="&toDoState;"           value="1"/>
+						<menuitem label="&toFollowState;"       value="2"/>
+						<menuitem label="&currentStateFilter;"  value="1230"/>
+						<menuitem label="&allStateFilter;"      value=""/>
 					</menupopup>
 				</menulist>
 				<menulist  id="viewFilter"  oncommand="viewFilterChange()">
 					<menupopup>
-						<menuitem label="mail"       value="2"/>
-						<menuitem label="subfolders" value="1" selected="true"/>
-						<menuitem label="folder"     value="0"/>
+						<menuitem label="&mailViewFilter;"       value="2"/>
+						<menuitem label="&subFolderViewFilter;" value="1" selected="true"/>
+						<menuitem label="&folderViewFilter;"     value="0"/>
 					</menupopup>
 				</menulist>
 			</hbox>
@@ -122,7 +122,7 @@
 			<splitter class="tree-splitter" />
 			<treecol id="colTask" persist="hidden ordinal" label="Lien"
 				currentView="unthreaded" fixed="true" class="treecol-image taskColumnHeader"
-				tooltiptext="lien avec une tache" editable="true"/>
+				tooltiptext="&linkTaskHeader;" editable="true"/>
 		</treecols>
 	</tree>
 </overlay>
