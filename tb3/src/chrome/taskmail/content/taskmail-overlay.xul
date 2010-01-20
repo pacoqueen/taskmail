@@ -3,7 +3,7 @@
 <?xml-stylesheet href='chrome://taskmail/skin/taskmail-overlay.css' type='text/css'?>
 
 <!DOCTYPE overlay SYSTEM "chrome://taskmail/locale/taskmail-overlay.dtd">
-
+ 
 <overlay id="menuoverlay"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	
@@ -11,6 +11,10 @@
 	<script type='application/x-javascript'  src="chrome://taskmail/content/taskmail-overlay.js"/>
 	<script type='application/x-javascript'  src='chrome://taskmail/content/taskmail-column.js'/>
   	
+	<stringbundleset id="stringbundleset">
+		<stringbundle id="string-bundle" src="chrome://taskmail/locale/taskmail-overlay.properties"/>
+	</stringbundleset>
+
 	<!-- ajoute une entrée au menu contextuel de la liste des mails -->
 	<menupopup id="mailContext">
 		<menuitem label="&linkTask;"    accesskey="L" oncommand="linkTask()"/>

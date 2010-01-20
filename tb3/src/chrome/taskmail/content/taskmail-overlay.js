@@ -1,4 +1,5 @@
 var stateLabels = ["info", "à faire", "à suivre", "attente", "fait"];
+var stringsBundle = null;
 
 // //////////////////////////////////////////////////////////////////////////////
 // gestion des liens
@@ -31,7 +32,7 @@ function linkTask() {
  * @return void
  */
 function unlinkTask() {
-	if (window.confirm("Confirmez-vous la suppression du(des) lien(s) ?")) {
+	if (window.confirm(stringsBundle.getString('confirmDeleteLink'))) {
 		// parcours tous les messages sélectionnés pour trouver les taches liées
 		// dans celles sélectionnés
 		// TODO optimisation possible en n'invocant uniquement pour les liens liées;
@@ -446,7 +447,7 @@ function cancelSaveTask() {
 
 function removeTask() {
 	// demande une confirmation
-	if (window.confirm("Confimez-vous la suppression de la(des) tâche(s) ?")) {
+	if (window.confirm(stringsBundle.getString('taskDeleteConfirm'))) {
 		var listBox = document.getElementById("taskList");
 		var pk = listBox.selectedItem.getAttribute("pk");
 		tbirdsqlite.removeTaskSQLite(pk);
@@ -465,7 +466,7 @@ function moveTask(aDestFolder) {
 		return;
 	// si la tache a un lien, on ne fait rien.
 	if (getMailKeysFromTaskID(taskId) != null) {
-		alert('déplacement de tache avec lien non gérer.');
+		alert(stringsBundle.getString("moveLinkAlert"));
 		return;
 	}
 	tbirdsqlite.taskMoveSQLite(taskId, aDestFolder);
@@ -546,7 +547,7 @@ function init() {
 				// fait donc on laisse faire.
 				// @todo voir comment empecher le déplacement
 				if (!moveable) {
-					alert('déplacement de message problématique. Il existe un email qui a perdu une tache. Il est possible d\'annuler la dernière opération.');
+					alert(stringsBundle.getString("moveMailAlert"));
 				}
 				tbirdsqlite.msgsMoveCopyCompletedSQLite(aSrcMsgs, aDestFolder,
 						aDestMsgs);
@@ -566,6 +567,8 @@ function init() {
 					| notificationService.folderMoveCopyCompleted
 					| notificationService.msgsMoveCopyCompleted
 					| notificationService.msgsDeleted);
+
+	stringsBundle = document.getElementById("string-bundle");
 }
 
 // besoin de passer par le load de la fenêtre sinon ça plante thunderbird
