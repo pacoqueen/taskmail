@@ -683,3 +683,4 @@ function reprise(folder) {
  * mailbox-message://nobody@Local%20Folders/_maintenance/Autom%20Tests var
  * mailKey = GetSelectedMessages(); // provoque un plantage
  */
+

@@ -14,7 +14,11 @@
 	<stringbundleset id="stringbundleset">
 		<stringbundle id="string-bundle" src="chrome://taskmail/locale/taskmail-overlay.properties"/>
 	</stringbundleset>
-
+	
+	<keyset>
+  <key id="sample-key"  key="VK_CANCEL" oncommand="cancelSaveTask()"/>
+</keyset>
+	
 	<!-- ajoute une entrée au menu contextuel de la liste des mails -->
 	<menupopup id="mailContext">
 		<menuitem label="&linkTask;"    accesskey="L" oncommand="linkTask()"/>
@@ -26,7 +30,7 @@
 	
 	<vbox id="threadPaneBox">
 		<splitter/>
-		<vbox flex="0.5">
+		<vbox flex="0.5" >
 			<menupopup id="row-menu">
 				<menuitem label="&add;"                               oncommand="beginAddTask()"/>
 				<menuitem label="&addWithLink;"                       oncommand="beginAddTaskWithLink()"/>
@@ -49,7 +53,8 @@
 				</menu>
 			</menupopup>
       
-			<listbox id="taskList" ondblclick="doubleClikTask()" context="row-menu" seltype="multiple">
+			<listbox id="taskList" ondblclick="doubleClikTask()" context="row-menu" 
+					 seltype="multiple" flex="1" minheight="75">
 				<listhead>
 					<listheader label="&state;"/>
 					<listheader label="&title;"/>
@@ -62,9 +67,8 @@
 				</listcols>
 			</listbox>
         		
-        	<!--  task detail -->
-			<vbox collapsed="true" id="addTask">
-				<grid>
+			<vbox collapsed="true" id="addTask" flex="10">
+				<grid flex="1">
 					<columns>
 						<column/>
 						<column flex="1"/>
@@ -74,9 +78,9 @@
 							<label value="&title; :" control="taskTitle"/>
 							<textbox id="taskTitle" flex="1"/>
 						</row>
-						<row>
+						<row flex="1"  minheight="75">
 							<label value="&detail; :" command="taskDesc"/>
-							<textbox id="taskDesc" multiline="true" flex="1" rows="5" />
+							<textbox id="taskDesc" multiline="true" rows="5"/>
 						</row>			
 						<row>		
 							<label value="&state; :"/>
@@ -95,24 +99,24 @@
 				<hbox>
 					<spacer flex="1"/>
 					<button label="&save;"  oncommand="saveTask()"/>
-					<button label="&cancel;" oncommand="cancelSaveTask()" accesskey="Z" key="VK_CANCEL"/>
+					<button label="&cancel;" oncommand="cancelSaveTask()"/>
 				</hbox>
 			</vbox>
   		
 			<hbox>
 				<spacer flex="1"/>
-				<menulist  id="stateFilter"  oncommand="stateFilterChange()" tooltiptext="&stateFilterTTP;">
+				<menulist  id="stateFilter"  oncommand="stateFilterChange()">
 					<menupopup>
-						<menuitem label="&activeStateFilter;"   value="12" tooltiptext="&activeFilterTTP;"/>
+						<menuitem label="&activeStateFilter;"   value="12"/>
 						<menuitem label="&toDoState;"           value="1"/>
 						<menuitem label="&toFollowState;"       value="2"/>
-						<menuitem label="&currentStateFilter;"  value="1230" tooltiptext="&currentFilterTTP;"/>
+						<menuitem label="&currentStateFilter;"  value="1230"/>
 						<menuitem label="&allStateFilter;"      value=""/>
 					</menupopup>
 				</menulist>
-				<menulist  id="viewFilter"  oncommand="viewFilterChange()" tooltiptext="&viewFilterTTP;">
+				<menulist  id="viewFilter"  oncommand="viewFilterChange()">
 					<menupopup>
-						<menuitem label="&mailViewFilter;"       value="2" tooltiptext="&mailViewTTP;"/>
+						<menuitem label="&mailViewFilter;"       value="2"/>
 						<menuitem label="&subFolderViewFilter;" value="1" selected="true"/>
 						<menuitem label="&folderViewFilter;"     value="0"/>
 					</menupopup>
