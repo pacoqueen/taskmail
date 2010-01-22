@@ -21,11 +21,16 @@
 <!ENTITY toFollowState "à suivre">
 <!ENTITY waitingState  "attente">
 <!ENTITY doneState     "fait">
-<!ENTITY linkMailHeader    "lien avec un mail">
-<!ENTITY linkTaskHeader    "lien avec une tache">
-<!ENTITY activeStateFilter  "active">
-<!ENTITY currentStateFilter "en cours">
-<!ENTITY allStateFilter     "tout">
+<!ENTITY stateFilterTTP      "Filtre d'état">
+<!ENTITY activeFilterTTP     "Les tâches 'à faire' et 'à suivre'">
+<!ENTITY currentFilterTTP    "Toutes les tâches sauf les 'faite'">
+<!ENTITY linkMailHeader      "lien avec un mail">
+<!ENTITY linkTaskHeader      "lien avec une tache">
+<!ENTITY activeStateFilter   "active">
+<!ENTITY currentStateFilter  "en cours">
+<!ENTITY allStateFilter      "tout">
 <!ENTITY mailViewFilter      "mail">
 <!ENTITY subFolderViewFilter "subfolders">
 <!ENTITY folderViewFilter    "folder">
+<!ENTITY viewFilterTTP       "Filtre de visibilité">
+<!ENTITY mailViewTTP         "Les tâches liées aux emails courants">

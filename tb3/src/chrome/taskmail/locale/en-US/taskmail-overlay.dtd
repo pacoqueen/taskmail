@@ -21,11 +21,16 @@
 <!ENTITY toFollowState "to follow">
 <!ENTITY waitingState  "waiting">
 <!ENTITY doneState     "done">
-<!ENTITY linkMailHeader    "link with mails">
-<!ENTITY linkTaskHeader    "link with tasks">
-<!ENTITY activeStateFilter  "active">
-<!ENTITY currentStateFilter "current">
-<!ENTITY allStateFilter     "all">
+<!ENTITY stateFilterTTP      "State filter">
+<!ENTITY activeFilterTTP     "Tasks 'to do' et 'to follow'">
+<!ENTITY currentFilterTTP    "All tasks except 'done'">
+<!ENTITY linkMailHeader      "link with mails">
+<!ENTITY linkTaskHeader      "link with tasks">
+<!ENTITY activeStateFilter   "active">
+<!ENTITY currentStateFilter  "current">
+<!ENTITY allStateFilter      "all">
 <!ENTITY mailViewFilter      "mail">
 <!ENTITY subFolderViewFilter "subfolders">
 <!ENTITY folderViewFilter    "folder">
+<!ENTITY viewFilterTTP       "Visibility filter">
+<!ENTITY mailViewTTP         "Only tasks linked to current email">

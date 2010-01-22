@@ -62,6 +62,7 @@
 				</listcols>
 			</listbox>
         		
+        	<!--  task detail -->
 			<vbox collapsed="true" id="addTask">
 				<grid>
 					<columns>
@@ -94,25 +95,24 @@
 				<hbox>
 					<spacer flex="1"/>
 					<button label="&save;"  oncommand="saveTask()"/>
-					<button label="&cancel;" oncommand="cancelSaveTask()"/>
+					<button label="&cancel;" oncommand="cancelSaveTask()" accesskey="Z" key="VK_CANCEL"/>
 				</hbox>
 			</vbox>
   		
 			<hbox>
 				<spacer flex="1"/>
-				<!--<button label="reprise"    oncommand="reprise()"/>-->
-				<menulist  id="stateFilter"  oncommand="stateFilterChange()">
+				<menulist  id="stateFilter"  oncommand="stateFilterChange()" tooltiptext="&stateFilterTTP;">
 					<menupopup>
-						<menuitem label="&activeStateFilter;"   value="12"/>
+						<menuitem label="&activeStateFilter;"   value="12" tooltiptext="&activeFilterTTP;"/>
 						<menuitem label="&toDoState;"           value="1"/>
 						<menuitem label="&toFollowState;"       value="2"/>
-						<menuitem label="&currentStateFilter;"  value="1230"/>
+						<menuitem label="&currentStateFilter;"  value="1230" tooltiptext="&currentFilterTTP;"/>
 						<menuitem label="&allStateFilter;"      value=""/>
 					</menupopup>
 				</menulist>
-				<menulist  id="viewFilter"  oncommand="viewFilterChange()">
+				<menulist  id="viewFilter"  oncommand="viewFilterChange()" tooltiptext="&viewFilterTTP;">
 					<menupopup>
-						<menuitem label="&mailViewFilter;"       value="2"/>
+						<menuitem label="&mailViewFilter;"       value="2" tooltiptext="&mailViewTTP;"/>
 						<menuitem label="&subFolderViewFilter;" value="1" selected="true"/>
 						<menuitem label="&folderViewFilter;"     value="0"/>
 					</menupopup>
