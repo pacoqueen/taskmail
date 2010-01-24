@@ -31,9 +31,9 @@ var columnHandler = {
     var type = getMailLinkType(taskID, mailKey);
     var linkURI = null;
     if (type == 2) {
-    	linkURI = "chrome://taskmail/skin/link_task_hilight.jpg";
+    	linkURI = "chrome://taskmail/skin/link_task_hilight.png";
     } else if (type == 1) {
-    	linkURI = "chrome://taskmail/skin/link_task.jpg";
+    	linkURI = "chrome://taskmail/skin/link_task.png";
     }
   	return linkURI;
   },

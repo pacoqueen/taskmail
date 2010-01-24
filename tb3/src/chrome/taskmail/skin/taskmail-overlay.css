@@ -1,7 +1,11 @@
 @import url(chrome://global/skin/);
 
 .taskColumnHeader {
-	list-style-image: url('chrome://taskmail/skin/link_task.jpg');
+	list-style-image: url('chrome://taskmail/skin/link_task.png');
+}
+
+.icon-mail-column  {
+	padding-left:7px;
 }
 
 #taskList {

@@ -617,7 +617,7 @@ function _makeRowList(pk, titleInput, stateInput) {
 
 	cell = document.createElement('listcell');
 	cell.setAttribute('label', null);
-	cell.setAttribute('class','listcell-iconic');
+	cell.setAttribute('class','listcell-iconic icon-mail-column');
 	//cell.setAttribute('image','chrome://taskmail/skin/link_mail.jpg');
 	row.appendChild(cell);
 
