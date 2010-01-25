@@ -15,10 +15,6 @@
 		<stringbundle id="string-bundle" src="chrome://taskmail/locale/taskmail-overlay.properties"/>
 	</stringbundleset>
 	
-	<keyset>
-  <key id="sample-key"  key="VK_CANCEL" oncommand="cancelSaveTask()"/>
-</keyset>
-	
 	<!-- ajoute une entrée au menu contextuel de la liste des mails -->
 	<menupopup id="mailContext">
 		<menuitem label="&linkTask;"    accesskey="L" oncommand="linkTask()"/>
@@ -68,6 +64,11 @@
 			</listbox>
         		
 			<vbox collapsed="true" id="addTask" flex="10">
+				<keyset>
+					<!-- control entrée est utilisable dans le textare -->
+					<key keycode="VK_RETURN" oncommand="saveTask();"/>
+					<key modifiers="control" keycode="VK_RETURN" oncommand="saveTask();"/>
+				</keyset>
 				<grid flex="1">
 					<columns>
 						<column/>
@@ -133,4 +134,13 @@
 				tooltiptext="&linkTaskHeader;" editable="true"/>
 		</treecols>
 	</tree>
+	
+	<menubar id="mail-menubar">
+		<menu id="TaskMailMenu" label="Tasks and mails">
+			<menupopup>
+				<menuitem label="test" oncommand="displaySelectedTask();"/>
+			</menupopup>
+				
+		</menu>			
+	</menubar>
 </overlay>

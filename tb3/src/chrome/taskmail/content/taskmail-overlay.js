@@ -659,6 +659,16 @@ function displayMessageID() {
 	consoleService.logStringMessage(folder.baseMessageURI);
 }
 
+function displaySelectedTask () {
+	var listbox = document.getElementById("taskList");
+	var selectedItems = listbox.selectedItems;
+	for (var i = 0; i < selectedItems.length; i++) {
+		
+	}
+	var selectedIndex = listbox.selectedItems.map(function (item) {return listbox.getIndexOfItem(item)});
+	consoleService.logStringMessage(selectedIndex);
+}
+
 function reprise(folder) {
 	if (folder == null) {
 		folder = GetSelectedMsgFolders()[0];
