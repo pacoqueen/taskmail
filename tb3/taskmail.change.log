@@ -1,6 +1,7 @@
 taskmail 0.6a3
 
-1. RETURN and CONTROL-RETURN save task.
+1. RETURN and CONTROL-RETURN save task. SHIFT-ESCAPE = cancel save
+   when focus is in the task detail. 
 
 taskmail 0.6a2
 

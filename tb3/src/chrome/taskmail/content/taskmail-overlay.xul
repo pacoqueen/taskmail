@@ -63,12 +63,14 @@
 				</listcols>
 			</listbox>
         		
+			<keyset>
+				<!-- control entrée est utilisable dans le textare -->
+				<key keycode="VK_RETURN" oncommand="taskDetailKey('save');"/>
+				<key modifiers="control" keycode="VK_RETURN" oncommand="taskDetailKey('save');"/>
+				<key modifiers="shift" keycode="VK_ESCAPE" oncommand="taskDetailKey('cancel');"/>
+			</keyset>
+
 			<vbox collapsed="true" id="addTask" flex="10">
-				<keyset>
-					<!-- control entrée est utilisable dans le textare -->
-					<key keycode="VK_RETURN" oncommand="saveTask();"/>
-					<key modifiers="control" keycode="VK_RETURN" oncommand="saveTask();"/>
-				</keyset>
 				<grid flex="1">
 					<columns>
 						<column/>
@@ -135,12 +137,12 @@
 		</treecols>
 	</tree>
 	
-	<menubar id="mail-menubar">
+	<!--menubar id="mail-menubar">
 		<menu id="TaskMailMenu" label="Tasks and mails">
 			<menupopup>
-				<menuitem label="test" oncommand="displaySelectedTask();"/>
+				<menuitem label="toto" oncommand="window.open('chrome://taskmail/content/test.xul','test','chrome,resizable');"/>
 			</menupopup>
 				
 		</menu>			
-	</menubar>
+	</menubar-->
 </overlay>
