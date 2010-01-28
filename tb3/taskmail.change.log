@@ -1,7 +1,8 @@
-taskmail 0.6a3
+taskmail 0.7
 
 1. RETURN and CONTROL-RETURN save task. SHIFT-ESCAPE = cancel save
-   when focus is in the task detail. 
+   when focus is in the task detail.
+2. Focus on inputtext when task detail opens.
 
 taskmail 0.6a2
 

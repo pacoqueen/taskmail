@@ -419,6 +419,7 @@ function beginAddTask() {
     fillTaskDetail("", "", 1, "");
     var box = document.getElementById("addTask");
     box.collapsed = false;
+    document.getElementById("taskTitle").focus();
     addOrUpdate = "add";
     addWithLink = false;
 }
@@ -431,6 +432,7 @@ function beginUpdateTask() {
     // show details
     var box = document.getElementById("addTask");
     box.collapsed = false;
+    document.getElementById("taskTitle").focus();
     addOrUpdate = "update";
 }
 

@@ -16,6 +16,7 @@
 <!ENTITY state       "Etat">
 <!ENTITY title       "Titre">
 <!ENTITY detail      "Descriptif">
+<!ENTITY detailTTP   "Entrée ou CTRL-Entrée = Sauver, SHIFT-Echap = Annuler">
 <!ENTITY infoState     "info">
 <!ENTITY toDoState     "à faire">
 <!ENTITY toFollowState "à suivre">
