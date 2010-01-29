@@ -346,8 +346,39 @@ function emptyList() {
 function refreshTaskList() {
     // consoleService.logStringMessage("refreshTaskList");
     // le refresh du folder est lancé avant l'handler de la colonne des emails.
+	var selectedTasks = getSelectedTasksKeys();
     emptyList();
     getTaskList();
+    selectedTasksByKeys(selectedTasks);
+}
+
+/**
+ * return tasks selected keys. 
+ * @return Array[int]
+ */
+function getSelectedTasksKeys() {
+	var listBox = document.getElementById("taskList");
+    var selectedTasks = listBox.selectedItems;
+    var result = new Array();
+    for (var i = 0; i < selectedTasks.length; i++) {
+		result.push(selectedTasks[i].getAttribute("pk"));
+    }
+    return result;
+}
+
+/**
+ * select tasks by keys
+ * @param Array[int] keys
+ * @return void
+ */
+function selectedTasksByKeys (keys) {
+	var listBox = document.getElementById("taskList");
+	for (var i = 0; i < listBox.getRowCount(); i++) {
+		var row = listBox.getItemAtIndex(i);
+		if (keys.indexOf(row.getAttribute("pk")) > -1) {
+			listBox.addItemToSelection(row);
+		}
+	}
 }
 
 function stateFilterChange() {

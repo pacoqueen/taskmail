@@ -1,3 +1,7 @@
+taskmail 0.8
+
+1. save selected tasks after action occured.
+
 taskmail 0.7
 
 1. RETURN and CONTROL-RETURN save task. SHIFT-ESCAPE = cancel save
