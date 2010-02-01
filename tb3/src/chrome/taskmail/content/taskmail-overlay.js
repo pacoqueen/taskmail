@@ -6,23 +6,37 @@ var stringsBundle = null;
 //
 
 /**
- * lie l'email courant avec toutes les tâches sélectionnées
+ * lie email et tâches courants. En fonction du send du lien,
+ * un seul objet sélectionnable
+ * @param sens String "task" or "mail"
  */
-function linkTask() {
-    var tree = document.getElementById("threadTree");
-    // tree.db.getIndicesForSelection(count, indices);
-    // var mailIndices = GetSelectedIndices(gDBView);
-    // consoleService.logStringMessage(mailIndices);
-    // TODO gérer plusieurs emails sélectionnés
-    var mailKey = gDBView.keyForFirstSelectedMessage;
-    // var mailKey = gDBView.getKeyAt(mailIndices[0]);
-    var listBox = document.getElementById("taskList");
+function linkTask(sens) {
     var folder = GetSelectedMsgFolders()[0];
-    var taskIds = getSelectedTasksKeys();
-    for (var i = 0; i < taskIds.length; i++) {
-    	var taskId = taskIds[i];
-    	tbirdsqlite.linkTaskSQLite(taskId, folder, mailKey);	
+    if (sens == "mail") {
+	    var selectedMessages = gFolderDisplay.selectedMessages;
+	    if (selectedMessages.length > 1) {
+	    	// trop de mails sélectionnés
+	    	alert(stringsBundle.getString("LinkAlertTooManyMail"));
+	    	return;
+	    }
+	    var taskIds = getSelectedTasksKeys();
+	    for (var i = 0; i < taskIds.length; i++) {
+	    	var taskId = taskIds[i];
+	    	tbirdsqlite.linkTaskSQLite(taskId, folder, selectedMessages[0].messageKey);	
+	    }
+    } else {
+	    var taskIds = getSelectedTasksKeys();
+	    if (taskIds.length > 1) {
+	    	// trop de taches sélectionnées
+	    	alert(stringsBundle.getString("LinkAlertTooManyTask"));
+	    	return;
+	    }
+	    var selectedMessages = gFolderDisplay.selectedMessages;
+	    for (var i = 0; i < selectedMessages.length; i++) {
+	    	tbirdsqlite.linkTaskSQLite(taskIds[0], folder, selectedMessages[i].messageKey);
+	    }	
     }
+    // var mailKey = gDBView.getKeyAt(mailIndices[0]);
     // consoleService.logStringMessage(link done
     // tache="+taskId+",mail="+mailId);
 

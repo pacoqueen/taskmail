@@ -1,6 +1,6 @@
-<!ENTITY linkTask    "Link to a task">
+<!ENTITY linkTask    "Link to tasks">
 <!ENTITY linkNewTask "Link to a new task">
-<!ENTITY linkMail    "Link to mail">
+<!ENTITY linkMail    "Link to mails">
 <!ENTITY unlinkTasks "Unlink tasks">
 <!ENTITY unlinkMail  "Unlink mails">
 <!ENTITY goNextTask  "Go to next task">

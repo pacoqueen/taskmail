@@ -1,10 +1,10 @@
-<!ENTITY linkTask    "Lier à une tâche">
+<!ENTITY linkTask    "Lier aux tâches">
 <!ENTITY linkNewTask "Lier à une nouvelle tache">
-<!ENTITY linkMail    "Lier au mail">
+<!ENTITY linkMail    "Lier aux emails">
 <!ENTITY unlinkTasks "Délier les taches">
-<!ENTITY unlinkMail  "Délier des mails">
+<!ENTITY unlinkMail  "Délier des emails">
 <!ENTITY goNextTask  "Aller à la tache suivante">
-<!ENTITY goNextMail  "Aller au mail suivant">
+<!ENTITY goNextMail  "Aller à l'email suivant">
 <!ENTITY add         "ajouter">
 <!ENTITY addWithLink "ajouter liée">
 <!ENTITY update      "modifier">
@@ -25,8 +25,8 @@
 <!ENTITY stateFilterTTP      "Filtre d'état">
 <!ENTITY activeFilterTTP     "Les tâches 'à faire' et 'à suivre'">
 <!ENTITY currentFilterTTP    "Toutes les tâches sauf les 'faite'">
-<!ENTITY linkMailHeader      "lien avec un mail">
-<!ENTITY linkTaskHeader      "lien avec une tache">
+<!ENTITY linkMailHeader      "lien avec un email">
+<!ENTITY linkTaskHeader      "lien avec une tâche">
 <!ENTITY activeStateFilter   "active">
 <!ENTITY currentStateFilter  "en cours">
 <!ENTITY allStateFilter      "tout">

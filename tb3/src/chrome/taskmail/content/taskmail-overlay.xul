@@ -17,7 +17,7 @@
 	
 	<!-- ajoute une entrée au menu contextuel de la liste des mails -->
 	<menupopup id="mailContext">
-		<menuitem label="&linkTask;"    accesskey="L" oncommand="linkTask()"/>
+		<menuitem label="&linkTask;"    accesskey="L" oncommand="linkTask('mail')"/>
 		<menuitem label="&linkNewTask;" accesskey="N" oncommand="beginAddTaskWithLink()"/>
 		<menuitem label="&unlinkTasks;" accesskey="D" oncommand="unlinkTask()"/>
 		<menuitem label="&goNextTask;"  accesskey="A" oncommand="showLinkedTask()"/>
@@ -32,7 +32,7 @@
 				<menuitem label="&addWithLink;"                       oncommand="beginAddTaskWithLink()"/>
 				<menuitem label="&update;"                            oncommand="beginUpdateTask()"/>
 				<menuitem label="&delete;"                            oncommand="removeTask()"/>
-				<menuitem label="&linkMail;"            accesskey="L" oncommand="linkTask()"/>
+				<menuitem label="&linkMail;"            accesskey="L" oncommand="linkTask('task')"/>
 				<menuitem label="&unlinkMail;"          accesskey="D" oncommand="unlinkTask()"/>
 				<menuitem label="&goNextMail;"          accesskey="A" oncommand="showLinkedMail()"/>
 				<menu id="taskContext-moveMenu"
