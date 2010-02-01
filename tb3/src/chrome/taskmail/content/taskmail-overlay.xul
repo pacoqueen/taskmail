@@ -49,7 +49,7 @@
 				</menu>
 			</menupopup>
       
-			<listbox id="taskList" ondblclick="doubleClikTask()" context="row-menu" 
+			<listbox id="taskList" ondblclick="doubleClikTask(event)" context="row-menu" 
 					 seltype="multiple" flex="1" minheight="75">
 				<listhead>
 					<listheader label="&state;"/>
@@ -137,12 +137,12 @@
 		</treecols>
 	</tree>
 	
-	<!--menubar id="mail-menubar">
+	<menubar id="mail-menubar">
 		<menu id="TaskMailMenu" label="Tasks and mails">
 			<menupopup>
 				<menuitem label="toto" oncommand="window.open('chrome://taskmail/content/test.xul','test','chrome,resizable');"/>
-			</menupopup>
-				
+				<menuitem label="Update" oncommand="beginUpdateTask();"/>
+			</menupopup>				
 		</menu>			
-	</menubar-->
+	</menubar>
 </overlay>

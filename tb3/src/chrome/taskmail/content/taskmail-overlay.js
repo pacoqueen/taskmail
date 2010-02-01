@@ -5,19 +5,24 @@ var stringsBundle = null;
 // gestion des liens
 //
 
+/**
+ * lie l'email courant avec toutes les tâches sélectionnées
+ */
 function linkTask() {
-    // TODO gérer la sélection de plusieurs emails
-    // TODO gérer pas de tache sélectionné
     var tree = document.getElementById("threadTree");
     // tree.db.getIndicesForSelection(count, indices);
     // var mailIndices = GetSelectedIndices(gDBView);
     // consoleService.logStringMessage(mailIndices);
+    // TODO gérer plusieurs emails sélectionnés
     var mailKey = gDBView.keyForFirstSelectedMessage;
     // var mailKey = gDBView.getKeyAt(mailIndices[0]);
     var listBox = document.getElementById("taskList");
-    var taskId = listBox.selectedItem.getAttribute("pk");
     var folder = GetSelectedMsgFolders()[0];
-    tbirdsqlite.linkTaskSQLite(taskId, folder, mailKey);
+    var taskIds = getSelectedTasksKeys();
+    for (var i = 0; i < taskIds.length; i++) {
+    	var taskId = taskIds[i];
+    	tbirdsqlite.linkTaskSQLite(taskId, folder, mailKey);	
+    }
     // consoleService.logStringMessage(link done
     // tache="+taskId+",mail="+mailId);
 
@@ -81,8 +86,7 @@ function showLinkedTask() {
 }
 
 function showLinkedMail() {
-    var taskID = document.getElementById("taskList").selectedItem
-            .getAttribute("pk");
+    var taskID = document.popupNode.getAttribute("pk");
     // recupére les keys de mail liés à la tache
     var keysMails = getMailKeysFromTaskID(taskID);
     if (keysMails.length > 0) {
@@ -408,12 +412,15 @@ function viewFilterChange() {
 // gestion des mises à jour
 //
 
-var addOrUpdate = "";
+// -1 = new task
+var taskDetailPK = -1;
 var addWithLink = false;
 
 function doubleClikTask(event) {
     var box = document.getElementById("addTask");
-    if (box.collapsed) {
+    var pk = event.target.getAttribute("pk");
+    if (box.collapsed || taskDetailPK != pk) {
+    	// si on double clique sur une autre tache, ça l'ouvre
         beginUpdateTask();
     } else {
         cancelSaveTask();
@@ -451,20 +458,27 @@ function beginAddTask() {
     var box = document.getElementById("addTask");
     box.collapsed = false;
     document.getElementById("taskTitle").focus();
-    addOrUpdate = "add";
+    taskDetailPK = -1;
     addWithLink = false;
 }
 
+/*
+ * Update la tache (la 1° sélectionnée)
+ * 
+ */
 function beginUpdateTask() {
     // get task detail
     var listBox = document.getElementById("taskList");
-    var pk = listBox.selectedItem.getAttribute("pk");
-    tbirdsqlite.getTaskDetailSQLite(pk, fillTaskDetail);
-    // show details
-    var box = document.getElementById("addTask");
-    box.collapsed = false;
-    document.getElementById("taskTitle").focus();
-    addOrUpdate = "update";
+    var taskKeys = getSelectedTasksKeys();
+    if (taskKeys.length > 0) {
+    	// on prend la 1° tache sélectionnée
+	    tbirdsqlite.getTaskDetailSQLite(taskKeys[0], fillTaskDetail);
+	    // show details
+	    var box = document.getElementById("addTask");
+	    box.collapsed = false;
+	    document.getElementById("taskTitle").focus();
+	    taskDetailPK = taskKeys[0];
+    }
 }
 
 function saveTask() {
@@ -474,7 +488,7 @@ function saveTask() {
     var desc = document.getElementById("taskDesc").value;
     var currentMsgFolder = GetSelectedMsgFolders()[0];
 
-    if (addOrUpdate == "add") {
+    if (taskDetailPK == -1) {
         tbirdsqlite.addTaskSQLite(idInput, titleInput, stateInput, desc,
                 currentMsgFolder);
         if (addWithLink) {
@@ -497,12 +511,17 @@ function cancelSaveTask() {
     box.collapsed = true;
 }
 
+/**
+ * efface toutes les tâches sélectionnées.
+ */
 function removeTask() {
     // demande une confirmation
     if (window.confirm(stringsBundle.getString('taskDeleteConfirm'))) {
         var listBox = document.getElementById("taskList");
-        var pk = listBox.selectedItem.getAttribute("pk");
-        tbirdsqlite.removeTaskSQLite(pk);
+        var taskIds = getSelectedTasksKeys();
+        for (var i = 0; i < taskIds.length; i++) {
+        	tbirdsqlite.removeTaskSQLite(taskIds[i]);
+        }
         refreshTaskList();
         refreshMailLink();
     }
@@ -586,7 +605,6 @@ function init() {
             tbirdsqlite.deleteFolderSQLite(aFolder);
         },
         folderMoveCopyCompleted : function(aMove, aSrcFolder, aDestFolder) {
-            // TODO Voir ce qu'on devrait faire pour une copie de folder
             if (aMove) {
                 tbirdsqlite.moveFolderSQLite(aSrcFolder, aDestFolder);
             }
@@ -652,7 +670,9 @@ function fillTaskList(id, title, state) {
 
 function _makeRowList(pk, titleInput, stateInput) {
     var row = document.createElement('listitem');
+    
     row.setAttribute('pk', pk);
+    
     // Create and attach 1st cell
     var cell = document.createElement('listcell');
     cell.setAttribute('label', stateLabels[stateInput]);
