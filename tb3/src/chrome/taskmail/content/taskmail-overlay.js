@@ -161,6 +161,11 @@ function hasTask(messageKey) {
     return result;
 }
 
+/**
+ * détermine les clés de taches à partir de la clé de mail spécifiée
+ * @param String mailKey
+ * @return Array
+ */
 function getTaskIDFromMailID(mailKey) {
     var result = new Array();
     var j = 0;
@@ -304,6 +309,14 @@ function refreshMailLink() {
     // parcours tout les taches et regarde s'il existe une tache liée
     var column = tree.columns.getNamedColumn("colTask");
     tree.treeBoxObject.invalidateColumn(column);
+}
+
+function adjustTaskMenu() {
+	var menuitem = document.getElementById('row-menu.goNextMail');
+	var regExp = new RegExp("[0-9]+");
+	var mailLinkedKeys = getMailKeysFromTaskID(document.popupNode.getAttribute("pk")); 
+	var count = mailLinkedKeys != null ? mailLinkedKeys.length : 0;
+	menuitem.label = menuitem.label.replace(regExp,count);
 }
 
 // //////////////////////////////////////////////////////////////////////////////
