@@ -91,7 +91,7 @@ var tbirdsqlite = {
     stat.execute();
    },
   
-   removeTaskSQLite: function (pk) {        
+   removeTaskLinkSQLite: function (pk) {        
     var stat = this.dbConnection.createStatement("delete from tasks where rowid = :pk");
     stat.bindInt32Parameter(0,pk);
     stat.execute();

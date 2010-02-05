@@ -1,6 +1,7 @@
 taskmail 0.9
 
 1. linked objects count in context-menu.
+2. bug with french localisation (no confirmation on task delete).
 
 taskmail 0.8
 

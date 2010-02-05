@@ -20,14 +20,14 @@
 		<menuitem label="&linkTask;"    accesskey="L" oncommand="linkTask('mail')"/>
 		<menuitem label="&linkNewTask;" accesskey="N" oncommand="beginAddTaskWithLink()"/>
 		<menuitem label="&unlinkTasks;" accesskey="D" oncommand="unlinkTask()"/>
-		<menuitem label="&goNextTask;"  accesskey="A" oncommand="showLinkedTask()"/>
+		<menuitem label="&goNextTask;"  accesskey="A" oncommand="showLinkedTask()" id="mailContext.goNextTask"/>
 		<menuseparator/>
 	</menupopup>
 	
 	<vbox id="threadPaneBox">
 		<splitter/>
 		<vbox flex="0.5" >
-			<menupopup id="row-menu" onpopupshowing="adjustTaskMenu();">
+			<menupopup id="row-menu" onpopupshowing="adjustContextMenu('task');">
 				<menuitem label="&add;"                               oncommand="beginAddTask()"/>
 				<menuitem label="&addWithLink;"                       oncommand="beginAddTaskWithLink()"/>
 				<menuitem label="&update;"                            oncommand="beginUpdateTask()"/>

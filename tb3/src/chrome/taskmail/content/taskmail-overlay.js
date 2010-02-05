@@ -311,11 +311,22 @@ function refreshMailLink() {
     tree.treeBoxObject.invalidateColumn(column);
 }
 
-function adjustTaskMenu() {
-	var menuitem = document.getElementById('row-menu.goNextMail');
+/**
+ * @param sens String "task" or "mail"
+ */
+function adjustContextMenu(sens) {
+	var menuitem = null;
+	var linkedObject = null;
+	if (sens == "task") {
+		menuitem = document.getElementById('row-menu.goNextMail');
+		linkedObject = getMailKeysFromTaskID(document.popupNode.getAttribute("pk")); 
+	} else {
+		menuitem = document.getElementById('mailContext.goNextTask');
+		var mails = gFolderDisplay.selectedMessages;
+		linkedObject = getTaskIDFromMailID(mails[0].messageKey); 
+	}
 	var regExp = new RegExp("[0-9]+");
-	var mailLinkedKeys = getMailKeysFromTaskID(document.popupNode.getAttribute("pk")); 
-	var count = mailLinkedKeys != null ? mailLinkedKeys.length : 0;
+	var count = linkedObject != null ? linkedObject.length : 0;
 	menuitem.label = menuitem.label.replace(regExp,count);
 }
 
@@ -539,7 +550,7 @@ function cancelSaveTask() {
 }
 
 /**
- * efface toutes les tâches sélectionnées.
+ * efface toutes les tâches sélectionnées avec les liens associés
  */
 function removeTask() {
     // demande une confirmation
@@ -547,7 +558,7 @@ function removeTask() {
         var listBox = document.getElementById("taskList");
         var taskIds = getSelectedTasksKeys();
         for (var i = 0; i < taskIds.length; i++) {
-        	tbirdsqlite.removeTaskSQLite(taskIds[i]);
+        	tbirdsqlite.removeTaskLinkSQLite(taskIds[i]);
         }
         refreshTaskList();
         refreshMailLink();
@@ -611,6 +622,9 @@ function init() {
             refreshTaskLink, false);
     document.getElementById("taskList").addEventListener("select",
             refreshMailLink, false);
+    // bug, pas possible d'utiliser onpopupshowing dans le .xul
+    document.getElementById("mailContext").addEventListener("popupshowing",
+            adjustContextMenu, false);
 
     var newMailListener = {
         folderRenamed : function(aOrigFolder, aNewFolder) {
