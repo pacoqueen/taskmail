@@ -6,7 +6,7 @@ var tbirdsqlite = {
    getTaskListSQLite: function (mailId, folder, stateFilter, fillFunction) {
     var sql = ""; 
 	var stat;
-	var folderURI = folder.baseMessageURI;
+	var folderURI = folder.URI;
     try {
       // recherche par mail (donc non recurssive)
       if (mailId != null) {
@@ -49,7 +49,7 @@ var tbirdsqlite = {
          var title = stat.getString(1);
          var state = stat.getString(2);
 
-          fillFunction (id, title, state);
+          fillFunction (id, title, state, folderURI);
       }
     } catch (err) {
       alert(err);
@@ -73,7 +73,7 @@ var tbirdsqlite = {
    },
   
    addTaskSQLite: function (idInput, titleInput, stateInput, desc, folder) {
-    var folderURI = folder.baseMessageURI;
+    var folderURI = folder.URI;
     var stat = this.dbConnection.createStatement("insert into tasks (title, state, desc, folderURI) values (:titleInput, :stateInput, :desc, :folderURI)");
     stat.bindStringParameter(0,titleInput);
     stat.bindStringParameter(1,stateInput);
@@ -102,7 +102,7 @@ var tbirdsqlite = {
    
    linkTaskSQLite: function (taskId, folder, mailId) {        
     var stat = this.dbConnection.createStatement("insert into links (folderURI, mailId, taskId) values (:folderURI, :mailId, :taskId)");
-	var folderURI = folder.baseMessageURI;
+	var folderURI = folder.URI;
     stat.bindStringParameter(0,folderURI);
     stat.bindStringParameter(1,mailId);
     stat.bindInt32Parameter(2,taskId);
@@ -117,7 +117,7 @@ var tbirdsqlite = {
     */
    unlinkTaskSQLite: function (msgs, taskId) {
 	   var stat = this.dbConnection.createStatement("delete from links where folderURI = :URI and mailId = :MAIL_ID and taskId = :TASK_ID");
-	   var folderURI = msgs.folder.baseMessageURI;
+	   var folderURI = msgs.folder.URI;
 	   var mailId = msgs.messageKey;
 	   stat.bindStringParameter(0, folderURI);
 	   stat.bindInt32Parameter(1, mailId);
@@ -130,15 +130,16 @@ var tbirdsqlite = {
     try {
       var sql = "select mailId, taskId from links, tasks where links.folderURI = tasks.folderURI and links.taskId = tasks.rowid and tasks.folderURI = :folderURI";
       var stat = this.dbConnection.createStatement(sql);
-	  var folderURI = folder.baseMessageURI;
+	  var folderURI = folder.URI;
       stat.bindStringParameter(0, folderURI);
       var i = 0;
        while (stat.executeStep()) {
-         mailKeysLinks[i] = stat.getInt32(0);
-         taskIdLinks[i] = stat.getInt32(1);
+         folderURILinks[nbLinks + i] = folderURI;
+         mailKeysLinks[nbLinks + i] = stat.getInt32(0);
+         taskIdLinks[nbLinks + i] = stat.getInt32(1);
          i++;
        }
-       nbLinks = i;
+       nbLinks = nbLinks + i;
     } catch (err) {
       Components.utils.reportError("getLinkSQLite " + err);
     }
@@ -151,10 +152,10 @@ var tbirdsqlite = {
 		var origFolderName = aOrigFolder.name;
 		// le origFolder n'a pas d'attribut parent
 		var newFolderName  = aNewFolder.name;
-		var newFolderURI   = aNewFolder.baseMessageURI;
+		var newFolderURI   = aNewFolder.URI;
 		
-		var origSubFolderURI = aOrigFolder.baseMessageURI;
-		var newSubFolderURI  = aNewFolder.baseMessageURI;
+		var origSubFolderURI = aOrigFolder.URI;
+		var newSubFolderURI  = aNewFolder.URI;
 
 		var sql = "update tasks set folderURI = replace(folderURI, :old, :new) where folderURI like :like";
 		var stat4 = this.dbConnection.createStatement(sql);
@@ -185,7 +186,7 @@ var tbirdsqlite = {
 	try {
 		this.dbConnection.beginTransaction();
 		
-		var folderURI = aFolder.baseMessageURI;
+		var folderURI = aFolder.URI;
 		consoleService.logStringMessage("deleteFolderSQLite"+folderURI);
 
 		var sql = "delete from tasks where folderURI = :URI";
@@ -211,8 +212,8 @@ var tbirdsqlite = {
 	 */
 	moveFolderSQLite: function (aSrcFolder, aDestFolder) {
 		try {
-			var oldParentURI = aSrcFolder.parent != null ? aSrcFolder.parent.baseMessageURI : aSrcFolder.baseMessageURI;
-			var newParentURI = aDestFolder.baseMessageURI;
+			var oldParentURI = aSrcFolder.parent != null ? aSrcFolder.parent.URI : aSrcFolder.URI;
+			var newParentURI = aDestFolder.URI;
 			
 			this.dbConnection.beginTransaction();
 			
@@ -220,14 +221,14 @@ var tbirdsqlite = {
 			var stat = this.dbConnection.createStatement(sql);
 			stat.bindStringParameter(0, oldParentURI);
 			stat.bindStringParameter(1, newParentURI);
-			stat.bindStringParameter(2, aSrcFolder.baseMessageURI + "%");
+			stat.bindStringParameter(2, aSrcFolder.URI + "%");
 			stat.execute();
 			
 			sql = "update links set folderURI = replace(folderURI, :OLD_URI, :NEW_URI) where folderURI like :OLD_LIKE_URI";
 			var stat2 = this.dbConnection.createStatement(sql);
 			stat2.bindStringParameter(0, oldParentURI);
 			stat2.bindStringParameter(1, newParentURI);
-			stat2.bindStringParameter(2, aSrcFolder.baseMessageURI + "%");
+			stat2.bindStringParameter(2, aSrcFolder.URI + "%");
 			stat2.execute();
 		} catch (err) {
 			this.dbConnection.rollbackTransaction();
@@ -243,13 +244,14 @@ var tbirdsqlite = {
 	 */
 	msgsDeletedSQLite: function(aMsgs) {
 		try {
+			this.dbConnection.beginTransaction();
 			var TASK_SQL = "delete from tasks where rowid in (select taskId from links where folderURI = :URI and mailId = :ID)";
 			var LINK_SQL = "delete from links where folderURI = :URI and mailId = :ID";
 			var msgEnum = aMsgs.enumerate();
 			while (msgEnum.hasMoreElements()) {
 				var msg = msgEnum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
 				var msgKey = msg.messageKey;
-				var folderURI = msg.folder.baseMessageURI;
+				var folderURI = msg.folder.URI;
 				consoleService.logStringMessage("msgsDeletedSQLite"+folderURI+","+msgKey);
 				var stat = this.dbConnection.createStatement(TASK_SQL);
 				stat.bindStringParameter(0, folderURI);
@@ -290,19 +292,19 @@ var tbirdsqlite = {
 				var srcMsg = srcEnum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
 				var destMsg = destEnum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
 
-				consoleService.logStringMessage("msgsMoveCopyCompletedSQLite"+destMsg.folder.baseMessageURI+","+
-				                                srcMsg.folder.baseMessageURI+","+srcMsg.messageKey);
+				consoleService.logStringMessage("msgsMoveCopyCompletedSQLite"+destMsg.folder.URI+","+
+				                                srcMsg.folder.URI+","+srcMsg.messageKey);
 				
 				var stat = this.dbConnection.createStatement(TASK_SQL);
-				stat.bindStringParameter(0, destMsg.folder.baseMessageURI);
-				stat.bindStringParameter(1, srcMsg.folder.baseMessageURI);
+				stat.bindStringParameter(0, destMsg.folder.URI);
+				stat.bindStringParameter(1, srcMsg.folder.URI);
 				stat.bindStringParameter(2, srcMsg.messageKey);
 				stat.execute();
 				
 				var stat2 = this.dbConnection.createStatement(LINK_SQL);
-				stat2.bindStringParameter(0, destMsg.folder.baseMessageURI);
+				stat2.bindStringParameter(0, destMsg.folder.URI);
 				stat2.bindStringParameter(1, destMsg.messageKey);
-				stat2.bindStringParameter(2, srcMsg.folder.baseMessageURI);
+				stat2.bindStringParameter(2, srcMsg.folder.URI);
 				stat2.bindStringParameter(3, srcMsg.messageKey);
 				stat2.execute();
 			}
@@ -328,16 +330,17 @@ var tbirdsqlite = {
 	taskMoveSQLite: function(aTaskID, aDestFolder) {
 		var SQL = "update tasks set folderURI = :NEW_URI where rowid = :TASK_ID";
 		var stat = this.dbConnection.createStatement(SQL);
-		stat.bindStringParameter(0, aDestFolder.baseMessageURI);
+		stat.bindStringParameter(0, aDestFolder.URI);
 		stat.bindStringParameter(1, aTaskID);
 		stat.execute();
-		consoleService.logStringMessage("taskMoveSQLite " + aTaskID + " dans " + aDestFolder.baseMessageURI);
+		consoleService.logStringMessage("taskMoveSQLite " + aTaskID + " dans " + aDestFolder.URI);
 	},
    
    onLoad: function() {  
      // initialization code
      this.initialized = true;  
-     this.dbInit();  
+     this.dbInit();
+     this.dbUpgrade();
    },  
    
    dbConnection: null,  
@@ -370,17 +373,45 @@ var tbirdsqlite = {
      this.dbConnection = dbConnection;  
    },
    
-   reprise: function (folder) {
-    var stat = this.dbConnection.createStatement("update tasks set folderURI = :folderURI where folderURI = :URI and folderName = :folderName");
-    stat.bindStringParameter(0,folder.baseMessageURI);
-    stat.bindStringParameter(1,folder.parent.baseMessageURI);
-	stat.bindStringParameter(2,folder.name);
-    stat.execute();
-    var stat2 = this.dbConnection.createStatement("update links set folderURI = :folderURI where folderURI = :URI and folderName = :folderName");
-    stat.bindStringParameter(0,folder.baseMessageURI);
-    stat.bindStringParameter(1,folder.parent.baseMessageURI);
-	stat.bindStringParameter(2,folder.name);
-    stat2.execute();
+	dbUpgrade: function () {
+		try {
+			this.dbConnection.beginTransaction();
+			var currentVersion = 0;
+			var targetVersion = 3;
+			var stat = this.dbConnection.createStatement("select version from model_version");
+			try {
+				stat.executeStep();
+				currentVersion = stat.getInt32(0);
+			} catch (err) {
+				stat = this.dbConnection.createStatement("CREATE TABLE model_version (version NUMERIC)");
+				stat.execute();
+				stat = this.dbConnection.createStatement("insert into model_version values (2)");
+				stat.execute();
+			}			
+			if (currentVersion < targetVersion) {
+				alert("Upgrade of db model needed. Please save our sqllite file in 'user profile directory'/tasks.sqlite then press OK.");
+			}
+			if (currentVersion < 3) {
+				this.dbReprise3();			
+			}
+			if (currentVersion < targetVersion) {
+				stat = this.dbConnection.createStatement("update model_version set version = 3");
+				stat.execute();
+				alert("Upgrade successful.");
+			}
+		} catch (err) {
+			this.dbConnection.rollbackTransaction();
+				alert("Upgrade problem : " + err);
+		} finally {
+			this.dbConnection.commitTransaction();
+		}
+   },
+   
+	dbReprise3: function () {
+		var stat = this.dbConnection.createStatement("insert into tasks values  ('folderURI', 'foldername','title','0','description')");
+		stat.execute();
+		stat = this.dbConnection.createStatement("insert into tasks values ('folderURI2', 'foldername2','title2','0','description2')");
+		stat.execute();
    },
 
    _dbCreate: function(aDBService, aDBFile) {  
@@ -395,4 +426,3 @@ var tbirdsqlite = {
   }
 };
 window.addEventListener("load", function(e) { tbirdsqlite.onLoad(e); }, false); 
-

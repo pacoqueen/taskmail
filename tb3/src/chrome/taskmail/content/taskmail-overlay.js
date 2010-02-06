@@ -12,6 +12,11 @@ var stringsBundle = null;
  */
 function linkTask(sens) {
     var folder = GetSelectedMsgFolders()[0];
+    if (!allEqualsSelectedTasksFolderURI(folder.URI)) {
+    	// un des taches dans un sous folder.
+    	alert(stringsBundle.getString("LinkAlertSubfolder"));
+    	return;
+    }
     if (sens == "mail") {
 	    var selectedMessages = gFolderDisplay.selectedMessages;
 	    if (selectedMessages.length > 1) {
@@ -101,9 +106,10 @@ function showLinkedTask() {
 
 function showLinkedMail() {
     var taskID = document.popupNode.getAttribute("pk");
+    var folderURI = document.popupNode.getAttribute("folderURI");
     // recupére les keys de mail liés à la tache
     var keysMails = getMailKeysFromTaskID(taskID);
-    if (keysMails.length > 0) {
+    if (keysMails != null && keysMails.length > 0) {
         // si la tache selectionnée a au moins un mail lié
         var i = -1;
         try {
@@ -126,18 +132,24 @@ function showLinkedMail() {
             }
         } catch (err) {
         }
-        gDBView.selectMsgByKey(keysMails[i + 1]);
+        // keysMail pourrait être modifié par le changement de folder
+        var keyMailToSelect = keysMails[i + 1];
+        // if task from subfolder select folder.
+        if (GetSelectedMsgFolders()[0].URI != folderURI) {
+	        SelectFolder(folderURI);
+        }
+        gDBView.selectMsgByKey(keyMailToSelect);
     }
 }
 
+var folderURILinks = new Array();
 var mailKeysLinks = new Array();
 var taskIdLinks = new Array();
-var nbLinks = -1;
+var nbLinks = 0;
 
 // use to populate custom column
 function hasMail(taskID) {
-    // consoleService.logStringMessage("hasMail, taskID=" + taskID + ",
-    // nbLinks=" + nbLinks);
+    // consoleService.logStringMessage("hasMail, taskID=" + taskID + ", nbLinks=" + nbLinks);
     var result = false;
     for (var i = 0; i < nbLinks; i++) {
         if (taskIdLinks[i] == taskID) {
@@ -149,8 +161,7 @@ function hasMail(taskID) {
 }
 
 function hasTask(messageKey) {
-    // consoleService.logStringMessage("hasTask, mailID=" + messageID + ",
-    // nbLinks=" + nbLinks);
+    // consoleService.logStringMessage("hasTask, mailID=" + messageID + ",nbLinks=" + nbLinks);
     var result = false;
     for (var i = 0; i < nbLinks; i++) {
         if (mailKeysLinks[i] == messageKey) {
@@ -322,6 +333,7 @@ function adjustContextMenu(sens) {
 		linkedObject = getMailKeysFromTaskID(document.popupNode.getAttribute("pk")); 
 	} else {
 		menuitem = document.getElementById('mailContext.goNextTask');
+		// TODO obtenir email ayant reçu click droit.
 		var mails = gFolderDisplay.selectedMessages;
 		linkedObject = getTaskIDFromMailID(mails[0].messageKey); 
 	}
@@ -336,13 +348,16 @@ function adjustContextMenu(sens) {
 
 function getTaskList() {
     var currentMsgFolder = GetSelectedMsgFolders()[0];
-    var viewFilter = document.getElementById("viewFilter").selectedItem.value
+    var viewFilter = document.getElementById("viewFilter").selectedItem.value;
+    nbLinks = 0;
     if (viewFilter == 2) {
         // recherche par mail
         try {
             var selectedMailKey = gDBView.keyForFirstSelectedMessage;
             // consoleService.logStringMessage(selectedMailKey);
             var stateFilter = document.getElementById("stateFilter").selectedItem.value;
+            // il faut charger les liens avant les taches
+            tbirdsqlite.getLinkSQLite(currentMsgFolder);
             tbirdsqlite.getTaskListSQLite(selectedMailKey, currentMsgFolder,
                     stateFilter, fillTaskList);
         } catch (err) {
@@ -351,8 +366,6 @@ function getTaskList() {
         var recur = viewFilter == 1;
         // évite erreur sur "dossier locaux"
         if (currentMsgFolder != null) {
-            // il faut charger les liens avant les taches
-            tbirdsqlite.getLinkSQLite(currentMsgFolder);
             getTaskListRec(currentMsgFolder, recur);
         }
     }
@@ -363,6 +376,8 @@ function getTaskList() {
 
 function getTaskListRec(folder, recur) {
     var stateFilter = document.getElementById("stateFilter").selectedItem.value;
+    // il faut charger les liens avant les taches ; chargement récurssif
+    tbirdsqlite.getLinkSQLite(folder);
     tbirdsqlite.getTaskListSQLite(null, folder, stateFilter, fillTaskList);
 
     // récupére les sous folders si possible et si demandé
@@ -406,6 +421,17 @@ function getSelectedTasksKeys() {
 		result.push(selectedTasks[i].getAttribute("pk"));
     }
     return result;
+}
+
+function allEqualsSelectedTasksFolderURI(folderURI) {
+	var listBox = document.getElementById("taskList");
+    var selectedTasks = listBox.selectedItems;
+    for (var i = 0; i < selectedTasks.length; i++) {
+    	if (selectedTasks[i].getAttribute("folderURI") != folderURI) {
+    		return false;
+    	}
+    }
+    return true;
 }
 
 /**
@@ -704,15 +730,16 @@ function fillTaskDetail(id, title, state, desc) {
     }
 }
 
-function fillTaskList(id, title, state) {
-    var row = _makeRowList(id, title, state);
+function fillTaskList(id, title, state, folderURI) {
+    var row = _makeRowList(id, title, state, folderURI);
     document.getElementById("taskList").appendChild(row);
 }
 
-function _makeRowList(pk, titleInput, stateInput) {
+function _makeRowList(pk, titleInput, stateInput, folderURI) {
     var row = document.createElement('listitem');
     
     row.setAttribute('pk', pk);
+    row.setAttribute("folderURI", folderURI);
     
     // Create and attach 1st cell
     var cell = document.createElement('listcell');
@@ -753,7 +780,7 @@ function _unique(array) {
 // /////////////////////////////////////////////////////////////////////////////
 // Tests
 
-function displayMessageID() {
+function displayFolderURI() {
     /*
      * var messageArray={}; messageArray=GetSelectedMessages(); var messageURI =
      * messageArray[0]; var header = messenger.msgHdrFromURI(messageURI); var
@@ -769,7 +796,8 @@ function displayMessageID() {
     // messageID=50826FCACE4318438E8AF53FD716466701E595A36F@exdruembetl003.eq1etl.local
     // conclusion : même messgeID. l'uri elle est différente.
     var folder = GetSelectedMsgFolders()[0];
-    consoleService.logStringMessage(folder.baseMessageURI);
+    consoleService.logStringMessage("URI"+folder.URI);
+    consoleService.logStringMessage("baseMessageURI"+folder.baseMessageURI);
 }
 
 function displaySelectedTask () {
@@ -798,12 +826,16 @@ function reprise(folder) {
             consoleService.logStringMessage(e);
         }
     }
-    consoleService.logStringMessage(folder.baseMessageURI);
+    consoleService.logStringMessage(folder.URI);
 }
 
 /*
- * baseMessageURI =
+ * URI =
  * mailbox-message://nobody@Local%20Folders/_maintenance/Autom%20Tests var
  * mailKey = GetSelectedMessages(); // provoque un plantage
  */
 
+function testSelectFolder() {
+//	SelectFolder("mailbox-message://nobody@Local%20Folders/_maintenance/dpca");
+	SelectFolder("mailbox://nobody@Local%20Folders/_maintenance/dpca");
+}

@@ -1,3 +1,10 @@
+taskmail 0.10
+
+1. On a tasks of a subfolders, 'Go to next mail' change current folder 
+2. Impossible to link an email and a tasks of a subfolder.
+3. in sqlite, folderURI contains folder.URI instead of folder.baseMessageURI (database model upgrade needed).
+4. database model upgrade system. 
+
 taskmail 0.9
 
 1. linked objects count in context-menu.

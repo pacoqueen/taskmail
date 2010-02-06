@@ -137,12 +137,12 @@
 		</treecols>
 	</tree>
 	
-	<menubar id="mail-menubar">
+	<!--menubar id="mail-menubar">
 		<menu id="TaskMailMenu" label="Tasks and mails">
 			<menupopup>
-				<menuitem label="toto" oncommand="window.open('chrome://taskmail/content/test.xul','test','chrome,resizable');"/>
-				<menuitem label="Update" oncommand="beginUpdateTask();"/>
+				<menuitem label="displayFolderURI" oncommand="displayFolderURI();"/>
+				<menuitem label="selectFolder" oncommand="testSelectFolder();"/>
 			</menupopup>				
 		</menu>			
-	</menubar>
+	</menubar-->
 </overlay>

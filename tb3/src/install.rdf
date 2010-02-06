@@ -4,7 +4,7 @@
   
     <em:id>{c7adabc0-01aa-11df-8a39-0800200c9a66}</em:id>
     <em:name>tasks and mails</em:name>
-    <em:version>0.9</em:version>
+    <em:version>0.10</em:version>
     <em:description>tasks and emails management in a thunderbird extension. tasks are stored in emails folder and it's possible to link an email to a task.</em:description>
     <em:creator>gilles orsini</em:creator>
 
