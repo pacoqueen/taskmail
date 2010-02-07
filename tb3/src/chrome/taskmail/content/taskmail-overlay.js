@@ -19,6 +19,7 @@ function linkTask(sens) {
     }
     if (sens == "mail") {
 	    var selectedMessages = gFolderDisplay.selectedMessages;
+	    // TODO améliorer le test en autorisant, quelques soit le sens, des liens 1-N.
 	    if (selectedMessages.length > 1) {
 	    	// trop de mails sélectionnés
 	    	alert(stringsBundle.getString("LinkAlertTooManyMail"));
@@ -104,6 +105,10 @@ function showLinkedTask() {
     }
 }
 
+/**
+ * selection le prochain email liée.
+ * basé sur la tache qui a reçue le click droit.
+ */
 function showLinkedMail() {
     var taskID = document.popupNode.getAttribute("pk");
     var folderURI = document.popupNode.getAttribute("folderURI");
@@ -140,6 +145,28 @@ function showLinkedMail() {
         }
         gDBView.selectMsgByKey(keyMailToSelect);
     }
+}
+
+/**
+ * Sélectionne les emails liés aux tâches sélectionnées.
+ * Toutes les taches doivent être dans le folder courant.
+ */
+function selectLinkedMails() {
+	var folder = GetSelectedMsgFolders()[0];
+	if (!allEqualsSelectedTasksFolderURI(folder.URI)) {
+    	// un des taches dans un sous folder.
+    	alert(stringsBundle.getString("SelectMailLinkAlertSubfolder"));
+    	return;
+    }
+	var tasks = getSelectedTasksKeys();
+	var allMails = new Array();
+	for (var i = 0; i < tasks.length; i++) {
+		var mails = getMailKeysFromTaskID(tasks[i]);
+		allMails = allMails.concat(mails);
+	}
+	for (var i = 0; i < allMails.length; i++) {
+		gDBView.selectMsgByKey(allMails[i]);
+	}
 }
 
 var folderURILinks = new Array();
@@ -592,20 +619,23 @@ function removeTask() {
 }
 
 /**
- * déplace un tache dans un nouveau folder si la tache n'est liée à aucun email
+ * déplace les taches dans un nouveau folder si les taches n'ont pas de liens.
  */
 function moveTask(aDestFolder) {
-    var taskId = document.popupNode.getAttribute("pk");
-    // si pas de task sélectionnée, on ne fait rien.
-    if (taskId == "")
-        return;
-    // si la tache a un lien, on ne fait rien.
-    if (getMailKeysFromTaskID(taskId) != null) {
-        alert(stringsBundle.getString("moveLinkAlert"));
-        return;
+    var tasks = getSelectedTasksKeys();
+    for (var i = 0; i < tasks.length; i++) {
+	    // si la tache a un lien, on ne fait rien.
+	    if (getMailKeysFromTaskID(tasks[i]) != null) {
+	        alert(stringsBundle.getString("moveLinkAlert"));
+	        return;
+	    }
     }
-    tbirdsqlite.taskMoveSQLite(taskId, aDestFolder);
-    refreshTaskList();
+    for (var i = 0; i < tasks.length; i++) {
+	    tbirdsqlite.taskMoveSQLite(tasks[i], aDestFolder);
+    }
+    if (tasks.length > 0) {
+    	refreshTaskList();
+    }
 }
 
 /**

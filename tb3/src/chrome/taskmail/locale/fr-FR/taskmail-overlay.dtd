@@ -5,6 +5,7 @@
 <!ENTITY unlinkMail  "Délier des emails">
 <!ENTITY goNextTask  "Aller à la tache suivante (0)">
 <!ENTITY goNextMail  "Aller à l'email suivant (0)">
+<!ENTITY selectMail  "Sélectionner les emails">
 <!ENTITY add         "ajouter">
 <!ENTITY addWithLink "ajouter liée">
 <!ENTITY update      "modifier">

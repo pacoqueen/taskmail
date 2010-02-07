@@ -5,6 +5,7 @@
 <!ENTITY unlinkMail  "Unlink mails">
 <!ENTITY goNextTask  "Go to next task (0)">
 <!ENTITY goNextMail  "Go to next mail (0)">
+<!ENTITY selectMail  "Select mail">
 <!ENTITY add         "add">
 <!ENTITY addWithLink "add with link">
 <!ENTITY update      "update">

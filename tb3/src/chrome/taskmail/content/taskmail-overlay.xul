@@ -28,13 +28,14 @@
 		<splitter/>
 		<vbox flex="0.5" >
 			<menupopup id="row-menu" onpopupshowing="adjustContextMenu('task');">
-				<menuitem label="&add;"                               oncommand="beginAddTask()"/>
-				<menuitem label="&addWithLink;"                       oncommand="beginAddTaskWithLink()"/>
-				<menuitem label="&update;"                            oncommand="beginUpdateTask()"/>
-				<menuitem label="&delete;"                            oncommand="removeTask()"/>
-				<menuitem label="&linkMail;"            accesskey="L" oncommand="linkTask('task')"/>
-				<menuitem label="&unlinkMail;"          accesskey="D" oncommand="unlinkTask()"/>
-				<menuitem id="row-menu.goNextMail" label="&goNextMail;"          accesskey="A" oncommand="showLinkedMail()"/>
+				<menuitem label="&add;"                        oncommand="beginAddTask()"/>
+				<menuitem label="&addWithLink;"                oncommand="beginAddTaskWithLink()"/>
+				<menuitem label="&update;"                     oncommand="beginUpdateTask()"/>
+				<menuitem label="&delete;"                     oncommand="removeTask()"/>
+				<menuitem label="&linkMail;"     accesskey="L" oncommand="linkTask('task')"/>
+				<menuitem label="&unlinkMail;"   accesskey="U" oncommand="unlinkTask()"/>
+				<menuitem label="&goNextMail;"   accesskey="A" oncommand="showLinkedMail()" id="row-menu.goNextMail" />
+				<!--menuitem label="&selectMail;"   accesskey="S" oncommand="selectLinkedMails()"/-->
 				<menu id="taskContext-moveMenu"
 					label="&moveTask;"
 					accesskey="D"

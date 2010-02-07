@@ -1,3 +1,8 @@
+taskmail 0.11
+
+1. internal db intialisation when first installation.
+2. multi tasks move.
+
 taskmail 0.10
 
 1. On a tasks of a subfolders, 'Go to next mail' change current folder 

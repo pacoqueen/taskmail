@@ -349,7 +349,8 @@ var tbirdsqlite = {
    dbSchema: {  
       tables: {  
         tasks:"folderURI TEXT, title TEXT NOT NULL, state TEXT, desc TEXT",
-        links:"folderURI TEXT, mailId TEXT, taskId NUMBER"
+        links:"folderURI TEXT, mailId TEXT, taskId NUMBER",
+        model_version:"version NUMERIC"
      }  
    },  
    
@@ -365,9 +366,10 @@ var tbirdsqlite = {
    
      var dbConnection;  
    
-     if (!dbFile.exists())  
+     if (!dbFile.exists()) {
        dbConnection = this._dbCreate(dbService, dbFile);  
-     else {  
+       this._dbInitTables();
+     } else {  
        dbConnection = dbService.openDatabase(dbFile);  
      }  
      this.dbConnection = dbConnection;  
@@ -392,7 +394,7 @@ var tbirdsqlite = {
 				alert("Upgrade of db model needed. Please save our sqllite file in 'user profile directory'/tasks.sqlite then press OK.");
 			}
 			if (currentVersion < 3) {
-				this.dbReprise3();			
+				this.dbUpgrade3();			
 			}
 			if (currentVersion < targetVersion) {
 				stat = this.dbConnection.createStatement("update model_version set version = 3");
@@ -407,7 +409,7 @@ var tbirdsqlite = {
 		}
    },
    
-	dbReprise3: function () {
+	dbUpgrade3: function () {
 		var stat = this.dbConnection.createStatement("insert into tasks values  ('folderURI', 'foldername','title','0','description')");
 		stat.execute();
 		stat = this.dbConnection.createStatement("insert into tasks values ('folderURI2', 'foldername2','title2','0','description2')");
@@ -423,6 +425,12 @@ var tbirdsqlite = {
   _dbCreateTables: function(aDBConnection) {  
     for(var name in this.dbSchema.tables)  
        aDBConnection.createTable(name, this.dbSchema.tables[name]);  
+  },
+  
+  _dbInitTables: function () {
+	var stat = this.dbConnection.createStatement("insert into model_version values (3)");
+	stat.execute();
+	consoleService.logStringMessage("Database initialisation successful.");
   }
 };
 window.addEventListener("load", function(e) { tbirdsqlite.onLoad(e); }, false); 
