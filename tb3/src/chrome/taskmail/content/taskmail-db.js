@@ -379,7 +379,7 @@ var tbirdsqlite = {
 		try {
 			this.dbConnection.beginTransaction();
 			var currentVersion = 0;
-			var targetVersion = 3;
+			var targetVersion = 4;
 			var stat = this.dbConnection.createStatement("select version from model_version");
 			try {
 				stat.executeStep();
@@ -393,11 +393,11 @@ var tbirdsqlite = {
 			if (currentVersion < targetVersion) {
 				alert("Upgrade of db model needed. Please save our sqllite file in 'user profile directory'/tasks.sqlite then press OK.");
 			}
-			if (currentVersion < 3) {
-				this.dbUpgrade3();			
+			if (currentVersion < 4) {
+				this.dbUpgrade4();			
 			}
 			if (currentVersion < targetVersion) {
-				stat = this.dbConnection.createStatement("update model_version set version = 3");
+				stat = this.dbConnection.createStatement("update model_version set version = 4");
 				stat.execute();
 				alert("Upgrade successful.");
 			}
@@ -409,10 +409,10 @@ var tbirdsqlite = {
 		}
    },
    
-	dbUpgrade3: function () {
-		var stat = this.dbConnection.createStatement("insert into tasks values  ('folderURI', 'foldername','title','0','description')");
+	dbUpgrade4: function () {
+		var stat = this.dbConnection.createStatement("update tasks set folderURI = replace(folderURI,'mailbox-message:','mailbox:')");
 		stat.execute();
-		stat = this.dbConnection.createStatement("insert into tasks values ('folderURI2', 'foldername2','title2','0','description2')");
+		stat = this.dbConnection.createStatement("update links set folderURI = replace(folderURI,'mailbox-message:','mailbox:')");
 		stat.execute();
    },
 
