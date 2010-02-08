@@ -368,7 +368,7 @@ var tbirdsqlite = {
    
      if (!dbFile.exists()) {
        dbConnection = this._dbCreate(dbService, dbFile);  
-       this._dbInitTables();
+       this._dbInitTables(dbConnection);
      } else {  
        dbConnection = dbService.openDatabase(dbFile);  
      }  
@@ -427,8 +427,8 @@ var tbirdsqlite = {
        aDBConnection.createTable(name, this.dbSchema.tables[name]);  
   },
   
-  _dbInitTables: function () {
-	var stat = this.dbConnection.createStatement("insert into model_version values (3)");
+  _dbInitTables: function (connexion) {
+	var stat = connexion.createStatement("insert into model_version values (3)");
 	stat.execute();
 	consoleService.logStringMessage("Database initialisation successful.");
   }
