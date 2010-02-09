@@ -169,6 +169,13 @@ function selectLinkedMails() {
 	}
 }
 
+function goFolder() {
+    var folderURI = document.popupNode.getAttribute("folderURI");
+    if (GetSelectedMsgFolders()[0].URI != folderURI) {
+        SelectFolder(folderURI);
+    }
+}
+
 var folderURILinks = new Array();
 var mailKeysLinks = new Array();
 var taskIdLinks = new Array();

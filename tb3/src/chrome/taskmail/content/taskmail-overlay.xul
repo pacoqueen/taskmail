@@ -35,6 +35,7 @@
 				<menuitem label="&linkMail;"     accesskey="L" oncommand="linkTask('task')"/>
 				<menuitem label="&unlinkMail;"   accesskey="U" oncommand="unlinkTask()"/>
 				<menuitem label="&goNextMail;"   accesskey="A" oncommand="showLinkedMail()" id="row-menu.goNextMail" />
+				<menuitem label="&goFolder;"     accesskey="F" oncommand="goFolder()"/>
 				<!--menuitem label="&selectMail;"   accesskey="S" oncommand="selectLinkedMails()"/-->
 				<menu id="taskContext-moveMenu"
 					label="&moveTask;"
