@@ -162,10 +162,14 @@ function selectLinkedMails() {
 	var allMails = new Array();
 	for (var i = 0; i < tasks.length; i++) {
 		var mails = getMailKeysFromTaskID(tasks[i]);
-		allMails = allMails.concat(mails);
+		if (mails != null) allMails = allMails.concat(mails);
 	}
-	for (var i = 0; i < allMails.length; i++) {
-		gDBView.selectMsgByKey(allMails[i]);
+	if (allMails.length > 0) {
+		gDBView.selection.clearSelection();
+		for (var i = 0; i < allMails.length; i++) {
+			var j = gDBView.findIndexFromKey(allMails[i], false);
+			gDBView.selection.rangedSelect(j, j, true);
+		}
 	}
 }
 
@@ -364,7 +368,7 @@ function adjustContextMenu(sens) {
 	var linkedObject = null;
 	if (sens == "task") {
 		menuitem = document.getElementById('row-menu.goNextMail');
-		linkedObject = getMailKeysFromTaskID(document.popupNode.getAttribute("pk")); 
+		linkedObject = getMailKeysFromTaskID(document.popupNode.getAttribute("pk"));
 	} else {
 		menuitem = document.getElementById('mailContext.goNextTask');
 		// TODO obtenir email ayant reçu click droit.
@@ -374,6 +378,14 @@ function adjustContextMenu(sens) {
 	var regExp = new RegExp("[0-9]+");
 	var count = linkedObject != null ? linkedObject.length : 0;
 	menuitem.label = menuitem.label.replace(regExp,count);
+	
+	if (sens == "task") {
+		// on désactive 'go to folder' si la tache courante est dans le folder courant.
+		var currentFolder = GetSelectedMsgFolders()[0];
+		var taskFolderURI = document.popupNode.getAttribute("folderURI");
+		menuitem = document.getElementById('row-menu.goFolder');
+		menuitem.disabled = currentFolder.URI == taskFolderURI;
+	}
 }
 
 // //////////////////////////////////////////////////////////////////////////////
@@ -619,6 +631,8 @@ function removeTask() {
         var taskIds = getSelectedTasksKeys();
         for (var i = 0; i < taskIds.length; i++) {
         	tbirdsqlite.removeTaskLinkSQLite(taskIds[i]);
+        	// ferme le détail de tâche si ouverte
+        	if (taskDetailPK == taskIds[i]) cancelSaveTask();
         }
         refreshTaskList();
         refreshMailLink();
