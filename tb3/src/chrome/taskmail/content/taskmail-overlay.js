@@ -185,6 +185,8 @@ var mailKeysLinks = new Array();
 var taskIdLinks = new Array();
 var nbLinks = 0;
 
+var taskOrMailFocus = null;
+
 // use to populate custom column
 function hasMail(taskID) {
     // consoleService.logStringMessage("hasMail, taskID=" + taskID + ", nbLinks=" + nbLinks);
@@ -331,7 +333,12 @@ function getMailLinkType(taskID, selectedMailKey) {
     return result;
 }
 
+/**
+ * 
+ * @param {} clearLink boolean true => reset all icon.
+ */
 function refreshTaskLink() {
+//	consoleService.logStringMessage("refreshTaskLink");
     var selectedMailKey = null;
     try {
         selectedMailKey = gDBView.keyForFirstSelectedMessage;
@@ -344,16 +351,20 @@ function refreshTaskLink() {
         var linkType = getTaskLinkType(row.getAttribute("pk"), selectedMailKey);
         //row.lastChild.setAttribute("label", text);
         var linkURL = null;
+        if (taskOrMailFocus == "task" && linkType == 2) {
+        	linkType = 1;
+        }
         if (linkType == 2) {
             linkURL = "chrome://taskmail/skin/link_mail_hilight.jpg";
         } else if (linkType == 1) {
             linkURL = "chrome://taskmail/skin/link_mail.jpg";
-        }
+       	}
         row.lastChild.setAttribute("image", linkURL);
     }
 }
 
 function refreshMailLink() {
+//	consoleService.logStringMessage("refreshMailLink");
     var tree = document.getElementById("threadTree");
     // parcours tout les taches et regarde s'il existe une tache liée
     var column = tree.columns.getNamedColumn("colTask");
@@ -385,6 +396,45 @@ function adjustContextMenu(sens) {
 		var taskFolderURI = document.popupNode.getAttribute("folderURI");
 		menuitem = document.getElementById('row-menu.goFolder');
 		menuitem.disabled = currentFolder.URI == taskFolderURI;
+	}
+}
+
+function focusEvent(sens) {
+	// le select event avant focus event
+//	consoleService.logStringMessage("focusEvent");
+	toto(sens);
+}
+
+function selectMailEvent() {
+//	consoleService.logStringMessage("selectMailEvent");
+	toto("mail");
+}
+
+var temp = 0;
+function selectTaskEvent() {
+	
+//	consoleService.logStringMessage("selectTaskEvent" + temp); 
+	temp = temp + 1;
+	toto("task");
+}
+
+function toto(sens) {
+	if (sens == "task") {
+		if (taskOrMailFocus != "task") {
+			taskOrMailFocus = "task";
+//			consoleService.logStringMessage("toto changement vers task");
+			refreshTaskLink();
+		}
+//		consoleService.logStringMessage("toto refresh mail");
+		refreshMailLink();
+	} else {
+		if (taskOrMailFocus != "mail") {
+			taskOrMailFocus = "mail";
+//			consoleService.logStringMessage("toto changement vers mail");
+			refreshMailLink();
+		}
+//		consoleService.logStringMessage("toto refresh task");
+		refreshTaskLink();
 	}
 }
 
@@ -447,12 +497,12 @@ function emptyList() {
 }
 
 function refreshTaskList() {
-    // consoleService.logStringMessage("refreshTaskList");
+//    consoleService.logStringMessage("refreshTaskList");
     // le refresh du folder est lancé avant l'handler de la colonne des emails.
 	var selectedTasks = getSelectedTasksKeys();
     emptyList();
     getTaskList();
-    selectedTasksByKeys(selectedTasks);
+    selectTasksByKeys(selectedTasks);
 }
 
 /**
@@ -485,7 +535,8 @@ function allEqualsSelectedTasksFolderURI(folderURI) {
  * @param Array[int] keys
  * @return void
  */
-function selectedTasksByKeys (keys) {
+function selectTasksByKeys (keys) {
+//	consoleService.logStringMessage("selectedTasksByKeys");
 	var listBox = document.getElementById("taskList");
 	for (var i = 0; i < listBox.getRowCount(); i++) {
 		var row = listBox.getItemAtIndex(i);
@@ -505,15 +556,11 @@ function viewFilterChange() {
         // recherche par mail
         // il faut supprimer le refreshTaskLink et le remettre pour qui soit en
         // 2°
-        document.getElementById("threadTree").removeEventListener("select",
-                refreshTaskLink, false);
-        document.getElementById("threadTree").addEventListener("select",
-                refreshTaskList, false);
-        document.getElementById("threadTree").addEventListener("select",
-                refreshTaskLink, false);
+        document.getElementById("threadTree").removeEventListener("select",refreshTaskLink, false);
+        document.getElementById("threadTree").addEventListener("select",refreshTaskList, false);
+        document.getElementById("threadTree").addEventListener("select",refreshTaskLink, false);
     } else {
-        document.getElementById("threadTree").removeEventListener("select",
-                refreshTaskList, false);
+        document.getElementById("threadTree").removeEventListener("select",refreshTaskList, false);
     }
     refreshTaskList();
 }
@@ -693,15 +740,13 @@ function msgsMoveable(selectedMsgs) {
 }
 
 function init() {
-    document.getElementById("folderTree").addEventListener("select",
-            refreshTaskList, false);
-    document.getElementById("threadTree").addEventListener("select",
-            refreshTaskLink, false);
-    document.getElementById("taskList").addEventListener("select",
-            refreshMailLink, false);
+    document.getElementById("folderTree").addEventListener("select",refreshTaskList, false);
+    document.getElementById("threadTree").addEventListener("select",selectMailEvent, false);
+    document.getElementById("taskList").addEventListener("select",selectTaskEvent, false);
     // bug, pas possible d'utiliser onpopupshowing dans le .xul
-    document.getElementById("mailContext").addEventListener("popupshowing",
-            adjustContextMenu, false);
+    document.getElementById("mailContext").addEventListener("popupshowing",adjustContextMenu, false);
+    document.getElementById("listbox").addEventListener("focus",focusEvent(), false);
+    document.getElementById("treeThread").addEventListener("focus",focusEvent(), false);
 
     var newMailListener = {
         folderRenamed : function(aOrigFolder, aNewFolder) {
@@ -889,4 +934,9 @@ function reprise(folder) {
 function testSelectFolder() {
 //	SelectFolder("mailbox-message://nobody@Local%20Folders/_maintenance/dpca");
 	SelectFolder("mailbox://nobody@Local%20Folders/_maintenance/dpca");
+}
+
+function testDisplayEvent() {
+	    consoleService.logStringMessage(temp);
+
 }
