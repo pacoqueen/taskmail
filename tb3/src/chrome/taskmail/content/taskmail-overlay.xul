@@ -139,13 +139,12 @@
 		</treecols>
 	</tree>
 	
-	<menubar id="mail-menubar">
+	<!--menubar id="mail-menubar">
 		<menu id="TaskMailMenu" label="Tasks and mails">
 			<menupopup>
 				<menuitem label="displayFolderURI" oncommand="displayFolderURI();"/>
 				<menuitem label="selectFolder" oncommand="testSelectFolder();"/>
-				<menuitem label="temp" oncommand="testDisplayEvent();"/>
 			</menupopup>				
 		</menu>			
-	</menubar>
+	</menubar-->
 </overlay>

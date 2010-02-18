@@ -12,17 +12,6 @@ var columnHandler = {
   getRowProperties:    function(row, props){},
 
   getImageSrc:         function(row, col) {
-      /*
-      var key = gDBView.getKeyAt(row);
-      var hdr = gDBView.db.GetMsgHdrForKey(key);
-      var messageID= hdr.messageId;
-     	if(hasTask(messageID)==true){
-        return "chrome://xnote/skin/xnote_context.png";
-	    }else {
-		    return null;
-	    }
-	    */
-//  	consoleService.logStringMessage("getImageSrc"+taskOrMailFocus);
   	var taskID = -1;
     var taskSelectedItem = document.getElementById("taskList").selectedItem; 
     if (taskSelectedItem != null) {
@@ -31,9 +20,6 @@ var columnHandler = {
     var mailKey = gDBView.getKeyAt(row);
     var type = getMailLinkType(taskID, mailKey);
     var linkURI = null;
-    if (taskOrMailFocus == "mail" && type == 2) {
-    	type = 1;
-    }
     if (type == 2) {
     	linkURI = "chrome://taskmail/skin/link_task_hilight.png";
     } else if (type == 1) {

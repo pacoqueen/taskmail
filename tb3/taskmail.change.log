@@ -1,7 +1,12 @@
+taskmail 0.13
+
+bug
+1. problem when used with others extensions as AttachmentExtractor (nothing does'nt work)
+
 taskmail 0.12
 
 1. Go to Folder on task on subfolder without links.
-1. Select linked emails.
+2. Select linked emails.
 
 taskmail 0.11
 

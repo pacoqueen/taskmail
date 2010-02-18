@@ -1,5 +1,5 @@
-const Cc = Components.classes;  
-const Ci = Components.interfaces;  
+const taskmailCC = Components.classes;  
+const taskmailCI = Components.interfaces;  
    
 var tbirdsqlite = {
    
@@ -355,14 +355,14 @@ var tbirdsqlite = {
    },  
    
    dbInit: function() {  
-     var dirService = Cc["@mozilla.org/file/directory_service;1"].  
-       getService(Ci.nsIProperties);  
+     var dirService = taskmailCC["@mozilla.org/file/directory_service;1"].  
+       getService(taskmailCI.nsIProperties);  
    
-     var dbFile = dirService.get("ProfD", Ci.nsIFile);  
+     var dbFile = dirService.get("ProfD", taskmailCI.nsIFile);  
      dbFile.append("tasks.sqlite");  
    
-     var dbService = Cc["@mozilla.org/storage/service;1"].  
-       getService(Ci.mozIStorageService);  
+     var dbService = taskmailCC["@mozilla.org/storage/service;1"].  
+       getService(taskmailCI.mozIStorageService);  
    
      var dbConnection;  
    
