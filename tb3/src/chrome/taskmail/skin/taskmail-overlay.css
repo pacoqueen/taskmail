@@ -1,5 +1,17 @@
 @import url(chrome://global/skin/);
 
+.subfolderColumnHeader {
+	list-style-image: url('chrome://messenger/skin/icons/thread-col.png');
+	padding: 0px;
+	margin:0px;
+}
+
+.listcell-subfolder {
+	list-style-image: url('chrome://messenger/skin/icons/thread.png');
+	padding: 0px;
+	margin:0px 0px 0px 3px;
+}
+
 .taskColumnHeader {
 	list-style-image: url('chrome://taskmail/skin/link_task.png');
 	padding-left: 0px;

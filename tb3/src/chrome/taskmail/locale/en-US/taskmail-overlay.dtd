@@ -6,6 +6,7 @@
 <!ENTITY goNextTask  "Go to next task {0}">
 <!ENTITY goNextMail  "Go to next mail {0}">
 <!ENTITY selectMail  "Select mails">
+<!ENTITY selectTask  "Select tasks">
 <!ENTITY goFolder    "Go to Folder">
 <!ENTITY add         "add">
 <!ENTITY addWithLink "add with link">
@@ -19,21 +20,24 @@
 <!ENTITY title       "Title">
 <!ENTITY detail      "Detail">
 <!ENTITY detailTTP   "Entrée or CTRL-Entrée = Save, SHIFT-Echap = Cancel">
-<!ENTITY infoState     "info">
-<!ENTITY toDoState     "to do">
-<!ENTITY toFollowState "to follow">
-<!ENTITY waitingState  "waiting">
-<!ENTITY doneState     "done">
 <!ENTITY stateFilterTTP      "State filter">
 <!ENTITY activeFilterTTP     "Includes 'to do' and 'to follow'">
 <!ENTITY currentFilterTTP    "All tasks except 'done'">
 <!ENTITY linkMailHeader    "link with mails">
 <!ENTITY linkTaskHeader    "link with tasks">
+<!ENTITY toDoStateFilter     "to do">
+<!ENTITY toFollowStateFilter "to follow">
 <!ENTITY activeStateFilter  "active">
 <!ENTITY currentStateFilter "current">
 <!ENTITY allStateFilter     "all">
+<!ENTITY allViewFilter       "all folders">
 <!ENTITY mailViewFilter      "mail">
 <!ENTITY subFolderViewFilter "subfolders">
 <!ENTITY folderViewFilter    "folder">
 <!ENTITY viewFilterTTP       "View filter">
+<!ENTITY allViewTTP          "Tasks of all folders">
 <!ENTITY mailViewTTP         "Only tasks linked to current email">
+<!ENTITY addTask             "Add a task">
+<!ENTITY header.subfolder    "Does task is outside the current subfolder">
+<!ENTITY colHeadLink         "Task link">
+<!ENTITY composeReport       "Compose report">

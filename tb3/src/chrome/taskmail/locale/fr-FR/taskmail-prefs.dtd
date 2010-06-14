@@ -1,0 +1,23 @@
+<!ENTITY window.title         "Options de Task &amp; mail">
+<!ENTITY prefs.pane.report    "Rapport">
+<!ENTITY report.caption       "Rapport de tâches">
+<!ENTITY fields.comment       "Pour les champs Pour et Copie à, virgule pour séparer plusieurs destinaitaires.">
+<!ENTITY field.to             "Pour">
+<!ENTITY field.cc             "Copie à">
+<!ENTITY field.subject        "Sujet">
+<!ENTITY field.body           "Corps">
+<!ENTITY reset                "Réinitialiser">
+<!ENTITY reset.key            "R">
+<!ENTITY prefs.pane.state     "Etats">
+<!ENTITY prefs.state.intro    "Les états peuvent être utilisés pour organiser et filtrer les tâches.">
+<!ENTITY prefs.state.warning  "Attention, ne pas supprimer un état qui serait utilisé.">
+<!ENTITY addState             "Ajouer">
+<!ENTITY editState            "Modifier">
+<!ENTITY removeState          "Supprimer">
+<!ENTITY addState.key         "A">
+<!ENTITY editState.key        "M">
+<!ENTITY removeState.key      "S">
+<!ENTITY upState              "Monter">
+<!ENTITY upState.key          "M">
+<!ENTITY downState            "Descendre">
+<!ENTITY downState.key        "D">

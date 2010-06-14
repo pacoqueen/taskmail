@@ -9,6 +9,7 @@
 	
 	<script type='application/x-javascript'  src="chrome://taskmail/content/taskmail-db.js"/>
 	<script type='application/x-javascript'  src="chrome://taskmail/content/taskmail-overlay.js"/>
+	<script type='application/x-javascript'  src="chrome://taskmail/content/taskmail-report.js"/>
 	<script type='application/x-javascript'  src='chrome://taskmail/content/taskmail-column.js'/>
   	
 	<stringbundleset id="stringbundleset">
@@ -17,30 +18,36 @@
 	
 	<!-- ajoute une entrée au menu contextuel de la liste des mails -->
 	<menupopup id="mailContext">
-		<menuitem label="&linkTask;"    accesskey="L" oncommand="linkTask('mail')"/>
-		<menuitem label="&linkNewTask;" accesskey="N" oncommand="beginAddTaskWithLink()"/>
-		<menuitem label="&unlinkTasks;" accesskey="D" oncommand="unlinkTask()"/>
-		<menuitem label="&goNextTask;"  accesskey="A" oncommand="showLinkedTask()" id="mailContext.goNextTask"/>
+		<menuitem label="&linkTask;"    accesskey="L" oncommand="TASKMAIL.UILink.linkTask()"/>
+		<menuitem label="&linkNewTask;" accesskey="N" oncommand="TASKMAIL.UI.beginAddTaskWithLink()"/>
+		<menuitem label="&unlinkTasks;" accesskey="D" oncommand="TASKMAIL.UILink.unlinkTask()"/>
+		<menuitem label="&goNextTask;"  accesskey="A" oncommand="TASKMAIL.UILink.showLinkedTask()" id="mailContext.goNextTask"/>
+		<menuitem label="&selectTask;"  accesskey="S" oncommand="TASKMAIL.UILink.selectLinkedTask();"/>
 		<menuseparator/>
+	</menupopup>
+	
+	<menupopup id="folderPaneContext">
+		<menuseparator/>
+		<menuitem label="&addTask;"  accesskey="A" oncommand="TASKMAIL.UI.beginAddTask();"/>
 	</menupopup>
 	
 	<vbox id="threadPaneBox">
 		<splitter/>
-		<vbox flex="0.5" >
-			<menupopup id="row-menu" onpopupshowing="adjustContextMenu('task');">
-				<menuitem label="&add;"                        oncommand="beginAddTask()"/>
-				<menuitem label="&addWithLink;"                oncommand="beginAddTaskWithLink()"/>
-				<menuitem label="&update;"                     oncommand="beginUpdateTask()"/>
-				<menuitem label="&delete;"                     oncommand="removeTask()"/>
-				<menuitem label="&linkMail;"     accesskey="L" oncommand="linkTask('task')"/>
-				<menuitem label="&unlinkMail;"   accesskey="U" oncommand="unlinkTask()"/>
-				<menuitem label="&goNextMail;"   accesskey="A" oncommand="showLinkedMail()" id="row-menu.goNextMail" />
-				<menuitem label="&goFolder;"     accesskey="F" oncommand="goFolder()"       id="row-menu.goFolder"/>
-				<menuitem label="&selectMail;"   accesskey="S" oncommand="selectLinkedMails()"/>
+		<vbox flex="0.5" persist="width" id="taskPane">
+			<menupopup id="row-menu" onpopupshowing="TASKMAIL.UI.adjustContextMenu('task');">
+				<menuitem label="&add;"                        oncommand="TASKMAIL.UI.beginAddTask()"/>
+				<menuitem label="&addWithLink;"                oncommand="TASKMAIL.UI.beginAddTaskWithLink()"/>
+				<menuitem label="&update;"                     oncommand="TASKMAIL.UI.beginUpdateTask()"/>
+				<menuitem label="&delete;"                     oncommand="TASKMAIL.UI.removeTask()" id="row-menu.delete"/>
+				<menuitem label="&linkMail;"     accesskey="L" oncommand="TASKMAIL.UILink.linkTask()"/>
+				<menuitem label="&unlinkMail;"   accesskey="U" oncommand="TASKMAIL.UILink.unlinkTask()"/>
+				<menuitem label="&goNextMail;"   accesskey="A" oncommand="TASKMAIL.UILink.showLinkedMail()" id="row-menu.goNextMail" />
+				<menuitem label="&goFolder;"     accesskey="F" oncommand="TASKMAIL.UI.goFolder()"       id="row-menu.goFolder"/>
+				<menuitem label="&selectMail;"   accesskey="S" oncommand="TASKMAIL.UILink.selectLinkedMails()"/>
 				<menu id="taskContext-moveMenu"
 					label="&moveTask;"
 					accesskey="D"
-					oncommand="moveTask(event.target._folder)">
+					oncommand="TASKMAIL.UI.moveTask(event.target._folder)">
 					<menupopup id="taskContext-fileHereMenu"
 						type="folder"
 						mode="filing"
@@ -49,16 +56,19 @@
 						fileHereLabel="&moveHere;"
 						fileHereAccessKey="I"/>
 				</menu>
+				<menuitem label="&composeReport;" accesskey="C" oncommand="TASKMAIL.Report.composeReport()"/>
 			</menupopup>
       
-			<listbox id="taskList" ondblclick="doubleClikTask(event)" context="row-menu" 
+			<listbox id="taskList" ondblclick="TASKMAIL.UI.doubleClikTask(event)" context="row-menu" 
 					 seltype="multiple" flex="1" minheight="75">
 				<listhead>
+					<listheader tooltiptext="&header.subfolder;" class="listheader-icon subfolderColumnHeader"/>
 					<listheader label="&state;"/>
 					<listheader label="&title;"/>
 					<listheader tooltiptext="&linkMailHeader;" class="listheader-icon taskColumnHeader"/>
 				</listhead>
 				<listcols>
+					<listcol/>
 					<listcol/>
 					<listcol flex="1"/>
 					<listcol/>
@@ -67,9 +77,9 @@
         		
 			<keyset>
 				<!-- control entrée est utilisable dans le textare -->
-				<key keycode="VK_RETURN" oncommand="taskDetailKey('save');"/>
-				<key modifiers="control" keycode="VK_RETURN" oncommand="taskDetailKey('save');"/>
-				<key modifiers="shift" keycode="VK_ESCAPE" oncommand="taskDetailKey('cancel');"/>
+				<key keycode="VK_RETURN" oncommand="TASKMAIL.UI.keyPressedInTaskDetail('save');"/>
+				<key modifiers="control" keycode="VK_RETURN" oncommand="TASKMAIL.UI.keyPressedInTaskDetail('save');"/>
+				<key modifiers="shift" keycode="VK_ESCAPE" oncommand="TASKMAIL.UI.keyPressedInTaskDetail('cancel');"/>
 			</keyset>
 
 			<vbox collapsed="true" id="addTask" flex="10" tooltiptext="&detailTTP;">
@@ -91,11 +101,6 @@
 							<label value="&state; :"/>
 							<menulist  id="taskState">
 								<menupopup>
-									<menuitem label="&infoState;"     value="0"/>
-									<menuitem label="&toDoState;"     value="1"/>
-									<menuitem label="&toFollowState;" value="2"/>
-									<menuitem label="&waitingState;"  value="3"/>
-									<menuitem label="&doneState;"     value="4"/>
 								</menupopup>
 							</menulist>
 						</row>
@@ -103,47 +108,52 @@
 				</grid>
 				<hbox>
 					<spacer flex="1"/>
-					<button label="&save;"  oncommand="saveTask()"/>
-					<button label="&cancel;" oncommand="cancelSaveTask()"/>
+					<button label="&save;"  oncommand="TASKMAIL.UI.saveTask()"/>
+					<button label="&cancel;" oncommand="TASKMAIL.UI.cancelSaveTask()"/>
 				</hbox>
 			</vbox>
   		
 			<hbox>
 				<spacer flex="1"/>
-				<menulist  id="stateFilter"  oncommand="stateFilterChange()" tooltiptext="&stateFilterTTP;">
-					<menupopup>
-						<menuitem label="&activeStateFilter;"   value="12" tooltiptext="&activeFilterTTP;"/>
-						<menuitem label="&toDoState;"           value="1"/>
-						<menuitem label="&toFollowState;"       value="2"/>
-						<menuitem label="&currentStateFilter;"  value="1230" tooltiptext="&currentFilterTTP;"/>
-						<menuitem label="&allStateFilter;"      value=""/>
-					</menupopup>
-				</menulist>
-				<menulist  id="viewFilter"  oncommand="viewFilterChange()" tooltiptext="&viewFilterTTP;">
+				<button type="menu"  id="stateFilter"  oncommand="TASKMAIL.UI.changeStateFilter(event)" tooltiptext="&stateFilterTTP;">
+						<menupopup id="stateFilterPopup">
+						</menupopup>
+				</button>
+				<menulist  id="viewFilter"  oncommand="TASKMAIL.UI.viewFilterChange()" tooltiptext="&viewFilterTTP;">
 					<menupopup>
 						<menuitem label="&mailViewFilter;"       value="2" tooltiptext="&mailViewTTP;"/>
-						<menuitem label="&subFolderViewFilter;" value="1" selected="true"/>
 						<menuitem label="&folderViewFilter;"     value="0"/>
+						<menuitem label="&subFolderViewFilter;"  value="1" selected="true"/>
+						<menuitem label="&allViewFilter;"        value="3" tooltiptext="&allViewTTP;"/>
 					</menupopup>
 				</menulist>
 			</hbox>
 		</vbox>
 	</vbox>
 	
-	<tree id="threadTree">
+	<tree id="threadTree" >
 		<treecols id="threadCols">
 			<splitter class="tree-splitter" />
-			<treecol id="colTask" persist="hidden ordinal" label="Lien"
+			<treecol id="colTask" persist="hidden ordinal" label="&colHeadLink;"
 				currentView="unthreaded" fixed="true" class="treecol-image taskColumnHeader"
 				tooltiptext="&linkTaskHeader;" editable="true"/>
 		</treecols>
 	</tree>
 	
-	<!--menubar id="mail-menubar">
+	<statusbar id="status-bar">
+	 <statusbarpanel id="statusbar.tasks"></statusbarpanel>
+	</statusbar>
+	
+	<!--script type='application/x-javascript'  src='chrome://taskmail/content/taskmail-test.js'/>
+	<menubar id="mail-menubar">
 		<menu id="TaskMailMenu" label="Tasks and mails">
 			<menupopup>
-				<menuitem label="displayFolderURI" oncommand="displayFolderURI();"/>
-				<menuitem label="selectFolder" oncommand="testSelectFolder();"/>
+				<menuitem label="getList" oncommand="TASKMAIL.UI.refreshTaskList();"/>
+				<menuitem label="init" oncommand="TASKMAIL.UI.init();"/>
+				<menuitem label="folder" oncommand="testGetFolder();"/>
+				<menuitem label="compose" oncommand="testCompose();"/>
+				<menuitem label="openTemplate" oncommand="testOpenTemplate();"/>
+				<menuitem label="preferences" oncommand="testPreferences();"/>
 			</menupopup>				
 		</menu>			
 	</menubar-->

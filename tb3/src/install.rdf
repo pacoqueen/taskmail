@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
   <Description about="urn:mozilla:install-manifest">
   
     <em:id>{c7adabc0-01aa-11df-8a39-0800200c9a66}</em:id>
     <em:name>tasks and mails</em:name>
-    <em:version>0.13</em:version>
+    <em:version>0.26</em:version>
     <em:description>Tasks management based on linking tasks to emails.</em:description>
     <em:creator>gilles orsini</em:creator>
 
@@ -17,9 +17,11 @@
 		</Description>
 	</em:targetApplication>
 
-  <em:homepageURL>https://sourceforge.net/projects/taskmail/</em:homepageURL>
-  <em:optionsURL/>
-  <em:aboutURL/>
-  <em:iconURL>chrome://taskmail/skin/taskmail_icon.png</em:iconURL>
-  <em:hidden/></Description>
+    <em:homepageURL>http://tasksandmails.mozdev.org/</em:homepageURL>
+    <em:optionsURL>chrome://taskmail/content/taskmail-prefs.xul</em:optionsURL>
+    <em:aboutURL/>
+    <em:iconURL>chrome://taskmail/skin/taskmail_icon.png</em:iconURL>
+    <em:hidden/>
+    <em:updateURL>https://www.mozdev.org/p/updates/tasksandmails/%7Bc7adabc0-01aa-11df-8a39-0800200c9a66%7D/update.rdf</em:updateURL>
+  </Description>
 </RDF>
