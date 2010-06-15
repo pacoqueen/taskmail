@@ -115,7 +115,7 @@
   		
 			<hbox>
 				<spacer flex="1"/>
-				<button type="menu"  id="stateFilter"  oncommand="TASKMAIL.UI.changeStateFilter(event)" tooltiptext="&stateFilterTTP;">
+				<button type="menu"  id="stateFilter"  selectedIdExp="12" persist="selectedIdExp" oncommand="TASKMAIL.UI.changeStateFilter(event)" tooltiptext="&stateFilterTTP;">
 						<menupopup id="stateFilterPopup">
 						</menupopup>
 				</button>
@@ -144,7 +144,7 @@
 	 <statusbarpanel id="statusbar.tasks"></statusbarpanel>
 	</statusbar>
 	
-	<!--script type='application/x-javascript'  src='chrome://taskmail/content/taskmail-test.js'/>
+	<script type='application/x-javascript'  src='chrome://taskmail/content/taskmail-test.js'/>
 	<menubar id="mail-menubar">
 		<menu id="TaskMailMenu" label="Tasks and mails">
 			<menupopup>
@@ -154,7 +154,8 @@
 				<menuitem label="compose" oncommand="testCompose();"/>
 				<menuitem label="openTemplate" oncommand="testOpenTemplate();"/>
 				<menuitem label="preferences" oncommand="testPreferences();"/>
+				<menuitem label="states" oncommand="TASKMAIL.UI.getStates();"/>
 			</menupopup>				
 		</menu>			
-	</menubar-->
+	</menubar>
 </overlay>
