@@ -115,7 +115,7 @@
   		
 			<hbox>
 				<spacer flex="1"/>
-				<button type="menu"  id="stateFilter"  selectedIdExp="12" persist="selectedIdExp" oncommand="TASKMAIL.UI.changeStateFilter(event)" tooltiptext="&stateFilterTTP;">
+				<button type="menu"  id="stateFilter"  selectedIdExp="1,2" persist="selectedIdExp" oncommand="TASKMAIL.UI.changeStateFilter(event)" tooltiptext="&stateFilterTTP;">
 						<menupopup id="stateFilterPopup">
 						</menupopup>
 				</button>
@@ -154,7 +154,7 @@
 				<menuitem label="compose" oncommand="testCompose();"/>
 				<menuitem label="openTemplate" oncommand="testOpenTemplate();"/>
 				<menuitem label="preferences" oncommand="testPreferences();"/>
-				<menuitem label="states" oncommand="TASKMAIL.UI.getStates();"/>
+				<menuitem label="states" oncommand="TASKMAIL.UI.getStatesFromPref();"/>
 			</menupopup>				
 		</menu>			
 	</menubar>

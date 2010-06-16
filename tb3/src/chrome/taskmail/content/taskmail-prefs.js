@@ -124,9 +124,10 @@ TASKMAIL.PREFS = {
    },
     
 	deleteState : function () {
-	  if (this.mStatesListBox.selectedItem) {
+		var index = this.mStatesListBox.selectedIndex; 
+	  if (index > -1) {
 	    this.mStatesListBox.removeChild(this.mStatesListBox.selectedItem);
-	    this.states.splice(this.mStatesListBox.selectedIndex, 1);
+	    this.states.splice(index, 1);
 	    this._saveStatePref();
 	  }
   },

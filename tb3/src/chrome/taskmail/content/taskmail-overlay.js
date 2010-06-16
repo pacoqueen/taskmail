@@ -578,7 +578,7 @@ TASKMAIL.UI = {
 		this.prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
     this.prefs.addObserver("", this, false);
     // charge les états pour la liste de tâches et le détail d'une tâche.
-    this.getStates();
+    this.getStatesFromPref();
 	},
 	
 	observe : function (subject, topic, data) {
@@ -588,7 +588,7 @@ TASKMAIL.UI = {
 	 
 	  switch(data) {
 			case "states":
-				this.getStates();
+				this.getStatesFromPref();
 				this.refreshTaskList();
 				break;
 		}	
@@ -602,10 +602,11 @@ TASKMAIL.UI = {
 	
 	/**
 	 * Récupére les états depuis les préférences et remplie la liste déroule du détail de tâche.
-	 * Appelé après changement des préférences ou au lancement de l'appli.
-	 * remplit la liste des taches dans le détail et la menu déroulant.
+	 * et le menu deroulant du filtre d'état
+	 * Appelé après changement des préférences par observer ou au lancement de l'appli.
 	 */
-	getStates : function () {
+	getStatesFromPref : function () {
+		consoleService.logStringMessage("getStatesFromPref");
 		var result = new Array();
     var statesPref = this.prefs.getComplexValue("states",Components.interfaces.nsIPrefLocalizedString).data;
     var statePrefArray = statesPref.split(",");
@@ -618,28 +619,23 @@ TASKMAIL.UI = {
     // stocke les états (id et libelle)
     this.states = result;
     
-    //charge le menu déroulant avec les libelles et les id sous forme de checkbox
+		//charge le menu déroulant avec les libelles et les id sous forme de checkbox
     var stateList = document.getElementById("taskState");
     var index = stateList.selectedIndex;
     
-    stateList.selectedIndex = index;
-    stateList.removeAllItems();    
-    for(var i=0; i<this.states.length; i++) {
+		stateList.selectedIndex = index;
+		stateList.removeAllItems();    
+		for(var i=0; i<this.states.length; i++) {
     	// remplit la liste déroulante dans le détail de tache.
     	stateList.appendItem(this.states[i].label,this.states[i].id);
     }
-		this.refreshStateFilterLabel();
-  },
-  
-  /**
-   * rafraichit le menu des états depuis this.states, recoche les cases, recalcul le libelle du bouton.
-   */
-  refreshStateFilterLabel : function () {
+
+    // charge le menu déroulant du filtre des états
     var stateButton = document.getElementById("stateFilter");
-    var selectedIdExp = stateButton.getAttribute("selectedIdExp");
     var stateFilter = document.getElementById("stateFilterPopup");
-    var filterLabel = "";
-    var allStatesChecked = true;
+    // récupéré pour savoir ce qui était coché.
+    var selectedIdExp = stateButton.getAttribute("selectedIdExp");
+    var selectedStateIdArray = selectedIdExp.split(",").map(function (e) {return parseInt(e);});
     
     for(var i=stateFilter.childNodes.length - 1; i>=0; i--) {
     	stateFilter.removeChild(stateFilter.childNodes[i]);
@@ -650,23 +646,12 @@ TASKMAIL.UI = {
     	menuitem.setAttribute("label", this.states[i].label);
     	menuitem.setAttribute("id", this.states[i].id);
     	menuitem.setAttribute("type", "checkbox");
-    	if (selectedIdExp.indexOf(this.states[i].id) > -1) {
+    	if (selectedStateIdArray.indexOf(this.states[i].id) > -1) {
     		menuitem.setAttribute("checked", true);
-    		if (filterLabel == "") {
-    			filterLabel += this.states[i].label;
-    		} else if (filterLabel.charAt(filterLabel.length - 1) != "+") {
-    			filterLabel += "+";
-    		}
-    	} else {
-  			allStatesChecked = false;
   		}
     	stateFilter.appendChild(menuitem);
     }
-    // Si toutes les coches sont cochés on met un libellé
-    if (allStatesChecked) {
-  		filterLabel = "Tout";
-  	}
-  	stateButton.label = filterLabel;
+		this.refreshStateFilterLabel();
   },
   
   /**
@@ -674,28 +659,57 @@ TASKMAIL.UI = {
    * Appele après un cochage d'état.
    */
   changeStateFilter : function (event) {
-  	var filterId = "";
+  	consoleService.logStringMessage("changeStateFilter");
   	var noStatesCheck = true;
   	var stateFilterMenu = document.getElementById("stateFilterPopup");
   	for(var i=0; i<stateFilterMenu.childNodes.length; i++) {
   		var stateChecked = stateFilterMenu.childNodes[i].getAttribute("checked"); 
   		if (stateChecked) {
  				noStatesCheck = false;
- 				filterId += stateFilterMenu.childNodes[i].getAttribute("id") + ",";
+ 				break;
   		}
   	}
   	if (noStatesCheck) {
   		// si on essaie de décocher la dernière, on la recoche car on ne peut pas avoir aucune coche
   		event.target.setAttribute("checked", true);
   	} else {
-	  	var stateFilter = document.getElementById("stateFilter");
-  		// stocke les id séparés par un virgule car l'attribut est persistant.
-  		// n'est fait que si on coche change réellement d'état
-  		stateFilter.setAttribute("selectedIdExp", filterId);
+  		this.refreshStateFilterLabel();
   		this.refreshTaskList();
   	}
-  	// recalcule le libelle du bouton
-  	this.refreshStateFilterLabel();
+  },
+  
+  /**
+   * recalcul le libellé du bouton des états et les id sélectionné
+   * pour la persistance du filtre.
+   */
+  refreshStateFilterLabel : function () {
+  	consoleService.logStringMessage("refreshStateFilterLabel");
+    var stateButton = document.getElementById("stateFilter");
+    var stateFilter = document.getElementById("stateFilterPopup");
+    var filterLabel = "";
+    var allStatesChecked = true;
+    var selectedStateId = new Array();
+        
+    // remplit le filtre d'état
+    for(var i=0; i<stateFilter.childNodes.length; i++) {
+    	var checked = stateFilter.childNodes[i].getAttribute("checked"); 	
+    	if (checked) {
+    		if (filterLabel == "") {
+    			filterLabel += stateFilter.childNodes[i].getAttribute("label");
+    		} else if (filterLabel.charAt(filterLabel.length - 1) != "+") {
+    			filterLabel += "+";
+    		}
+    		selectedStateId.push(stateFilter.childNodes[i].getAttribute("id"));
+    	} else {
+  			allStatesChecked = false;
+  		}
+    }
+    // Si toutes les coches sont cochés on met un libellé
+    if (allStatesChecked) {
+  		filterLabel = "Tout";
+  	}
+  	stateButton.label = filterLabel;
+  	stateButton.setAttribute("selectedIdExp",selectedStateId.join(","));
   },
   
   /**
@@ -726,10 +740,6 @@ TASKMAIL.UI = {
    */
   getStateLabel : function (id) {
   	var result = "";
-  	// si les états ne sont pas chargés
-  	if (this.states.length == 0) {
-  		this.states = this.getStates();
-  	}
   	for(var index=0; index<this.states.length; index++) {
   		if (this.states[index].id == id) {
   			return this.states[index].label; 
