@@ -25,6 +25,7 @@
 <!ENTITY currentFilterTTP    "All tasks except 'done'">
 <!ENTITY linkMailHeader    "link with mails">
 <!ENTITY linkTaskHeader    "link with tasks">
+<!ENTITY filter.label        "Filters : ">
 <!ENTITY toDoStateFilter     "to do">
 <!ENTITY toFollowStateFilter "to follow">
 <!ENTITY activeStateFilter  "active">

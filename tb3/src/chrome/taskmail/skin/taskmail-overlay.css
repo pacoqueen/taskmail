@@ -28,3 +28,11 @@
 	padding :  0px;
 	margin : 0px;
 }
+
+.filterLabel {
+	color : rgb(125,125,125);
+	padding-top:5px;	
+}
+
+radio[pane=taskmail-pane] {list-style-image: url("chrome://taskmail/skin/generalPane.png")}
+radio[pane=taskmail-reportPane] {list-style-image: url("chrome://taskmail/skin/reportPane.png")}

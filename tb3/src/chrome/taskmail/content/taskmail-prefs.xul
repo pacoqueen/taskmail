@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href='chrome://taskmail/skin/taskmail-overlay.css' type='text/css'?>
 <!DOCTYPE overlay SYSTEM "chrome://taskmail/locale/taskmail-prefs.dtd">
 <prefwindow id="taskmail-prefs"      title="&window.title;"      
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -14,19 +14,22 @@
     <preferences>
       <preference id="taskmail_states" name="taskmail.states" type="string"/>
     </preferences>
-    <label control="stateList" value="&prefs.state.intro;"/>
-    <hbox>
-      <listbox id="stateList" flex="1" rows="10" ondblclick="TASKMAIL.PREFS.editState();"></listbox>
-      <vbox>
-        <button label="&addState;" accesskey="&addState.key;" oncommand="TASKMAIL.PREFS.addState();"/>
-        <button label="&editState;" accesskey="&editState.key;" oncommand="TASKMAIL.PREFS.editState();"/>
-        <button label="&removeState;" accesskey="&removeState.key;" oncommand="TASKMAIL.PREFS.deleteState();"/>
-        <separator orient="horizontal"/>
-        <button label="&upState;" accesskey="&upState.key;" oncommand="TASKMAIL.PREFS.upState();"/>
-        <button label="&downState;" accesskey="&downState.key;" oncommand="TASKMAIL.PREFS.downState();"/>
-      </vbox>
-    </hbox>
-    <label value="&prefs.state.warning;"/>
+    <groupbox>
+      <caption label="&states.caption;"/>
+	    <label control="stateList" value="&prefs.state.intro;"/>
+    	<hbox>
+	      <listbox id="stateList" flex="1" rows="10" ondblclick="TASKMAIL.PREFS.editState();"></listbox>
+	      <vbox>
+	        <button label="&addState;" accesskey="&addState.key;" oncommand="TASKMAIL.PREFS.addState();"/>
+	        <button label="&editState;" accesskey="&editState.key;" oncommand="TASKMAIL.PREFS.editState();"/>
+	        <button label="&removeState;" accesskey="&removeState.key;" oncommand="TASKMAIL.PREFS.deleteState();"/>
+	        <separator orient="horizontal"/>
+	        <button label="&upState;" accesskey="&upState.key;" oncommand="TASKMAIL.PREFS.upState();"/>
+	        <button label="&downState;" accesskey="&downState.key;" oncommand="TASKMAIL.PREFS.downState();"/>
+	      </vbox>
+	    </hbox>
+	    <label value="&prefs.state.warning;"/>
+    </groupbox>
   </prefpane>
   
   <prefpane id="taskmail-reportPane" label="&prefs.pane.report;">

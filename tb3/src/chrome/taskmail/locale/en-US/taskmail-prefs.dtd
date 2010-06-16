@@ -1,5 +1,6 @@
 <!ENTITY window.title         "Task &amp; mail Options">
 <!ENTITY prefs.pane.report    "Report">
+<!ENTITY states.caption       "Tasks states">
 <!ENTITY report.caption       "Tasks report">
 <!ENTITY fields.comment       "For fileds To and CC, a comma to separe address.">
 <!ENTITY field.to             "To">

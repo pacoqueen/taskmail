@@ -313,7 +313,7 @@ TASKMAIL.UI = {
 			try {
 				var selectedMailKey = gDBView.keyForFirstSelectedMessage;
 				// consoleService.logStringMessage(selectedMailKey);
-				var stateFilter = this.getStateFilterString();
+				var stateFilter = this.getDBStateFilterString();
 				// il faut charger les liens avant les taches
 				TASKMAIL.DB.getLinkSQLite(currentMsgFolder);
 				temp.tasks = TASKMAIL.DB.getTaskListSQLite(selectedMailKey,
@@ -353,7 +353,7 @@ TASKMAIL.UI = {
 			folderName : ""
 		};
 		
-		var stateFilter = this.getStateFilterString();
+		var stateFilter = this.getDBStateFilterString();
 		// il faut charger les liens avant les taches ; chargement récurssif
 		TASKMAIL.DB.getLinkSQLite(folder);
 		var tasks = TASKMAIL.DB.getTaskListSQLite(null, folder, stateFilter);
@@ -533,6 +533,26 @@ TASKMAIL.UI = {
 		}
 		this.refreshTaskList();
 	},
+	 
+  /**
+	 * return all the root folders, Array.length == 0 if no folder
+	 * @return Array(nsIMsgFolder)
+	 */
+	_getAllRootFolders : function () {
+  	var servers = Components.classes["@mozilla.org/messenger/account-manager;1"].
+            getService(Components.interfaces.nsIMsgAccountManager)
+            .allServers;
+    var list = servers.Count() + ":"
+    var result = new Array();
+    for (var i = 0; i < servers.Count(); ++i) {
+    	var server = servers.QueryElementAt(i, Components.interfaces.nsIMsgIncomingServer)
+      if (!server.deferredToAccount && result.indexOf(server.rootMsgFolder) == -1) {
+      	// It's possible that rootFolder is not duplicated        
+        result.push(server.rootMsgFolder);
+      }
+    }
+    return result;
+  },
 
 	init : function() {
 		document.getElementById("folderTree").addEventListener("select",
@@ -606,7 +626,7 @@ TASKMAIL.UI = {
 	 * Appelé après changement des préférences par observer ou au lancement de l'appli.
 	 */
 	getStatesFromPref : function () {
-		consoleService.logStringMessage("getStatesFromPref");
+		//consoleService.logStringMessage("getStatesFromPref");
 		var result = new Array();
     var statesPref = this.prefs.getComplexValue("states",Components.interfaces.nsIPrefLocalizedString).data;
     var statePrefArray = statesPref.split(",");
@@ -634,7 +654,7 @@ TASKMAIL.UI = {
     var stateButton = document.getElementById("stateFilter");
     var stateFilter = document.getElementById("stateFilterPopup");
     // récupéré pour savoir ce qui était coché.
-    var selectedIdExp = stateButton.getAttribute("selectedIdExp");
+    var selectedIdExp = stateButton.getAttribute("taskSelectedIdExp");
     var selectedStateIdArray = selectedIdExp.split(",").map(function (e) {return parseInt(e);});
     
     for(var i=stateFilter.childNodes.length - 1; i>=0; i--) {
@@ -659,7 +679,7 @@ TASKMAIL.UI = {
    * Appele après un cochage d'état.
    */
   changeStateFilter : function (event) {
-  	consoleService.logStringMessage("changeStateFilter");
+  	//consoleService.logStringMessage("changeStateFilter");
   	var noStatesCheck = true;
   	var stateFilterMenu = document.getElementById("stateFilterPopup");
   	for(var i=0; i<stateFilterMenu.childNodes.length; i++) {
@@ -683,7 +703,7 @@ TASKMAIL.UI = {
    * pour la persistance du filtre.
    */
   refreshStateFilterLabel : function () {
-  	consoleService.logStringMessage("refreshStateFilterLabel");
+  	//consoleService.logStringMessage("refreshStateFilterLabel");
     var stateButton = document.getElementById("stateFilter");
     var stateFilter = document.getElementById("stateFilterPopup");
     var filterLabel = "";
@@ -696,8 +716,8 @@ TASKMAIL.UI = {
     	if (checked) {
     		if (filterLabel == "") {
     			filterLabel += stateFilter.childNodes[i].getAttribute("label");
-    		} else if (filterLabel.charAt(filterLabel.length - 1) != "+") {
-    			filterLabel += "+";
+    		} else if (filterLabel.charAt(filterLabel.length - 1) != ".") {
+    			filterLabel += ",...";
     		}
     		selectedStateId.push(stateFilter.childNodes[i].getAttribute("id"));
     	} else {
@@ -706,17 +726,17 @@ TASKMAIL.UI = {
     }
     // Si toutes les coches sont cochés on met un libellé
     if (allStatesChecked) {
-  		filterLabel = "Tout";
+  		filterLabel = TASKMAIL.UI.stringsBundle.getString('taskmail.allStates');
   	}
   	stateButton.label = filterLabel;
-  	stateButton.setAttribute("selectedIdExp",selectedStateId.join(","));
+  	stateButton.setAttribute("taskSelectedIdExp",selectedStateId.join(","));
   },
   
   /**
    * retourne la liste des états sélectionnés
    * Utilisé pour le requetage. 
    */
-   getStateFilterString : function () {
+   getDBStateFilterString : function () {
   	var result = "";
   	var allStatesChecked = true;
   	var stateFilter = document.getElementById("stateFilterPopup");
@@ -745,26 +765,6 @@ TASKMAIL.UI = {
   			return this.states[index].label; 
   		}
   	}  	
-  },
-	 
-  /**
-	 * return all the root folders, Array.length == 0 if no folder
-	 * @return Array(nsIMsgFolder)
-	 */
-	_getAllRootFolders : function () {
-  	var servers = Components.classes["@mozilla.org/messenger/account-manager;1"].
-            getService(Components.interfaces.nsIMsgAccountManager)
-            .allServers;
-    var list = servers.Count() + ":"
-    var result = new Array();
-    for (var i = 0; i < servers.Count(); ++i) {
-    	var server = servers.QueryElementAt(i, Components.interfaces.nsIMsgIncomingServer)
-      if (!server.deferredToAccount && result.indexOf(server.rootMsgFolder) == -1) {
-      	// It's possible that rootFolder is not duplicated        
-        result.push(server.rootMsgFolder);
-      }
-    }
-    return result;
   }
 }
 

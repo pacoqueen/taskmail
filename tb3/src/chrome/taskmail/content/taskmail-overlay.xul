@@ -115,12 +115,13 @@
   		
 			<hbox>
 				<spacer flex="1"/>
-				<button type="menu"  id="stateFilter"  selectedIdExp="1,2" persist="selectedIdExp" oncommand="TASKMAIL.UI.changeStateFilter(event)" tooltiptext="&stateFilterTTP;">
+				<label value="&filter.label;" class="filterLabel"/>
+				<button type="menu"  id="stateFilter"  taskSelectedIdExp="1,2" persist="taskSelectedIdExp" oncommand="TASKMAIL.UI.changeStateFilter(event)" tooltiptext="&stateFilterTTP;">
 						<menupopup id="stateFilterPopup">
 						</menupopup>
 				</button>
-				<menulist  id="viewFilter"  oncommand="TASKMAIL.UI.viewFilterChange()" tooltiptext="&viewFilterTTP;">
-					<menupopup>
+				<menulist  id="viewFilter" oncommand="TASKMAIL.UI.viewFilterChange()" tooltiptext="&viewFilterTTP;">
+					<menupopup style="padding-top:10px">
 						<menuitem label="&mailViewFilter;"       value="2" tooltiptext="&mailViewTTP;"/>
 						<menuitem label="&folderViewFilter;"     value="0"/>
 						<menuitem label="&subFolderViewFilter;"  value="1" selected="true"/>

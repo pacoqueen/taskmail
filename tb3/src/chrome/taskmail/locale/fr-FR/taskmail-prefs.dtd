@@ -1,5 +1,6 @@
 <!ENTITY window.title         "Options de Task &amp; mail">
 <!ENTITY prefs.pane.report    "Rapport">
+<!ENTITY states.caption       "Etat de tâches">
 <!ENTITY report.caption       "Rapport de tâches">
 <!ENTITY fields.comment       "Pour les champs Pour et Copie à, virgule pour séparer plusieurs destinaitaires.">
 <!ENTITY field.to             "Pour">
