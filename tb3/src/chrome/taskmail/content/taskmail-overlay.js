@@ -14,13 +14,17 @@ TASKMAIL.UI = {
 	},
 
 	doubleClikTask : function(event) {
-		var box = document.getElementById("addTask");
-		var pk = event.target.getAttribute("pk");
-		if (box.collapsed || this.taskDetailPK != pk) {
-			// si on double clique sur une autre tache, ça l'ouvre
-			this.beginUpdateTask();
+		if (event.ctrlKey) {
+			TASKMAIL.UILink.showLinkedMail(event.target);
 		} else {
-			this.cancelSaveTask();
+			var box = document.getElementById("addTask");
+			var pk = event.target.getAttribute("pk");
+			if (box.collapsed || this.taskDetailPK != pk) {
+				// si on double clique sur une autre tache, ça l'ouvre
+				this.beginUpdateTask();
+			} else {
+				this.cancelSaveTask();
+			}
 		}
 	},
 
@@ -896,11 +900,14 @@ TASKMAIL.UILink = {
 
 	/**
 	 * selection le prochain email liée. basé sur la tache qui a reçue le click
-	 * droit.
+	 * droit ou item passé suite à un ctrl-double clic.
 	 */
-	showLinkedMail : function() {
-		var taskID = document.popupNode.getAttribute("pk");
-		var folderURI = document.popupNode.getAttribute("folderURI");
+	showLinkedMail : function(item) {
+		if (!item) {
+			item = document.popupNode;
+		}
+		var taskID = item.getAttribute("pk");
+		var folderURI = item.getAttribute("folderURI");
 		// recupére les keys de mail liés à la tache
 		var keysMails = TASKMAIL.Link.getMailKeysFromTaskID(taskID);
 		if (keysMails != null && keysMails.length > 0) {
