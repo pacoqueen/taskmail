@@ -145,7 +145,7 @@
 	 <statusbarpanel id="statusbar.tasks"></statusbarpanel>
 	</statusbar>
 	
-	<script type='application/x-javascript'  src='chrome://taskmail/content/taskmail-test.js'/>
+	<!--script type='application/x-javascript'  src='chrome://taskmail/content/taskmail-test.js'/>
 	<menubar id="mail-menubar">
 		<menu id="TaskMailMenu" label="Tasks and mails">
 			<menupopup>
@@ -158,5 +158,5 @@
 				<menuitem label="states" oncommand="TASKMAIL.UI.getStatesFromPref();"/>
 			</menupopup>				
 		</menu>			
-	</menubar>
+	</menubar-->
 </overlay>
