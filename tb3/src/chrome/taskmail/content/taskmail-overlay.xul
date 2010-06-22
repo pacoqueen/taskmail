@@ -16,12 +16,20 @@
 		<stringbundle id="string-bundle" src="chrome://taskmail/locale/taskmail-overlay.properties"/>
 	</stringbundleset>
 	
+	<keyset>
+		<!-- control entrée est utilisable dans le textare -->
+		<key                           keycode="VK_RETURN" oncommand="TASKMAIL.UI.keyPressedInTaskDetail('save');"/>
+		<key modifiers="control"       keycode="VK_RETURN" oncommand="TASKMAIL.UI.keyPressedInTaskDetail('save');"/>
+		<key modifiers="shift"         keycode="VK_ESCAPE" oncommand="TASKMAIL.UI.keyPressedInTaskDetail('cancel');"/>
+		<key modifiers="shift"         key="L"             oncommand="TASKMAIL.UILink.showLinked(event);" id="show-linked"/>
+	</keyset>
+
 	<!-- ajoute une entrée au menu contextuel de la liste des mails -->
 	<menupopup id="mailContext">
 		<menuitem label="&linkTask;"    accesskey="L" oncommand="TASKMAIL.UILink.linkTask()"/>
 		<menuitem label="&linkNewTask;" accesskey="N" oncommand="TASKMAIL.UI.beginAddTaskWithLink()"/>
 		<menuitem label="&unlinkTasks;" accesskey="D" oncommand="TASKMAIL.UILink.unlinkTask()"/>
-		<menuitem label="&goNextTask;"  accesskey="A" oncommand="TASKMAIL.UILink.showLinkedTask()" id="mailContext.goNextTask"/>
+		<menuitem label="&goNextTask;"  accesskey="A" oncommand="TASKMAIL.UILink.showLinkedTask()" id="mailContext.goNextTask" key="show-linked"/>
 		<menuitem label="&selectTask;"  accesskey="S" oncommand="TASKMAIL.UILink.selectLinkedTask();"/>
 		<menuseparator/>
 	</menupopup>
@@ -41,7 +49,7 @@
 				<menuitem label="&delete;"                     oncommand="TASKMAIL.UI.removeTask()" id="row-menu.delete"/>
 				<menuitem label="&linkMail;"     accesskey="L" oncommand="TASKMAIL.UILink.linkTask()"/>
 				<menuitem label="&unlinkMail;"   accesskey="U" oncommand="TASKMAIL.UILink.unlinkTask()"/>
-				<menuitem label="&goNextMail;"   accesskey="A" oncommand="TASKMAIL.UILink.showLinkedMail()" id="row-menu.goNextMail" />
+				<menuitem label="&goNextMail;"   accesskey="A" oncommand="TASKMAIL.UILink.showLinkedMail()" id="row-menu.goNextMail" key="show-linked"/>
 				<menuitem label="&goFolder;"     accesskey="F" oncommand="TASKMAIL.UI.goFolder()"       id="row-menu.goFolder"/>
 				<menuitem label="&selectMail;"   accesskey="S" oncommand="TASKMAIL.UILink.selectLinkedMails()"/>
 				<menu id="taskContext-moveMenu"
@@ -75,13 +83,6 @@
 				</listcols>
 			</listbox>
         		
-			<keyset>
-				<!-- control entrée est utilisable dans le textare -->
-				<key keycode="VK_RETURN" oncommand="TASKMAIL.UI.keyPressedInTaskDetail('save');"/>
-				<key modifiers="control" keycode="VK_RETURN" oncommand="TASKMAIL.UI.keyPressedInTaskDetail('save');"/>
-				<key modifiers="shift" keycode="VK_ESCAPE" oncommand="TASKMAIL.UI.keyPressedInTaskDetail('cancel');"/>
-			</keyset>
-
 			<vbox collapsed="true" id="addTask" flex="10" tooltiptext="&detailTTP;">
 				<grid flex="1">
 					<columns>

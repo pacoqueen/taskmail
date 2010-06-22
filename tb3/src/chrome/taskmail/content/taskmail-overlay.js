@@ -943,6 +943,20 @@ TASKMAIL.UILink = {
 			gDBView.selectMsgByKey(keyMailToSelect);
 		}
 	},
+	
+	/**
+	 * sélectionne le prochain élèment lié en fonction de la zone qui a le focus
+	 * appelé par shift-L.
+	 */
+	showLinked : function (event) {
+		var focused = document.commandDispatcher.focusedElement;
+		if (document.getElementById("taskList") == focused) {
+			var item = document.getElementById("taskList").selectedItem;
+			TASKMAIL.UILink.showLinkedMail(item);
+		} else if (document.getElementById("threadTree") == focused) {
+			TASKMAIL.UILink.showLinkedTask();
+		}
+	},	
 
 	/**
 	 * Sélectionne les emails liés aux tâches sélectionnées. Toutes les taches
