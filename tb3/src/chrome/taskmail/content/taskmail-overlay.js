@@ -868,9 +868,12 @@ TASKMAIL.UILink = {
 				// on a des taches liées mais elles sont toutes visibles =>
 				// change
 				// le filtrage sr 'tout'
-				document.getElementById("stateFilter").selectedIndex = 4;
+				var stateFilter = document.getElementById("stateFilterPopup");
+				for(var i=0; i<stateFilter.childNodes.length; i++) {
+		  		stateFilter.childNodes[i].setAttribute("checked", true); 
+		  	}
 				TASKMAIL.UI.stateFilterChange();
-				taskIndex = TASKMAIL.Link.getTaskIndexFromTaskID(TaskIDs);
+				taskIndex = TASKMAIL.UI.getTaskIndexFromTaskID(TaskIDs);
 			}
 			// identifie l'index de la tache suivante
 			if (taskIndex.length > 0) {
@@ -894,7 +897,7 @@ TASKMAIL.UILink = {
 						+ 1]);
 			}
 		} catch (err) {
-			// Components.utils.reportError("dbUpgrade " + err);
+			Components.utils.reportError("showLinkedTask " + err);
 		}
 	},
 
