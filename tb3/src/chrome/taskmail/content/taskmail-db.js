@@ -502,7 +502,7 @@ TASKMAIL.DB = {
 						.createStatement("CREATE TABLE model_version (version NUMERIC)");
 				stat.execute();
 				stat = this.dbConnection
-						.createStatement("insert into model_version values (2)");
+						.createStatement("insert into model_version values (4)");
 				stat.execute();
 			}
 			if (currentVersion < targetVersion) {
@@ -548,7 +548,7 @@ TASKMAIL.DB = {
 
 	_dbInitTables : function(connexion) {
 		var stat = connexion
-				.createStatement("insert into model_version values (3)");
+				.createStatement("insert into model_version values (4)");
 		stat.execute();
 		this.consoleService
 				.logStringMessage("Database initialisation successful.");

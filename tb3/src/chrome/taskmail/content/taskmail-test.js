@@ -148,3 +148,9 @@ function testPreferences() {
 	var features = "chrome,titlebar,toolbar,centerscreen,modal";
 	window.openDialog("chrome://taskmail/content/taskmail-prefs.xul", "Preferences", features);
 }
+
+function testListSelection () {
+	var listBox = document.getElementById( "taskList" );
+	var temp = listBox.getItemAtIndex(10);
+	listBox.addItemToSelection(temp);
+}

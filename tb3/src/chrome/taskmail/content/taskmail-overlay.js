@@ -264,9 +264,12 @@ TASKMAIL.UI = {
 		// le refresh du folder est lancé avant l'handler de la colonne des
 		// emails.
 		var selectedTasks = this.getSelectedTasksKeys();
+		var oldCurrentItem = document.getElementById("taskList").currentIndex;
 		this.emptyList();
 		this.getTaskList();
 		this.selectTasksByKeys(selectedTasks);
+		// la sauvegarde de l'élément courant n'est pas parfaite sur un changement de folder.
+		document.getElementById("taskList").currentIndex = oldCurrentItem;
 	},
 
 	refreshTaskLink : function() {
@@ -501,6 +504,8 @@ TASKMAIL.UI = {
 			// parseInt car l'attribut du dom est forcement une string
 			var temp = parseInt(row.getAttribute("pk"));
 			if (keys.indexOf(temp) > -1) {
+				// besoin d'appeler ensureIsVisible sinon la selection ne marche pas toujours.
+				listBox.ensureIndexIsVisible(i);
 				listBox.addItemToSelection(row);
 			}
 		}

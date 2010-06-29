@@ -160,6 +160,7 @@
 				<menuitem label="openTemplate" oncommand="testOpenTemplate();"/>
 				<menuitem label="preferences" oncommand="testPreferences();"/>
 				<menuitem label="states" oncommand="TASKMAIL.UI.getStatesFromPref();"/>
+				<menuitem label="list selection" oncommand="testListSelection();"/>
 			</menupopup>				
 		</menu>			
 	</menubar-->
