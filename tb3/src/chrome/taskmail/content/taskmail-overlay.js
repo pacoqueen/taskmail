@@ -224,6 +224,11 @@ TASKMAIL.UI = {
 		}
 		row.appendChild(cell);
 
+		cell = document.createElement('listcell');
+		cell.setAttribute('label', null);
+		cell.setAttribute('class', 'listcell-iconic icon-mail-column');
+		row.appendChild(cell);
+		
 		var stateLabel = this.getStateLabel(aTask.state);
 		// Create and attach 1st cell
 		cell = document.createElement('listcell');
@@ -238,10 +243,6 @@ TASKMAIL.UI = {
 		// le text du lien sera setté plus tard
 		var linkText = "";
 
-		cell = document.createElement('listcell');
-		cell.setAttribute('label', null);
-		cell.setAttribute('class', 'listcell-iconic icon-mail-column');
-		row.appendChild(cell);
 		document.getElementById("taskList").appendChild(row);
 	},
 
@@ -292,7 +293,7 @@ TASKMAIL.UI = {
 			} else if (linkType == 1) {
 				linkURL = "chrome://taskmail/skin/link_mail.jpg";
 			}
-			row.lastChild.setAttribute("image", linkURL);
+			row.childNodes[1].setAttribute("image", linkURL);
 		}
 	},
 
@@ -774,6 +775,11 @@ TASKMAIL.UI = {
   			return this.states[index].label; 
   		}
   	}  	
+  },
+  
+  toggleTaskPane : function () {
+  	var pane = document.getElementById("taskPane");
+  	pane.collapsed = !pane.collapsed; 
   }
 }
 

@@ -23,6 +23,7 @@
 		<key modifiers="shift"         keycode="VK_ESCAPE" oncommand="TASKMAIL.UI.keyPressedInTaskDetail('cancel');"/>
 		<key modifiers="shift"         key="L"             oncommand="TASKMAIL.UILink.showLinked(event);" id="show-linked"/>
 		<key modifiers="shift"         key="N"             oncommand="TASKMAIL.UI.beginAddTaskWithLink();" id="add-linked"/>
+		<key                           keycode="VK_F9"     oncommand="TASKMAIL.UI.toggleTaskPane();"/>
 	</keyset>
 
 	<!-- ajoute une entrée au menu contextuel de la liste des mails -->
@@ -74,15 +75,15 @@
 					 seltype="multiple" flex="1" minheight="75">
 				<listhead>
 					<listheader tooltiptext="&header.subfolder;" class="listheader-icon subfolderColumnHeader"/>
+					<listheader tooltiptext="&linkMailHeader;" class="listheader-icon taskColumnHeader"/>
 					<listheader label="&state;"/>
 					<listheader label="&title;"/>
-					<listheader tooltiptext="&linkMailHeader;" class="listheader-icon taskColumnHeader"/>
 				</listhead>
 				<listcols>
 					<listcol/>
 					<listcol/>
-					<listcol flex="1"/>
 					<listcol/>
+					<listcol flex="1"/>
 				</listcols>
 			</listbox>
         		
