@@ -36,7 +36,7 @@ TASKMAIL.UI = {
 
 	beginAddTask : function() {
 		// clean UI
-		this.fillTaskDetail(new TASKMAIL.Task(0, null, null, null, 1));
+		this.fillTaskDetail(new TASKMAIL.Task(0, null, null, null, 1, 5));
 		var box = document.getElementById("addTask");
 		box.collapsed = false;
 		document.getElementById("taskTitle").focus();
@@ -68,12 +68,13 @@ TASKMAIL.UI = {
 		var titleInput = document.getElementById("taskTitle").value;
 		var stateInput = document.getElementById("taskState").selectedItem.value;
 		var desc = document.getElementById("taskDesc").value;
+		var prio = document.getElementById("taskPriority").selectedIndex;
 		// TODO
 		var currentMsgFolder = GetSelectedMsgFolders()[0];
 
 		if (this.taskDetailPK == -1) {
 			TASKMAIL.DB.addTaskSQLite(new TASKMAIL.Task(idInput,
-					currentMsgFolder.URI, titleInput, desc, stateInput));
+					currentMsgFolder.URI, titleInput, desc, stateInput, prio));
 			if (this.addWithLink) {
 				var taskId = TASKMAIL.DB.dbConnection.lastInsertRowID;
 				var selectedMessages = gFolderDisplay.selectedMessages;
@@ -85,7 +86,7 @@ TASKMAIL.UI = {
 			}
 		} else {
 			TASKMAIL.DB.updateTaskSQLite(new TASKMAIL.Task(idInput, null,
-					titleInput, desc, stateInput));
+					titleInput, desc, stateInput, prio));
 		}
 		this.refreshTaskList();
 		this.cancelSaveTask();
@@ -230,7 +231,7 @@ TASKMAIL.UI = {
 		row.appendChild(cell);
 		
 		cell = document.createElement('listcell');
-		cell.setAttribute('label', "1");
+		cell.setAttribute('label', aTask.priority);
 		cell.setAttribute('class', 'taskPriority-column taskPriority-1');
 		row.appendChild(cell);
 		
@@ -251,6 +252,10 @@ TASKMAIL.UI = {
 		document.getElementById("taskList").appendChild(row);
 	},
 
+	selectItemByLabel : function () {
+		
+	},
+	
 	fillTaskDetail : function(aTask) {
 		document.getElementById("addTask").value = aTask.id;
 		document.getElementById("taskTitle").value = aTask.title;
@@ -263,6 +268,7 @@ TASKMAIL.UI = {
 				break;
 			}
 		}
+		document.getElementById("taskPriority").selectedIndex = aTask.priority;
 	},
 
 	refreshTaskList : function() {

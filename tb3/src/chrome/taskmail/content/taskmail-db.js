@@ -4,13 +4,14 @@ if (!TASKMAIL.DB)
 	TASKMAIL.DB = {};
 
 TASKMAIL = {
-	Task : function(aId, aFolderURI, aTitle, aDesc, aState) {
+	Task : function(aId, aFolderURI, aTitle, aDesc, aState, aPriority) {
 		this.id = aId;
 		this.folderURI = aFolderURI;
 		this.title = aTitle;
 		this.desc = aDesc;
 		// State (code de l'état).
 		this.state = aState;
+		this.priority = aPriority;
 	}
 }
 
@@ -27,7 +28,7 @@ TASKMAIL.DB = {
 		try {
 			// recherche par mail (donc non recurssive)
 			if (mailId != null) {
-				sql = "select tasks.rowid, title, state, desc from tasks, links where tasks.folderURI = links.folderURI and tasks.rowid = links.taskId and links.folderURI = :folderURI and links.mailId = :mailId";
+				sql = "select tasks.rowid, title, state, desc, priority from tasks, links where tasks.folderURI = links.folderURI and tasks.rowid = links.taskId and links.folderURI = :folderURI and links.mailId = :mailId";
 				// quelque soit le type de recherche (email ou folder) on
 				// applique le
 				// filtre d'état
@@ -46,7 +47,7 @@ TASKMAIL.DB = {
 				stat.bindStringParameter(1, mailId);
 				// sinon recherche par folder
 			} else {
-				sql = "select tasks.rowid, title, state, desc from tasks where folderURI = :folderURI";
+				sql = "select tasks.rowid, title, state, desc, priority from tasks where folderURI = :folderURI";
 				// quelque soit le type de recherche (email ou folder) on
 				// applique le
 				// filtre d'état
@@ -68,8 +69,9 @@ TASKMAIL.DB = {
 				var title = stat.getString(1);
 				var state = stat.getString(2);
 				var desc  = stat.getString(3);
+				var prio  = stat.getInt32(4);
 
-				var task = new TASKMAIL.Task(id, folderURI, title, desc, state);
+				var task = new TASKMAIL.Task(id, folderURI, title, desc, state, prio);
 				result.push(task);
 			}
 		} catch (err) {
@@ -149,14 +151,15 @@ TASKMAIL.DB = {
 		var result = null;
 		try {
 			var stat = this.dbConnection
-					.createStatement("select rowid, title, state, desc from tasks where rowid = :pk");
+					.createStatement("select rowid, title, state, desc, priority from tasks where rowid = :pk");
 			stat.bindInt32Parameter(0, pk);
 			while (stat.executeStep()) {
 				var id = stat.getInt32(0);
 				var title = stat.getString(1);
 				var state = stat.getString(2);
 				var desc = stat.getString(3);
-				result = new TASKMAIL.Task(id, null, title, desc, state);
+				var prio = stat.getInt32(4);
+				result = new TASKMAIL.Task(id, null, title, desc, state, prio);
 			}
 		} catch (err) {
 			Components.utils.reportError("getTaskDetailSQLite " + err);
@@ -167,21 +170,23 @@ TASKMAIL.DB = {
 	addTaskSQLite : function(aTask) {
 		var folderURI = aTask.folderURI;
 		var stat = this.dbConnection
-				.createStatement("insert into tasks (title, state, desc, folderURI) values (:titleInput, :stateInput, :desc, :folderURI)");
+				.createStatement("insert into tasks (title, state, desc, folderURI, priority) values (:titleInput, :stateInput, :desc, :folderURI, :priority)");
 		stat.bindStringParameter(0, aTask.title);
 		stat.bindStringParameter(1, aTask.state);
 		stat.bindStringParameter(2, aTask.desc);
 		stat.bindStringParameter(3, aTask.folderURI);
+		stat.bindInt32Parameter(4, aTask.priority);
 		stat.execute();
 	},
 
 	updateTaskSQLite : function(aTask) {
 		var stat = this.dbConnection
-				.createStatement("update tasks set title = :title, state = :state, desc = :desc where rowid = :pk");
+				.createStatement("update tasks set title = :title, state = :state, desc = :desc, priority = :priority where rowid = :pk");
 		stat.bindStringParameter(0, aTask.title);
 		stat.bindStringParameter(1, aTask.state);
 		stat.bindStringParameter(2, aTask.desc);
-		stat.bindInt32Parameter(3, aTask.id);
+		stat.bindInt32Parameter(3, aTask.priority);
+		stat.bindInt32Parameter(4, aTask.id);
 		stat.execute();
 	},
 
@@ -457,7 +462,7 @@ TASKMAIL.DB = {
 	/* la pk de la table est le rowid interne de sqlite */
 	dbSchema : {
 		tables : {
-			tasks : "folderURI TEXT, title TEXT NOT NULL, state TEXT, desc TEXT",
+			tasks : "folderURI TEXT, title TEXT NOT NULL, state TEXT, desc TEXT, priority INTEGER",
 			links : "folderURI TEXT, mailId TEXT, taskId NUMBER",
 			model_version : "version NUMERIC"
 		}
@@ -487,11 +492,13 @@ TASKMAIL.DB = {
 		this.dbConnection = dbConnection;
 	},
 
+	targetVersion : 5,
+	
 	dbUpgrade : function() {
 		try {
 			this.dbConnection.beginTransaction();
 			var currentVersion = 0;
-			var targetVersion = 4;
+			
 			var stat = this.dbConnection
 					.createStatement("select version from model_version");
 			try {
@@ -502,25 +509,30 @@ TASKMAIL.DB = {
 						.createStatement("CREATE TABLE model_version (version NUMERIC)");
 				stat.execute();
 				stat = this.dbConnection
-						.createStatement("insert into model_version values (4)");
+						.createStatement("insert into model_version values (:version)");
+				stat.bindInt32Parameter(0, this.targetVersion);
 				stat.execute();
 			}
-			if (currentVersion < targetVersion) {
+			if (currentVersion < this.targetVersion) {
 				alert("Upgrade of db model needed. Please save our sqllite file in 'user profile directory'/tasks.sqlite then press OK.");
 			}
 			if (currentVersion < 4) {
 				this.dbUpgrade4();
 			}
-			if (currentVersion < targetVersion) {
+			if (currentVersion < 5) {
+				this.dbUpgrade5();
+			} 
+			if (currentVersion < this.targetVersion) {
 				stat = this.dbConnection
-						.createStatement("update model_version set version = 4");
+						.createStatement("update model_version set version = :version");
+				stat.bindInt32Parameter(0, this.targetVersion);
 				stat.execute();
 				alert("Upgrade successful.");
 			}
 		} catch (err) {
-			this.dbConnection.rollbackTransaction();
-			alert("Upgrade problem. Consult Error console for details.");
 			Components.utils.reportError("dbUpgrade " + err);
+			alert("Upgrade problem. Consult Error console for details.");
+			this.dbConnection.rollbackTransaction();
 		} finally {
 			this.dbConnection.commitTransaction();
 		}
@@ -532,6 +544,12 @@ TASKMAIL.DB = {
 		stat.execute();
 		stat = this.dbConnection
 				.createStatement("update links set folderURI = replace(folderURI,'mailbox-message:','mailbox:')");
+		stat.execute();
+	},
+	
+	dbUpgrade5 : function() {
+		var stat = this.dbConnection
+				.createStatement("alter table tasks add column priority INTEGER DEFAULT (5)");
 		stat.execute();
 	},
 
@@ -548,7 +566,8 @@ TASKMAIL.DB = {
 
 	_dbInitTables : function(connexion) {
 		var stat = connexion
-				.createStatement("insert into model_version values (4)");
+				.createStatement("insert into model_version values (:version)");
+		stat.bindInt32Parameter(0, this.targetVersion);
 		stat.execute();
 		this.consoleService
 				.logStringMessage("Database initialisation successful.");
