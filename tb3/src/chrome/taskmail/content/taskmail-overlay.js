@@ -229,6 +229,11 @@ TASKMAIL.UI = {
 		cell.setAttribute('class', 'listcell-iconic icon-mail-column');
 		row.appendChild(cell);
 		
+		cell = document.createElement('listcell');
+		cell.setAttribute('label', "1");
+		cell.setAttribute('class', 'taskPriority-column taskPriority-1');
+		row.appendChild(cell);
+		
 		var stateLabel = this.getStateLabel(aTask.state);
 		// Create and attach 1st cell
 		cell = document.createElement('listcell');

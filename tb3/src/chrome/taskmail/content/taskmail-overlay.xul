@@ -76,6 +76,7 @@
 				<listhead>
 					<listheader tooltiptext="&header.subfolder;" class="listheader-icon subfolderColumnHeader"/>
 					<listheader tooltiptext="&linkMailHeader;" class="listheader-icon taskColumnHeader"/>
+					<listheader label="!"/>
 					<listheader label="&state;"/>
 					<listheader label="&title;"/>
 				</listhead>
@@ -95,7 +96,7 @@
 					</columns>
 					<rows>
 						<row>
-							<label value="&title; :" control="taskTitle"/>
+							<label value="&title; :" control="taskTitle" class="libelle"/>
 							<textbox id="taskTitle" flex="1"/>
 						</row>
 						<row flex="1"  minheight="75">
@@ -104,10 +105,19 @@
 						</row>			
 						<row>		
 							<label value="&state; :"/>
+							<hbox>
 							<menulist  id="taskState">
 								<menupopup>
 								</menupopup>
 							</menulist>
+							<label value="Proirity :"/>
+							<menulist  id="taskPriority">
+								<menupopup>
+									<menuitem label="1" class="taskPriority-1"/>
+									<menuitem label="2"/>
+								</menupopup>
+							</menulist>
+							</hbox>
 						</row>
 					</rows>
 				</grid>

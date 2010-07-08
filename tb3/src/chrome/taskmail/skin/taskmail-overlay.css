@@ -34,5 +34,23 @@
 	padding-top:5px;	
 }
 
+#addTask label {
+	margin-top: 5px;
+}
+
+.taskPriority-column {
+	background-color: #FF0000;
+	color: #FFFFFF;
+	text-align: center;
+}
+
+.taskPriority-column label {
+	padding-left: 0px;
+}
+
+.taskPriority-1 {
+	background-color: #FF0000;
+}
+
 radio[pane=taskmail-pane] {list-style-image: url("chrome://taskmail/skin/generalPane.png")}
 radio[pane=taskmail-reportPane] {list-style-image: url("chrome://taskmail/skin/reportPane.png")}
