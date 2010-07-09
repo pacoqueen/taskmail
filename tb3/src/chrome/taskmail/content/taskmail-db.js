@@ -510,8 +510,9 @@ TASKMAIL.DB = {
 				stat.execute();
 				stat = this.dbConnection
 						.createStatement("insert into model_version values (:version)");
-				stat.bindInt32Parameter(0, this.targetVersion);
+				stat.bindInt32Parameter(0, 3);
 				stat.execute();
+				currentVersion = 3;
 			}
 			if (currentVersion < this.targetVersion) {
 				alert("Upgrade of db model needed. Please save our sqllite file in 'user profile directory'/tasks.sqlite then press OK.");
