@@ -76,19 +76,19 @@
 				<listhead>
 					<listheader tooltiptext="&header.subfolder;" class="listheader-icon subfolderColumnHeader"/>
 					<listheader tooltiptext="&linkMailHeader;" class="listheader-icon taskColumnHeader"/>
-					<listheader label="!"/>
+					<listheader id="taskPriorityColumnHeader" label="!" sortDirection="natural" onclick="TASKMAIL.UI.clickPriorityColumn(event);" persist="sortDirection"/>
 					<listheader label="&state;"/>
 					<listheader label="&title;"/>
 				</listhead>
 				<listcols>
-					<listcol/>
+					<listcol />
 					<listcol/>
 					<listcol/>
 					<listcol/>
 					<listcol flex="1"/>
 				</listcols>
 			</listbox>
-        		
+			
 			<vbox collapsed="true" id="addTask" flex="10" tooltiptext="&detailTTP;">
 				<grid flex="1">
 					<columns>

@@ -42,7 +42,6 @@ TASKMAIL.DB = {
 					}
 					sql += " and state in (" + stateExp + ")";
 				}
-				sql += "order by priority desc";
 				stat = this.dbConnection.createStatement(sql);
 				stat.bindStringParameter(0, folderURI);
 				stat.bindStringParameter(1, mailId);
@@ -62,7 +61,6 @@ TASKMAIL.DB = {
 					}
 					sql += " and state in (" + stateExp + ")";
 				}
-				sql += "order by priority desc";
 				stat = this.dbConnection.createStatement(sql);
 				stat.bindStringParameter(0, folderURI);
 			}

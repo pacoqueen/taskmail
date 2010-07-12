@@ -193,15 +193,6 @@ TASKMAIL.UI = {
 		}
 	},
 	
-	fillTaskListWithContent : function (content) {
-		for(var i=0; i<content.tasks.length; i++) {
-			this.fillTaskList(content.tasks[i]);
-		}
-		for(var i=0; i<content.subContents.length; i++) {
-			this.fillTaskListWithContent(content.subContents[i]);
-		}
-	},
-
 	fillTaskList : function(aTask) {
 		var row = document.createElement('listitem');
 
@@ -398,12 +389,40 @@ TASKMAIL.UI = {
 		return result;
 	},
 
+	makeFlatTaskList : function (temp) {
+		var result = temp.tasks;
+		for(var i=0; i<temp.subContents.length; i++) {
+			result = result.concat(this.makeFlatTaskList(temp.subContents[i]));
+		}	
+		return result;
+	},
+	
+	sortTaskList : function (list) {
+		var currentOrder = document.getElementById("taskPriorityColumnHeader").getAttribute("sortDirection");
+  	var order = null;
+  	switch (currentOrder) {
+  		case "natural" :
+				return list;
+  			break;
+  		case "ascending" :
+  			return list.sort(function (a,b) { if (a.priority == b.priority) return 0; else if (a.priority < b.priority) return -1; else return 1;});
+  			break;  			
+  		case "descending" :
+  			return list.sort(function (a,b) { if (a.priority == b.priority) return 0; else if (a.priority < b.priority) return 1; else return -1;});
+  			break;
+  	}  	
+	},
+	
 	getTaskList : function() {
 		// On va remonter les liens, on reset donc les tableaux
 		TASKMAIL.Link.resetLink();
 		
 		var temp = this.retrieveTasks();
-		this.fillTaskListWithContent(temp);
+		var flatList = this.makeFlatTaskList(temp);
+		flatList = this.sortTaskList(flatList);
+		for(var i=0; i<flatList.length; i++) {
+				this.fillTaskList(flatList[i]);
+		}
 		
 		// refresh link
 		this.refreshTaskLink();
@@ -791,6 +810,23 @@ TASKMAIL.UI = {
   toggleTaskPane : function () {
   	var pane = document.getElementById("taskPane");
   	pane.collapsed = !pane.collapsed; 
+  },
+  
+  clickPriorityColumn : function (event) {
+  	var currentOrder = event.target.getAttribute("sortDirection");
+  	var order = null;
+  	switch (currentOrder) {
+  		case "natural" :
+  			event.target.setAttribute("sortDirection","ascending");
+  			break;
+  		case "ascending" :
+  			event.target.setAttribute("sortDirection","descending");
+  			break;  			
+  		case "descending" :
+  			event.target.setAttribute("sortDirection","natural");
+  			break;
+  	}
+  	this.refreshTaskList();
   }
 }
 
