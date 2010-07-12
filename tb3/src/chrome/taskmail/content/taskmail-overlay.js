@@ -232,7 +232,7 @@ TASKMAIL.UI = {
 		
 		cell = document.createElement('listcell');
 		cell.setAttribute('label', aTask.priority);
-		cell.setAttribute('class', 'taskPriority-column taskPriority-1');
+		cell.setAttribute('class', 'taskPriority-column taskPriority-' + aTask.priority);
 		row.appendChild(cell);
 		
 		var stateLabel = this.getStateLabel(aTask.state);

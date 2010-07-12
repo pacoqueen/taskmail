@@ -28,7 +28,7 @@ TASKMAIL.DB = {
 		try {
 			// recherche par mail (donc non recurssive)
 			if (mailId != null) {
-				sql = "select tasks.rowid, title, state, desc, priority from tasks, links where tasks.folderURI = links.folderURI and tasks.rowid = links.taskId and links.folderURI = :folderURI and links.mailId = :mailId";
+				sql = "select tasks.rowid, title, state, desc, priority from tasks, links where tasks.folderURI = links.folderURI and tasks.rowid = links.taskId and links.folderURI = :folderURI and links.mailId = :mailId ";
 				// quelque soit le type de recherche (email ou folder) on
 				// applique le
 				// filtre d'état
@@ -42,12 +42,13 @@ TASKMAIL.DB = {
 					}
 					sql += " and state in (" + stateExp + ")";
 				}
+				sql += "order by priority desc";
 				stat = this.dbConnection.createStatement(sql);
 				stat.bindStringParameter(0, folderURI);
 				stat.bindStringParameter(1, mailId);
 				// sinon recherche par folder
 			} else {
-				sql = "select tasks.rowid, title, state, desc, priority from tasks where folderURI = :folderURI";
+				sql = "select tasks.rowid, title, state, desc, priority from tasks where folderURI = :folderURI ";
 				// quelque soit le type de recherche (email ou folder) on
 				// applique le
 				// filtre d'état
@@ -61,6 +62,7 @@ TASKMAIL.DB = {
 					}
 					sql += " and state in (" + stateExp + ")";
 				}
+				sql += "order by priority desc";
 				stat = this.dbConnection.createStatement(sql);
 				stat.bindStringParameter(0, folderURI);
 			}

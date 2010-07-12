@@ -48,8 +48,44 @@
 	padding-left: 0px;
 }
 
+.taskPriority-0 {
+	background-color: #00e43f;
+}
+
 .taskPriority-1 {
-	background-color: #FF0000;
+	background-color: #00e7a0;
+}
+
+.taskPriority-2 {
+	background-color: #00d1ea;
+}
+
+.taskPriority-3 {
+	background-color: #0071ed;
+}
+
+.taskPriority-4 {
+	background-color: #000ff0;
+}
+
+.taskPriority-5 {
+	background-color: #5400f3;
+}
+
+.taskPriority-6 { 
+	background-color: #ba00f6;
+}
+
+.taskPriority-7 {
+	background-color: #f900cd;
+}
+
+.taskPriority-8 {
+	background-color: #fc0068;
+}
+
+.taskPriority-9 {
+	background-color: #ff0000;
 }
 
 radio[pane=taskmail-pane] {list-style-image: url("chrome://taskmail/skin/generalPane.png")}
