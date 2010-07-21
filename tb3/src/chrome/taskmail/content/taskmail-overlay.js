@@ -6,9 +6,6 @@ if (!TASKMAIL.UI)
 
 TASKMAIL.UI = {
 	
-//	consoleService : Components.classes["@mozilla.org/consoleservice;1"]
-//			.getService(Components.interfaces.nsIConsoleService),
-			
 	goFolder : function() {
 		var folderURI = document.popupNode.getAttribute("folderURI");
 		if (GetSelectedMsgFolders()[0].URI != folderURI) {
@@ -399,31 +396,20 @@ TASKMAIL.UI = {
 		return result;
 	},
 	
-	sortTaskList : function () {
+	sortTaskList : function (list) {
 		var currentOrder = document.getElementById("taskPriorityColumnHeader").getAttribute("sortDirection");
-		if (currentOrder == "natural") return;
-		
-		
-		var listBox = document.getElementById("taskList");
-		var swapped = false;
-		do {
-			swapped = false;
-     	for(var i=0; i<listBox.getRowCount() - 1; i++) {
-     		var row = listBox.getItemAtIndex(i);
-     		var nextRow = listBox.getItemAtIndex(i + 1);
-     		var priority = row.childNodes[2].getAttribute("label")
-     		var nextPriority = nextRow.childNodes[2].getAttribute("label")
-	    	if ((currentOrder == "ascending" && priority > nextPriority) ||
-	    	    (currentOrder == "descending" && priority < nextPriority))
-	    	{
-	      	listBox.replaceChild(row.cloneNode(true), nextRow);
-	      	listBox.replaceChild(nextRow.cloneNode(true), row);
-       		swapped = true;
-	    	}
-    	}
-		} while (swapped);
-		
-//		this.consoleService.logStringMessage("taskList sorted");
+  	var order = null;
+  	switch (currentOrder) {
+  		case "natural" :
+				return list;
+  			break;
+  		case "ascending" :
+  			return list.sort(function (a,b) { if (a.priority == b.priority) return 0; else if (a.priority < b.priority) return -1; else return 1;});
+  			break;  			
+  		case "descending" :
+  			return list.sort(function (a,b) { if (a.priority == b.priority) return 0; else if (a.priority < b.priority) return 1; else return -1;});
+  			break;
+  	}  	
 	},
 	
 	getTaskList : function() {
@@ -432,10 +418,10 @@ TASKMAIL.UI = {
 		
 		var temp = this.retrieveTasks();
 		var flatList = this.makeFlatTaskList(temp);
+		flatList = this.sortTaskList(flatList);
 		for(var i=0; i<flatList.length; i++) {
 				this.fillTaskList(flatList[i]);
 		}
-		this.sortTaskList();
 		
 		// refresh link
 		this.refreshTaskLink();
@@ -445,7 +431,6 @@ TASKMAIL.UI = {
 		var invisibleTasksLabel = TASKMAIL.UI.stringsBundle.getFormattedString(
 				"statusbar.text", [temp.invisibleTasksCount]);
 		statusbar.setAttribute("label", invisibleTasksLabel);
-//		this.consoleService.logStringMessage("getTaskList finished");
 	},
 
 	taskDetailPK : -1,
@@ -832,29 +817,15 @@ TASKMAIL.UI = {
   	switch (currentOrder) {
   		case "natural" :
   			event.target.setAttribute("sortDirection","ascending");
-  			var selectedTasks = this.getSelectedTasksKeys();
-  			document.getElementById("taskList").currentIndex = -1;
-  			document.getElementById("taskList").clearSelection();
-//  			var oldCurrentItem = document.getElementById("taskList").currentIndex;
-  			this.sortTaskList();
-  			this.selectTasksByKeys(selectedTasks);
-				document.getElementById("taskList").currentIndex = this.getTaskIndexFromTaskID(selectedTasks)[0];
   			break;
   		case "ascending" :
   			event.target.setAttribute("sortDirection","descending");
-  			var selectedTasks = this.getSelectedTasksKeys();
-  			document.getElementById("taskList").currentIndex = -1;
-  			document.getElementById("taskList").clearSelection();
-//  			var oldCurrentItem = document.getElementById("taskList").currentIndex;
-  			this.sortTaskList();
-  			this.selectTasksByKeys(selectedTasks);
-				document.getElementById("taskList").currentIndex = this.getTaskIndexFromTaskID(selectedTasks)[0];
   			break;  			
   		case "descending" :
   			event.target.setAttribute("sortDirection","natural");
-  			this.refreshTaskList();
   			break;
   	}
+  	this.refreshTaskList();
   }
 }
 
