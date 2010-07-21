@@ -8,10 +8,13 @@
 <!ENTITY selectMail  "Select mails">
 <!ENTITY selectTask  "Select tasks">
 <!ENTITY goFolder    "Go to Folder">
-<!ENTITY add         "add">
-<!ENTITY addWithLink "add with link">
-<!ENTITY update      "update">
-<!ENTITY delete      "delete">
+<!ENTITY add         "Add">
+<!ENTITY addWithLink "Add with Link">
+<!ENTITY update      "Update">
+<!ENTITY delete      "Delete">
+<!ENTITY changePriority      "Change Priority">
+<!ENTITY incrementPriority      "Increment">
+<!ENTITY decrementPriority      "Decrement">
 <!ENTITY save        "Save">
 <!ENTITY cancel      "Cancel">
 <!ENTITY moveTask    "Move to">

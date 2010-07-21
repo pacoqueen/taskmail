@@ -8,13 +8,16 @@
 <!ENTITY selectMail  "Sélectionner les emails">
 <!ENTITY selectTask  "Sélectionner les tâches">
 <!ENTITY goFolder    "Aller au Folder">
-<!ENTITY add         "ajouter">
-<!ENTITY addWithLink "ajouter liée">
-<!ENTITY update      "modifier">
-<!ENTITY delete      "supprimer">
+<!ENTITY add         "Ajouter">
+<!ENTITY addWithLink "Ajouter Liée">
+<!ENTITY update      "Modifier">
+<!ENTITY delete      "Supprimer">
+<!ENTITY changePriority      "Changer la Priorité">
+<!ENTITY incrementPriority      "Incrémenter">
+<!ENTITY decrementPriority      "Décrémenter">
 <!ENTITY save        "Sauver">
 <!ENTITY cancel      "annuler">
-<!ENTITY moveTask    "déplacer vers">
+<!ENTITY moveTask    "Déplacer vers">
 <!ENTITY moveHere    "ici">
 <!ENTITY state       "Etat">
 <!ENTITY title       "Titre">

@@ -190,6 +190,59 @@ TASKMAIL.DB = {
 		stat.execute();
 	},
 
+	updateTaskProritySQLite : function(taskIdArray, priority) {
+		try {
+			var stat = this.dbConnection
+				.createStatement("update tasks set priority = :p where rowid = :pk");
+			this.dbConnection.beginTransaction();
+			for(var i=0; i<taskIdArray.length; i++) {
+				stat.bindInt32Parameter(0, priority);
+				stat.bindInt32Parameter(1, taskIdArray[i].id);
+				stat.execute();
+			}
+		} catch (err) {
+			this.dbConnection.rollbackTransaction();
+			Components.utils.reportError("updateTaskProritySQLite" + err);
+		} finally {
+			this.dbConnection.commitTransaction();
+		}
+	},
+	
+	incrementTaskProritySQLite : function(taskIdArray) {
+		try {
+			var stat = this.dbConnection
+				.createStatement("update tasks set priority = priority  + 1 where rowid = :pk and priority < 9");
+			this.dbConnection.beginTransaction();
+			for(var i=0; i<taskIdArray.length; i++) {
+				stat.bindInt32Parameter(0, taskIdArray[i].id);
+				stat.execute();
+			}
+		} catch (err) {
+			this.dbConnection.rollbackTransaction();
+			Components.utils.reportError("incrementTaskProritySQLite" + err);
+		} finally {
+			this.dbConnection.commitTransaction();
+		}
+	},
+	
+	decrementTaskProritySQLite : function(taskIdArray) {
+		try {
+			var stat = this.dbConnection
+				.createStatement("update tasks set priority = priority  - 1 where rowid = :pk and priority > 0");
+			this.dbConnection.beginTransaction();
+			for(var i=0; i<taskIdArray.length; i++) {
+				stat.bindInt32Parameter(0, taskIdArray[i].id);
+				stat.execute();
+			}
+		} catch (err) {
+			this.dbConnection.rollbackTransaction();
+			Components.utils.reportError("decrementTaskProritySQLite" + err);
+		} finally {
+			this.dbConnection.commitTransaction();
+		}
+	},
+	
+
 	removeTaskLinkSQLite : function(pk) {
 		var stat = this.dbConnection
 				.createStatement("delete from tasks where rowid = :pk");

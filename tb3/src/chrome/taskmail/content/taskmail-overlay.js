@@ -463,6 +463,9 @@ TASKMAIL.UI = {
 		return result;
 	},
 
+	/**
+	 * return array of selected task id.
+	 */
 	getSelectedTasks : function() {
 		var listBox = document.getElementById("taskList");
 		var selectedTasks = listBox.selectedItems;
@@ -826,6 +829,24 @@ TASKMAIL.UI = {
   			break;
   	}
   	this.refreshTaskList();
+  },
+  
+  updatePriority : function (event, priority) {
+  	var tasks = this.getSelectedTasks();
+  	TASKMAIL.DB.updateTaskProritySQLite(tasks, priority);
+		this.refreshTaskList();
+  },
+  
+  incrementPriority : function (event, priority) {
+  	var tasks = this.getSelectedTasks();
+  	TASKMAIL.DB.incrementTaskProritySQLite(tasks);
+		this.refreshTaskList();
+  },
+  
+  decrementPriority : function (event, priority) {
+  	var tasks = this.getSelectedTasks();
+  	TASKMAIL.DB.decrementTaskProritySQLite(tasks);
+		this.refreshTaskList();
   }
 }
 
