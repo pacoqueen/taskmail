@@ -833,7 +833,9 @@ TASKMAIL.UI = {
   		case "natural" :
   			event.target.setAttribute("sortDirection","ascending");
   			var selectedTasks = this.getSelectedTasksKeys();
-  			var oldCurrentItem = document.getElementById("taskList").currentIndex;
+  			document.getElementById("taskList").currentIndex = -1;
+  			document.getElementById("taskList").clearSelection();
+//  			var oldCurrentItem = document.getElementById("taskList").currentIndex;
   			this.sortTaskList();
   			this.selectTasksByKeys(selectedTasks);
 				document.getElementById("taskList").currentIndex = this.getTaskIndexFromTaskID(selectedTasks)[0];
@@ -841,7 +843,9 @@ TASKMAIL.UI = {
   		case "ascending" :
   			event.target.setAttribute("sortDirection","descending");
   			var selectedTasks = this.getSelectedTasksKeys();
-  			var oldCurrentItem = document.getElementById("taskList").currentIndex;
+  			document.getElementById("taskList").currentIndex = -1;
+  			document.getElementById("taskList").clearSelection();
+//  			var oldCurrentItem = document.getElementById("taskList").currentIndex;
   			this.sortTaskList();
   			this.selectTasksByKeys(selectedTasks);
 				document.getElementById("taskList").currentIndex = this.getTaskIndexFromTaskID(selectedTasks)[0];
