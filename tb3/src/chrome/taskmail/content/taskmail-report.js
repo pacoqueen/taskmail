@@ -33,6 +33,13 @@ TASKMAIL.Report = {
 				var templateBody = prefs.getCharPref("body");
 				
 				var temp = TASKMAIL.UI.retrieveTasks();
+				var currentOrder = document.getElementById("taskPriorityColumnHeader").getAttribute("sortDirection");
+				// si la liste est triée, on la met à plat
+				if (currentOrder != "natural") {
+					temp = TASKMAIL.UI.makeFlatTaskList(temp);
+				}
+				temp = TASKMAIL.UI.sortTaskList(temp);
+		  	
 				var body = this._getReportBody(temp, templateBody);
 				
 				composeFields.to = to;
@@ -54,6 +61,7 @@ TASKMAIL.Report = {
 	  var stateLabel = TASKMAIL.UI.getStateLabel(task.state);
 	  result = result.replace("#TASK_STATE#",stateLabel);
 	  result = result.replace("#TASK_DESC#",task.desc);
+	  result = result.replace("#TASK_PRIO#",task.priority);
 		return result;
 	},
 	

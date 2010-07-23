@@ -388,28 +388,33 @@ TASKMAIL.UI = {
 		return result;
 	},
 
+	/**
+	 * transforme une arbo de Content en un seul content.
+	 */
 	makeFlatTaskList : function (temp) {
-		var result = temp.tasks;
 		for(var i=0; i<temp.subContents.length; i++) {
-			result = result.concat(this.makeFlatTaskList(temp.subContents[i]));
-		}	
-		return result;
+			temp.tasks = temp.tasks.concat(this.makeFlatTaskList(temp.subContents[i]).tasks);
+		}
+		temp.subContents = new Array();
+		return temp;
 	},
 	
-	sortTaskList : function (list) {
+	/**
+	 * tri un content
+	 */
+	sortTaskList : function (temp) {
 		var currentOrder = document.getElementById("taskPriorityColumnHeader").getAttribute("sortDirection");
-  	var order = null;
-  	switch (currentOrder) {
-  		case "natural" :
-				return list;
-  			break;
-  		case "ascending" :
-  			return list.sort(function (a,b) { if (a.priority == b.priority) return 0; else if (a.priority < b.priority) return -1; else return 1;});
-  			break;  			
-  		case "descending" :
-  			return list.sort(function (a,b) { if (a.priority == b.priority) return 0; else if (a.priority < b.priority) return 1; else return -1;});
-  			break;
-  	}  	
+		switch (currentOrder) {
+			case "natural" :
+				break;
+			case "ascending" :
+				temp.tasks = temp.tasks.sort(function (a,b) { if (a.priority == b.priority) return 0; else if (a.priority < b.priority) return -1; else return 1;});
+				break;
+			case "descending" :
+				temp.tasks = temp.tasks.sort(function (a,b) { if (a.priority == b.priority) return 0; else if (a.priority < b.priority) return 1; else return -1;});
+				break;
+		}
+		return temp;
 	},
 	
 	getTaskList : function() {
@@ -417,10 +422,10 @@ TASKMAIL.UI = {
 		TASKMAIL.Link.resetLink();
 		
 		var temp = this.retrieveTasks();
-		var flatList = this.makeFlatTaskList(temp);
-		flatList = this.sortTaskList(flatList);
-		for(var i=0; i<flatList.length; i++) {
-				this.fillTaskList(flatList[i]);
+		temp = this.makeFlatTaskList(temp);
+		temp = this.sortTaskList(temp);
+		for(var i=0; i<temp.tasks.length; i++) {
+				this.fillTaskList(temp.tasks[i]);
 		}
 		
 		// refresh link
