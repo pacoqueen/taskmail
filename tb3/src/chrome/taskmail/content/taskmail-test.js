@@ -154,3 +154,14 @@ function testListSelection () {
 	var temp = listBox.getItemAtIndex(10);
 	listBox.addItemToSelection(temp);
 }
+
+function testMessageKey() {
+	var temp = gFolderDisplay.selectedMessages;
+	for(var i=0; i<temp.length; i++) {
+		consoleService.logStringMessage(temp[i].messageKey + "," + temp[i].messageId);
+	}	
+	
+	messageId reste constant après la compression de folders.
+	Est-ce que messageId est unique. Surement.
+}
+
