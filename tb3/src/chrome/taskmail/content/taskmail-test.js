@@ -161,7 +161,7 @@ function testMessageKey() {
 		consoleService.logStringMessage(temp[i].messageKey + "," + temp[i].messageId);
 	}	
 	
-	messageId reste constant après la compression de folders.
-	Est-ce que messageId est unique. Surement.
+	//messageId reste constant après la compression de folders.
+	//Est-ce que messageId est unique. Surement.
 }
 
