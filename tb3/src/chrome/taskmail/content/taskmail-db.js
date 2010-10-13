@@ -262,7 +262,7 @@ TASKMAIL.DB = {
 		
    	var messageId = msg.folder.GetMessageHeader(msg.messageKey).messageId;
    	var stat = TASKMAIL.DB.dbConnection
-				.createStatement("insert into links (folderURI, messageId, taskId) values (:folderURI, :mailId, :taskId)");
+				.createStatement("insert into links (folderURI, mailId, taskId) values (:folderURI, :mailId, :taskId)");
 		stat.bindStringParameter(0, msg.folder.URI);
 		stat.bindStringParameter(1, messageId);
 		stat.bindInt32Parameter(2, taskId);
@@ -281,7 +281,7 @@ TASKMAIL.DB = {
 	unlinkTaskSQLite : function(msg, taskId) {
    	var messageId = msg.folder.GetMessageHeader(msg.messageKey).messageId; 
    	var stat = this.dbConnection
-				.createStatement("delete from links where folderURI = :folderURI and messageId = :MAIL_ID and taskId = :TASK_ID");
+				.createStatement("delete from links where folderURI = :folderURI and mailId = :MAIL_ID and taskId = :TASK_ID");
 		stat.bindStringParameter(0, msg.folder.URI);
 		stat.bindStringParameter(1, messageId);
 		stat.bindInt32Parameter(2, taskId);
@@ -294,7 +294,7 @@ TASKMAIL.DB = {
 	getLinkSQLite : function(folder) {
 		consoleService.logStringMessage("getLinkSQLite,folderName="+folder.URI);
 		try {
-			var sql = "select links.folderURI, messageId, taskId from links, tasks where links.taskId = tasks.rowid and tasks.folderURI = :folderURI";
+			var sql = "select links.folderURI, mailId, taskId from links, tasks where links.taskId = tasks.rowid and tasks.folderURI = :folderURI";
 			var stat = this.dbConnection.createStatement(sql);
 			var folderURI = folder.URI;
 			stat.bindStringParameter(0, folderURI);
@@ -416,8 +416,8 @@ TASKMAIL.DB = {
 	msgsDeletedSQLite : function(aMsgs) {
 		try {
 			this.dbConnection.beginTransaction();
-			var TASK_SQL = "delete from tasks where rowid in (select taskId from links where folderURI = :URI and messageId = :ID)";
-			var LINK_SQL = "delete from links where folderURI = :URI and messageId = :ID";
+			var TASK_SQL = "delete from tasks where rowid in (select taskId from links where folderURI = :URI and mailId = :ID)";
+			var LINK_SQL = "delete from links where folderURI = :URI and mailId = :ID";
 			var msgEnum = aMsgs.enumerate();
 			while (msgEnum.hasMoreElements()) {
 				var msg = msgEnum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
@@ -455,8 +455,8 @@ TASKMAIL.DB = {
 	 */
 	msgsMoveCopyCompletedSQLite : function(aSrcMsgs, aDestFolder, aDestMsgs) {
 		try {
-			var TASK_SQL = "update tasks set folderURI = :NEW_URI where rowid in (select taskId from links where folderURI = :OLD_URI and messageId = :OLD_MSG_KEY)";
-			var LINK_SQL = "update links set folderURI = :NEW_URI where folderURI = :OLD_URI and messageId = :OLD_MSG_KEY";
+			var TASK_SQL = "update tasks set folderURI = :NEW_URI where rowid in (select taskId from links where folderURI = :OLD_URI and mailId = :OLD_MSG_KEY)";
+			var LINK_SQL = "update links set folderURI = :NEW_URI where folderURI = :OLD_URI and mailId = :OLD_MSG_KEY";
 
 			var srcEnum = aSrcMsgs.enumerate();
 			var destEnum = aDestMsgs.enumerate();
@@ -553,7 +553,7 @@ TASKMAIL.DB = {
 		this.dbConnection = dbConnection;
 	},
 
-	targetVersion : 5,
+	targetVersion : 6,
 	
 	dbUpgrade : function() {
 		try {
@@ -584,6 +584,9 @@ TASKMAIL.DB = {
 			if (currentVersion < 5) {
 				this.dbUpgrade5();
 			} 
+			if (currentVersion < 6) {
+				this.dbUpgrade6();
+			} 
 			if (currentVersion < this.targetVersion) {
 				stat = this.dbConnection
 						.createStatement("update model_version set version = :version");
@@ -613,6 +616,34 @@ TASKMAIL.DB = {
 		var stat = this.dbConnection
 				.createStatement("alter table tasks add column priority INTEGER DEFAULT (5)");
 		stat.execute();
+	},
+	
+	dbUpgrade6 : function() {
+		Application.console.log("update messageKey into messageId");
+		var acctMgr = Components.classes["@mozilla.org/messenger/account-manager;1"]
+                        .getService(Components.interfaces.nsIMsgAccountManager);
+		var accounts = acctMgr.accounts;
+		for (var i = 0; i < accounts.Count(); i++) {
+		  var account = accounts.QueryElementAt(i, Components.interfaces.nsIMsgAccount);
+		  var rootFolder = account.incomingServer.rootFolder; // nsIMsgFolder
+		  if (rootFolder.hasSubFolders) {
+		    var subFolders = rootFolder.subFolders; // nsIMsgFolder
+		    while(subFolders.hasMoreElements()) {
+		      var folder = subFolders.getNext().QueryInterface(Components.interfaces.nsIMsgFolder);
+		      Application.console.log(folder.prettiestName);
+		      var messages = folder.messages;
+		      while(messages.hasMoreElements()) {
+		      	var message = messages.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
+		      	var stat = this.dbConnection
+						.createStatement("update links set mailId = :messageId where folderURI = :folderURI and mailId = :messageKey");
+						stat.bindStringParameter(0,message.messageId);
+						stat.bindStringParameter(1,message.folder.URI);
+						stat.bindStringParameter(2,message.messageKey);
+						stat.execute();
+		      }
+		    }
+		  }
+}
 	},
 
 	_dbCreate : function(aDBService, aDBFile) {
