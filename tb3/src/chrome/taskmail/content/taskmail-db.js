@@ -576,7 +576,13 @@ TASKMAIL.DB = {
 				currentVersion = 3;
 			}
 			if (currentVersion < this.targetVersion) {
-				alert("Upgrade of db model needed. Please save our sqllite file in 'user profile directory'/tasks.sqlite then press OK.");
+				var dirService = Components.classes["@mozilla.org/file/directory_service;1"]
+				.getService(Components.interfaces.nsIProperties);
+				var dbFile = dirService.get("ProfD", Components.interfaces.nsIFile);
+				dbFile.append("tasks.sqlite");
+				alert("Upgrade of db model needed. A backup will be made of " + dbFile.path);
+				// Sauvegarde de la base.
+				dbFile.copyTo(null, "backup." + "tasks.sqlite" + "." + currentVersion);
 			}
 			if (currentVersion < 4) {
 				this.dbUpgrade4();
