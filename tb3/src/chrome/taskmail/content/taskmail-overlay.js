@@ -20,7 +20,7 @@ TASKMAIL.UI = {
 			var box = document.getElementById("addTask");
 			var pk = event.target.getAttribute("pk");
 			if (box.collapsed || this.taskDetailPK != pk) {
-				// si on double clique sur une autre tache, ça l'ouvre
+				// si on double clique sur une autre tache, Ã§a l'ouvre
 				this.beginUpdateTask();
 			} else {
 				this.cancelSaveTask();
@@ -30,7 +30,7 @@ TASKMAIL.UI = {
 
 	beginAddTaskWithLink : function() {
 		this.beginAddTask();
-		// addWithLink après pour overrider
+		// addWithLink aprÃ¨s pour overrider
 		this.addWithLink = true;
 	},
 
@@ -45,14 +45,14 @@ TASKMAIL.UI = {
 	},
 
 	/*
-	 * Update la tache (la 1° sélectionnée)
+	 * Update la tache (la 1Â° sÃ©lectionnÃ©e)
 	 */
 	beginUpdateTask : function() {
 		// get task detail
 		var listBox = document.getElementById("taskList");
 		var taskKeys = this.getSelectedTasksKeys();
 		if (taskKeys.length > 0) {
-			// on prend la 1° tache sélectionnée
+			// on prend la 1Â° tache sÃ©lectionnÃ©e
 			var task = TASKMAIL.DB.getTaskDetailSQLite(taskKeys[0]);
 			this.fillTaskDetail(task);
 			// show details
@@ -79,9 +79,7 @@ TASKMAIL.UI = {
 				var taskId = TASKMAIL.DB.dbConnection.lastInsertRowID;
 				var selectedMessages = gFolderDisplay.selectedMessages;
 				for (var i = 0; i < selectedMessages.length; i++) {
-					var mailKey = selectedMessages[i].messageKey;
-					TASKMAIL.DB.linkTaskSQLite(taskId, currentMsgFolder,
-							mailKey);
+					TASKMAIL.DB.linkTaskSQLite(taskId, selectedMessages[i]);
 				}
 			}
 		} else {
@@ -98,7 +96,7 @@ TASKMAIL.UI = {
 	},
 
 	/**
-	 * efface toutes les tâches sélectionnées avec les liens associés
+	 * efface toutes les tÃ¢ches sÃ©lectionnÃ©es avec les liens associÃ©s
 	 */
 	removeTask : function() {
 		// demande une confirmation
@@ -107,8 +105,8 @@ TASKMAIL.UI = {
 			var listBox = document.getElementById("taskList");
 			var taskIds = this.getSelectedTasksKeys();
 			for (var i = 0; i < taskIds.length; i++) {
-				TASKMAIL.DB.removeTaskLinkSQLite(taskIds[i]);
-				// ferme le détail de tâche si ouverte
+				TASKMAIL.DB.removeTaskAndLinkSQLite(taskIds[i]);
+				// ferme le dÃ©tail de tÃ¢che si ouverte
 				if (this.taskDetailPK == taskIds[i])
 					this.cancelSaveTask();
 			}
@@ -118,7 +116,7 @@ TASKMAIL.UI = {
 	},
 
 	/**
-	 * déplace les taches dans un nouveau folder si les taches n'ont pas de
+	 * dÃ©place les taches dans un nouveau folder si les taches n'ont pas de
 	 * liens.
 	 */
 	moveTask : function(aDestFolder) {
@@ -174,7 +172,7 @@ TASKMAIL.UI = {
 							.getAttribute("pk"));
 		} else {
 			menuitem = document.getElementById('mailContext.goNextTask');
-			// TODO obtenir email ayant reçu click droit.
+			// TODO obtenir email ayant reÃ§u click droit.
 			var mails = gFolderDisplay.selectedMessages;
 			linkedObject = TASKMAIL.Link
 					.getTaskIDFromMailID(mails[0].messageKey);
@@ -184,7 +182,7 @@ TASKMAIL.UI = {
 		menuitem.label = menuitem.label.replace(regExp, count);
 
 		if (sens == "task") {
-			// on désactive 'go to folder' si la tache courante est dans le
+			// on dÃ©sactive 'go to folder' si la tache courante est dans le
 			// folder courant.
 			var currentFolder = GetSelectedMsgFolders()[0];
 			var taskFolderURI = document.popupNode.getAttribute("folderURI");
@@ -237,7 +235,7 @@ TASKMAIL.UI = {
 		cell.setAttribute('label', aTask.title);
 		row.appendChild(cell);
 
-		// le text du lien sera setté plus tard
+		// le text du lien sera settÃ© plus tard
 		var linkText = "";
 
 		document.getElementById("taskList").appendChild(row);
@@ -264,13 +262,13 @@ TASKMAIL.UI = {
 
 	refreshTaskList : function() {
 		// consoleService.logStringMessage("refreshTaskList");
-		// le refresh du folder est lancé avant l'handler de la colonne des
+		// le refresh du folder est lancÃ© avant l'handler de la colonne des
 		// emails.
 		var selectedTasks = this.getSelectedTasksKeys();
 		this.emptyList();
 		this.getTaskList();
 		this.selectTasksByKeys(selectedTasks);
-		// la sauvegarde de l'élément courant n'est pas parfaite sur un changement de folder.
+		// la sauvegarde de l'Ã©lÃ©ment courant n'est pas parfaite sur un changement de folder.
 		document.getElementById("taskList").currentIndex = this.getTaskIndexFromTaskID(selectedTasks)[0];
 	},
 
@@ -281,7 +279,7 @@ TASKMAIL.UI = {
 		} catch (err) {
 			// Components.utils.reportError("dbUpgrade " + err);
 		}
-		// parcours tout les taches et regarde s'il existe une tache liée
+		// parcours tout les taches et regarde s'il existe une tache liÃ©e
 		var listBox = document.getElementById("taskList");
 		for (var i = 0; i < listBox.getRowCount(); i++) {
 			var row = listBox.getItemAtIndex(i);
@@ -300,7 +298,7 @@ TASKMAIL.UI = {
 
 	refreshMailLink : function() {
 		var tree = document.getElementById("threadTree");
-		// parcours tout les taches et regarde s'il existe une tache liée
+		// parcours tout les taches et regarde s'il existe une tache liÃ©e
 		var column = tree.columns.getNamedColumn("colTask");
 		tree.treeBoxObject.invalidateColumn(column);
 	},
@@ -346,7 +344,7 @@ TASKMAIL.UI = {
 		} else {
 			// subfolders
 			var recur = viewFilter == 1;
-			// évite erreur sur "dossier locaux"
+			// Ã©vite erreur sur "dossier locaux"
 			if (currentMsgFolder != null) {
 				result = this._retrieveTasksRec(currentMsgFolder, recur);
 			}
@@ -363,7 +361,7 @@ TASKMAIL.UI = {
 		};
 		
 		var stateFilter = this.getDBStateFilterString();
-		// il faut charger les liens avant les taches ; chargement récurssif
+		// il faut charger les liens avant les taches ; chargement rÃ©curssif
 		TASKMAIL.DB.getLinkSQLite(folder);
 		var tasks = TASKMAIL.DB.getTaskListSQLite(null, folder, stateFilter);
 		result.tasks = tasks;
@@ -371,7 +369,7 @@ TASKMAIL.UI = {
 				folder, stateFilter);
 		result.folderName = folder.prettiestName;
 
-		// récupére les sous folders si possible et si demandé
+		// rÃ©cupÃ©re les sous folders si possible et si demandÃ©
 		if (folder.hasSubFolders && recur) {
 			var subFolders = folder.subFolders;
 			try {
@@ -443,7 +441,7 @@ TASKMAIL.UI = {
 	stringsBundle : null,
 
 	/**
-	 * recupére les index des taches dont les pk sont fournies
+	 * recupÃ©re les index des taches dont les pk sont fournies
 	 * 
 	 * @param taskID :
 	 *            tableau de taskID
@@ -567,7 +565,7 @@ TASKMAIL.UI = {
 			// il faut supprimer le refreshTaskLink et le remettre pour qui
 			// soit
 			// en
-			// 2°
+			// 2Â°
 			document.getElementById("threadTree").removeEventListener("select",
 					this.refreshTaskLink, false);
 			document.getElementById("threadTree").addEventListener("select",
@@ -638,13 +636,13 @@ TASKMAIL.UI = {
 		document.getElementById("threadTree").addEventListener("dragover", TASKMAIL.UIDrag.onOverMail, false);
 		document.getElementById("threadTree").addEventListener("drop", TASKMAIL.UIDrag.onDropMail, false);
 		
-		// pose un observe sur les états définis dans les préférences
+		// pose un observe sur les Ã©tats dÃ©finis dans les prÃ©fÃ©rences
 		this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
          .getService(Components.interfaces.nsIPrefService)
          .getBranch("taskmail.");
 		this.prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
     this.prefs.addObserver("", this, false);
-    // charge les états pour la liste de tâches et le détail d'une tâche.
+    // charge les Ã©tats pour la liste de tÃ¢ches et le dÃ©tail d'une tÃ¢che.
     this.getStatesFromPref();
 	},
 	
@@ -668,9 +666,9 @@ TASKMAIL.UI = {
 	states : new Array(),
 	
 	/**
-	 * Récupére les états depuis les préférences et remplie la liste déroule du détail de tâche.
-	 * et le menu deroulant du filtre d'état
-	 * Appelé après changement des préférences par observer ou au lancement de l'appli.
+	 * RÃ©cupÃ©re les Ã©tats depuis les prÃ©fÃ©rences et remplie la liste dÃ©roule du dÃ©tail de tÃ¢che.
+	 * et le menu deroulant du filtre d'Ã©tat
+	 * AppelÃ© aprÃ¨s changement des prÃ©fÃ©rences par observer ou au lancement de l'appli.
 	 */
 	getStatesFromPref : function () {
 		//consoleService.logStringMessage("getStatesFromPref");
@@ -683,24 +681,24 @@ TASKMAIL.UI = {
     	var state = { id : id, label : stateLabel };
     	result.push(state);
     }
-    // stocke les états (id et libelle)
+    // stocke les Ã©tats (id et libelle)
     this.states = result;
     
-		//charge le menu déroulant avec les libelles et les id sous forme de checkbox
+		//charge le menu dÃ©roulant avec les libelles et les id sous forme de checkbox
     var stateList = document.getElementById("taskState");
     var index = stateList.selectedIndex;
     
 		stateList.selectedIndex = index;
 		stateList.removeAllItems();    
 		for(var i=0; i<this.states.length; i++) {
-    	// remplit la liste déroulante dans le détail de tache.
+    	// remplit la liste dÃ©roulante dans le dÃ©tail de tache.
     	stateList.appendItem(this.states[i].label,this.states[i].id);
     }
 
-    // charge le menu déroulant du filtre des états
+    // charge le menu dÃ©roulant du filtre des Ã©tats
     var stateButton = document.getElementById("stateFilter");
     var stateFilter = document.getElementById("stateFilterPopup");
-    // récupéré pour savoir ce qui était coché.
+    // rÃ©cupÃ©rÃ© pour savoir ce qui Ã©tait cochÃ©.
     var selectedIdExp = stateButton.getAttribute("taskSelectedIdExp");
     var selectedStateIdArray = selectedIdExp.split(",").map(function (e) {return parseInt(e);});
     
@@ -708,7 +706,7 @@ TASKMAIL.UI = {
     	stateFilter.removeChild(stateFilter.childNodes[i]);
     }    
     for(var i=0; i<this.states.length; i++) {
-    	// remplit le filtre d'état
+    	// remplit le filtre d'Ã©tat
     	var menuitem = document.createElement('menuitem');
     	menuitem.setAttribute("label", this.states[i].label);
     	menuitem.setAttribute("id", this.states[i].id);
@@ -722,8 +720,8 @@ TASKMAIL.UI = {
   },
   
   /**
-   * recoche la derniere case et recalcul les id des états cochés pour la persistance.
-   * Appele après un cochage d'état.
+   * recoche la derniere case et recalcul les id des Ã©tats cochÃ©s pour la persistance.
+   * Appele aprÃ¨s un cochage d'Ã©tat.
    */
   changeStateFilter : function (event) {
   	//consoleService.logStringMessage("changeStateFilter");
@@ -737,7 +735,7 @@ TASKMAIL.UI = {
   		}
   	}
   	if (noStatesCheck) {
-  		// si on essaie de décocher la dernière, on la recoche car on ne peut pas avoir aucune coche
+  		// si on essaie de dÃ©cocher la derniÃ¨re, on la recoche car on ne peut pas avoir aucune coche
   		event.target.setAttribute("checked", true);
   	} else {
   		this.refreshStateFilterLabel();
@@ -746,7 +744,7 @@ TASKMAIL.UI = {
   },
   
   /**
-   * recalcul le libellé du bouton des états et les id sélectionné
+   * recalcul le libellÃ© du bouton des Ã©tats et les id sÃ©lectionnÃ©
    * pour la persistance du filtre.
    */
   refreshStateFilterLabel : function () {
@@ -757,7 +755,7 @@ TASKMAIL.UI = {
     var allStatesChecked = true;
     var selectedStateId = new Array();
         
-    // remplit le filtre d'état
+    // remplit le filtre d'Ã©tat
     for(var i=0; i<stateFilter.childNodes.length; i++) {
     	var checked = stateFilter.childNodes[i].getAttribute("checked"); 	
     	if (checked) {
@@ -771,7 +769,7 @@ TASKMAIL.UI = {
   			allStatesChecked = false;
   		}
     }
-    // Si toutes les coches sont cochés on met un libellé
+    // Si toutes les coches sont cochÃ©s on met un libellÃ©
     if (allStatesChecked) {
   		filterLabel = TASKMAIL.UI.stringsBundle.getString('taskmail.allStates');
   	}
@@ -780,8 +778,8 @@ TASKMAIL.UI = {
   },
   
   /**
-   * retourne la liste des états sélectionnés
-   * Utilisé pour le requetage. 
+   * retourne la liste des Ã©tats sÃ©lectionnÃ©s
+   * UtilisÃ© pour le requetage. 
    */
    getDBStateFilterString : function () {
   	var result = "";
@@ -802,8 +800,8 @@ TASKMAIL.UI = {
   },
   
   /**
-   * récupére le libelle d'une tache à partir d'un id d'éta.
-   * Utilisé pour remplir la liste de tache et le rapport.
+   * rÃ©cupÃ©re le libelle d'une tache Ã  partir d'un id d'Ã©ta.
+   * UtilisÃ© pour remplir la liste de tache et le rapport.
    */
   getStateLabel : function (id) {
   	var result = "";
@@ -859,8 +857,8 @@ if (!TASKMAIL.UILink)
 	TASKMAIL.UILink = {};
 TASKMAIL.UILink = {
 	/**
-	 * lie email et tâches courants. En fonction du send du lien, un seul objet
-	 * sélectionnable
+	 * lie email et tÃ¢ches courants. En fonction du send du lien, un seul objet
+	 * sÃ©lectionnable
 	 * 
 	 */
 	linkTask : function(dropTarget, targetElement) {
@@ -879,9 +877,9 @@ TASKMAIL.UILink = {
 		}
 		var taskIds = TASKMAIL.UI.getTasksKeys(tasks);
 		if (mails.length > 1 && taskIds.length > 1) {
-			// on autorise les liaisons si un des deux côtés a 1 seul
-			// éléments
-			// sélectionné.
+			// on autorise les liaisons si un des deux cÃ´tÃ©s a 1 seul
+			// Ã©lÃ©ments
+			// sÃ©lectionnÃ©.
 			alert(TASKMAIL.UI.stringsBundle
 					.getString("LinkAlertTooManyObjects"));
 			return;
@@ -889,38 +887,32 @@ TASKMAIL.UILink = {
 		if (mails.length == 1) {
 			for (var i = 0; i < taskIds.length; i++) {
 				var taskId = taskIds[i];
-				TASKMAIL.DB.linkTaskSQLite(taskId, folder,
-						mails[0].messageKey);
+				TASKMAIL.DB.linkTaskSQLite(taskId, mails[0]);
 			}
 		} else {
 			for (var i = 0; i < mails.length; i++) {
-				TASKMAIL.DB.linkTaskSQLite(taskIds[0], folder,
-						mails[i].messageKey);
+				TASKMAIL.DB.linkTaskSQLite(taskIds[0], mails[i]);
 			}
 		}
-		// var mailKey = gDBView.getKeyAt(mailIndices[0]);
-		// consoleService.logStringMessage(link done
-		// tache="+taskId+",mail="+mailId);
-
 		TASKMAIL.UI.refreshTaskList();
 		TASKMAIL.UI.refreshMailLink();
 	},
 
 	/**
-	 * détruit tous les liens entre les emails sélectionnés et les taches
-	 * sélectionnées.
+	 * dÃ©truit tous les liens entre les emails sÃ©lectionnÃ©s et les taches
+	 * sÃ©lectionnÃ©es.
 	 * 
 	 * @return void
 	 */
 	unlinkTask : function() {
 		if (window.confirm(TASKMAIL.UI.stringsBundle
 				.getString('confirmDeleteLink'))) {
-			// parcours tous les messages sélectionnés pour trouver les
+			// parcours tous les messages sÃ©lectionnÃ©s pour trouver les
 			// taches
-			// liées
-			// dans celles sélectionnés
+			// liÃ©es
+			// dans celles sÃ©lectionnÃ©s
 			// TODO optimisation possible en n'invocant uniquement pour les
-			// liens liées;
+			// liens liÃ©es;
 			var selectedMessages = gFolderDisplay.selectedMessages; // OK un
 			// objet msg
 			var listBox = document.getElementById("taskList");
@@ -937,18 +929,18 @@ TASKMAIL.UILink = {
 	},
 
 	/**
-	 * Sélectionne les tâches liées aux emails sélectionnés.
+	 * SÃ©lectionne les tÃ¢ches liÃ©es aux emails sÃ©lectionnÃ©s.
 	 */
 	showLinkedTask : function() {
 		try {
-			// récupére la key du 1° email selectionné
+			// rÃ©cupÃ©re la key du 1Â° email selectionnÃ©
 			var mailKey = gDBView.keyForFirstSelectedMessage;
-			// recupére les ID de taches liées au mail
+			// recupÃ©re les ID de taches liÃ©es au mail
 			var TaskIDs = TASKMAIL.Link.getTaskIDFromMailID(mailKey);
-			// recupére les index des taches associées
+			// recupÃ©re les index des taches associÃ©es
 			var taskIndex = TASKMAIL.UI.getTaskIndexFromTaskID(TaskIDs);
 			if (TaskIDs.length > 0 && taskIndex.length == 0) {
-				// on a des taches liées mais elles sont toutes visibles =>
+				// on a des taches liÃ©es mais elles sont toutes visibles =>
 				// change
 				// le filtrage sr 'tout'
 				var stateFilter = document.getElementById("stateFilterPopup");
@@ -985,8 +977,8 @@ TASKMAIL.UILink = {
 	},
 
 	/**
-	 * selection le prochain email liée. basé sur la tache qui a reçue le click
-	 * droit ou item passé suite à un ctrl-double clic.
+	 * selection le prochain email liÃ©e. basÃ© sur la tache qui a reÃ§ue le click
+	 * droit ou item passÃ© suite Ã  un ctrl-double clic.
 	 */
 	showLinkedMail : function(item) {
 		if (!item) {
@@ -994,17 +986,17 @@ TASKMAIL.UILink = {
 		}
 		var taskID = item.getAttribute("pk");
 		var folderURI = item.getAttribute("folderURI");
-		// recupére les keys de mail liés à la tache
+		// recupÃ©re les keys de mail liÃ©s Ã  la tache
 		var keysMails = TASKMAIL.Link.getMailKeysFromTaskID(taskID);
 		if (keysMails != null && keysMails.length > 0) {
-			// si la tache selectionnée a au moins un mail lié
+			// si la tache selectionnÃ©e a au moins un mail liÃ©
 			var i = -1;
 			try {
 				var selectedMailKey = gDBView.keyForFirstSelectedMessage;
 				var founded = false;
 				// identifie le mail suivant
 				for (var i = 0; i < keysMails.length; i++) {
-					// on prend le 1° mail sélectionné
+					// on prend le 1Â° mail sÃ©lectionnÃ©
 					if (selectedMailKey == keysMails[i]) {
 						founded = true;
 						break;
@@ -1020,7 +1012,7 @@ TASKMAIL.UILink = {
 			} catch (err) {
 				// Components.utils.reportError("dbUpgrade " + err);
 			}
-			// keysMail pourrait être modifié par le changement de folder
+			// keysMail pourrait Ãªtre modifiÃ© par le changement de folder
 			var keyMailToSelect = keysMails[i + 1];
 			// if task from subfolder select folder.
 			if (GetSelectedMsgFolders()[0].URI != folderURI) {
@@ -1031,8 +1023,8 @@ TASKMAIL.UILink = {
 	},
 	
 	/**
-	 * sélectionne le prochain élèment lié en fonction de la zone qui a le focus
-	 * appelé par shift-L.
+	 * sÃ©lectionne le prochain Ã©lÃ¨ment liÃ© en fonction de la zone qui a le focus
+	 * appelÃ© par shift-L.
 	 */
 	showLinked : function (event) {
 		var focused = document.commandDispatcher.focusedElement;
@@ -1045,8 +1037,8 @@ TASKMAIL.UILink = {
 	},	
 
 	/**
-	 * Sélectionne les emails liés aux tâches sélectionnées. Toutes les taches
-	 * doivent être dans le folder courant.
+	 * SÃ©lectionne les emails liÃ©s aux tÃ¢ches sÃ©lectionnÃ©es. Toutes les taches
+	 * doivent Ãªtre dans le folder courant.
 	 */
 	selectLinkedMails : function() {
 		var folder = GetSelectedMsgFolders()[0];
@@ -1074,8 +1066,8 @@ TASKMAIL.UILink = {
 	},
 
 	/**
-	 * Sélectionne les tâches liées aux emails sélectionnées (tous). les taches
-	 * déjà sélectionnées sont conservées.
+	 * SÃ©lectionne les tÃ¢ches liÃ©es aux emails sÃ©lectionnÃ©es (tous). les taches
+	 * dÃ©jÃ  sÃ©lectionnÃ©es sont conservÃ©es.
 	 */
 	selectLinkedTask : function() {
 		var temp = TASKMAIL.UI.getSelectedMailKey();
@@ -1109,10 +1101,10 @@ TASKMAIL.Link = {
 	 * 
 	 * @param taskID
 	 * @param selectedMailKey
-	 * @return 2 = lien surligné, 1 = lien, 0 = pas de lien
+	 * @return 2 = lien surlignÃ©, 1 = lien, 0 = pas de lien
 	 */
 	getTaskLinkType : function(taskID, selectedMailKey) {
-		// taskID à -1 si pas de tache sélectionnée
+		// taskID Ã  -1 si pas de tache sÃ©lectionnÃ©e
 		var direct = false;
 		var undirect = false;
 		for (var j = 0; j < this.nbLinks; j++) {
@@ -1129,7 +1121,7 @@ TASKMAIL.Link = {
 	},
 
 	/**
-	 * Détermine les clé de mail correspondant à la tache spécifiée.
+	 * DÃ©termine les clÃ© de mail correspondant Ã  la tache spÃ©cifiÃ©e.
 	 */
 	getMailKeysFromTaskID : function(taskID) {
 		var result = null;
@@ -1148,7 +1140,7 @@ TASKMAIL.Link = {
 	},
 
 	/**
-	 * détermine les clés de taches à partir de la clé de mail spécifiée
+	 * dÃ©termine les clÃ©s de taches Ã  partir de la clÃ© de mail spÃ©cifiÃ©e
 	 * 
 	 * @param String
 	 *            mailKey
@@ -1182,12 +1174,12 @@ TASKMAIL.Link = {
 	
 	/**
 	 * @param taskID
-	 *            -1 si pas de tache sélectionnée
+	 *            -1 si pas de tache sÃ©lectionnÃ©e
 	 * @param selectedMailKey
-	 * @return 3 = lien grisé, 2 = lien surligné, 1 = lien, 0 = pas de lien
+	 * @return 3 = lien grisÃ©, 2 = lien surlignÃ©, 1 = lien, 0 = pas de lien
 	 */
 	getMailLinkType : function(taskID, selectedMailKey) {
-		// taskID à -1 si pas de tache sélectionnée
+		// taskID Ã  -1 si pas de tache sÃ©lectionnÃ©e
 		var direct = false;
 		var undirect = false;
 		var oneTaskVisible = false;
@@ -1230,7 +1222,7 @@ TASKMAIL.MailListener = {
 		TASKMAIL.UI.refreshMailLink();
 	},
 	folderDeleted : function(aFolder) {
-		// Rien lors de la suppression réelle puisque ça passe par la
+		// Rien lors de la suppression rÃ©elle puisque Ã§a passe par la
 		// corbeille
 		// Une fois dans la corbeille, 1 supprimer => un event
 		// folderDeleted,
@@ -1239,7 +1231,7 @@ TASKMAIL.MailListener = {
 		// le baseMessageURI est conforme
 		// avant delete
 		// mailbox-message://nobody@Local%20Folders/toto/titi
-		// l'uri est modifié
+		// l'uri est modifiÃ©
 		// consoleService.logStringMessage(aFolder.baseMessageURI);
 		TASKMAIL.DB.deleteFolderSQLite(aFolder);
 	},
@@ -1251,10 +1243,10 @@ TASKMAIL.MailListener = {
 	msgsMoveCopyCompleted : function(aMove, aSrcMsgs, aDestFolder, aDestMsgs) {
 		if (aMove) {
 			var moveable = this.msgsMoveable(aSrcMsgs);
-			// si problème on alerte mais le déplacement de message est
-			// déjà
+			// si problÃ¨me on alerte mais le dÃ©placement de message est
+			// dÃ©jÃ 
 			// fait donc on laisse faire.
-			// @todo voir comment empecher le déplacement
+			// @todo voir comment empecher le dÃ©placement
 			if (!moveable) {
 				alert(TASKMAIL.UI.stringsBundle.getString("moveMailAlert"));
 			}
@@ -1267,7 +1259,7 @@ TASKMAIL.MailListener = {
 		TASKMAIL.DB.msgsDeletedSQLite(aMsgs);
 	},
 	/**
-	 * si l'email est liée à au moins une tache liée à un autre mail, one ne
+	 * si l'email est liÃ©e Ã  au moins une tache liÃ©e Ã  un autre mail, one ne
 	 * fait rien.
 	 * 
 	 * @param selectedMsgs
@@ -1281,8 +1273,8 @@ TASKMAIL.MailListener = {
 					.QueryInterface(Components.interfaces.nsIMsgDBHdr);
 			selectedMsgKey.push(srcMsg.messageKey);
 		}
-		// 2 pour chaque selected msg, recupére les taches liées
-		// dès qu'un msg lié hors sélection, on stoppe
+		// 2 pour chaque selected msg, recupÃ©re les taches liÃ©es
+		// dÃ¨s qu'un msg liÃ© hors sÃ©lection, on stoppe
 		var stop = false;
 		for (var i = 0; i < selectedMsgKey.length && !stop; i++) {
 			var taskIDs = TASKMAIL.Link.getTaskIDFromMailID(selectedMsgKey[i]);
@@ -1299,8 +1291,8 @@ TASKMAIL.MailListener = {
 	}
 }
 
-// besoin de passer par le load de la fenêtre sinon ça plante thunderbird
-// (peut-être UI pas prête)
+// besoin de passer par le load de la fenÃªtre sinon Ã§a plante thunderbird
+// (peut-Ãªtre UI pas prÃªte)
 window.addEventListener("load", function(e) {
 			TASKMAIL.UI.init(e);
 		}, false);

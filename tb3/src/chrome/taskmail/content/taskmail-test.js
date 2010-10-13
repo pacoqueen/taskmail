@@ -15,10 +15,10 @@ function displayFolderURI() {
     // messageID=50826FCACE4318438E8AF53FD716466701E595A36F@exdruembetl003.eq1etl.local
     // Components.utils.reportError("messgeURI="+messageURI+"\n"+"messageID
     // ="+messageID);
-    // après déplacement de l'email
+    // aprÃ¨s dÃ©placement de l'email
     // messgeURI=mailbox-message://nobody@Local%20Folders/Trash#143700885
     // messageID=50826FCACE4318438E8AF53FD716466701E595A36F@exdruembetl003.eq1etl.local
-    // conclusion : même messgeID. l'uri elle est différente.
+    // conclusion : mÃªme messgeID. l'uri elle est diffÃ©rente.
     var folder = GetSelectedMsgFolders()[0];
     consoleService.logStringMessage("URI"+folder.URI);
     consoleService.logStringMessage("baseMessageURI"+folder.baseMessageURI);
@@ -160,8 +160,65 @@ function testMessageKey() {
 	for(var i=0; i<temp.length; i++) {
 		consoleService.logStringMessage(temp[i].messageKey + "," + temp[i].messageId);
 	}	
-	
-	//messageId reste constant après la compression de folders, après le déplacement de folder.
+	//messageId reste constant aprÃ¨s la compression de folders, aprÃ¨s le dÃ©placement de folder.
 	//Est-ce que messageId est unique. Surement.
 }
 
+function testGetMsgID() {
+	var folder = GetSelectedMsgFolders()[0];
+	var messageKey = prompt("key?");
+	var messageHdr = folder.GetMessageHeader(messageKey);
+	consoleService.logStringMessage("messageID=" + messageHdr.messageId);
+}
+
+
+let aListener = { 
+  /* called when new items are returned by the database query or freshly indexed */  
+  onItemsAdded: function myListener_onItemsAdded(aItems, aCollection) {  
+  },  
+  /* called when items that are already in our collection get re-indexed */  
+  onItemsModified: function myListener_onItemsModified(aItems, aCollection) {  
+  },  
+  /* called when items that are in our collection are purged from the system */  
+  onItemsRemoved: function myListener_onItemsRemoved(aItems, aCollection) {  
+  },  
+  /* called when our database query completes */  
+  onQueryCompleted: function myListener_onQueryCompleted(aCollection) {
+  	if (aCollection.items.length <= 0) {
+  		consoleService.logStringMessage("onQueryCompleted:no message");
+  		return;
+  	}
+  	consoleService.logStringMessage("onQueryCompleted:nb resultats=" + aCollection.items.length);
+  	for(var i=0; i<aCollection.items.length; i++) {
+  		consoleService.logStringMessage("id" + aCollection.items[i].id + 
+    		",messageKey="+ aCollection.items[i].messageKey + 
+    		",subject="+ aCollection.items[i].subject+",folder="+aCollection.items[i].folder.uri);
+  	}
+    
+//    consoleService.logStringMessage("onQueryCompleted:collection length=" + aCollection.items.length);
+//    try {
+//    	for (var conv in aCollection.items)  
+//    		//do something with the Conversation here  
+//				consoleService.logStringMessage("onQueryCompleted:Gloda " + conv.contact);
+//		} catch (e) {}    
+  }
+}
+
+function testGloda () {
+	Components.utils.import("resource://app/modules/gloda/public.js");
+	//var aMsrHdr = gFolderDisplay.selectedMessages[0];
+	//consoleService.logStringMessage("gloda:messageKey="+aMsrHdr.messageKey+",messageId="+aMsrHdr.messageId);
+	//var collection = Gloda.getMessageCollectionForHeader(aMsrHdr, aListener, null);
+	
+	var aFolder = GetSelectedMsgFolders()[0];
+	var aKey = gFolderDisplay.selectedMessages[0].messageKey;
+	let query = Gloda.newQuery(Gloda.NOUN_MESSAGE);
+  query.folder(aFolder).messageKey(aKey);
+  consoleService.logStringMessage("recherche par key " + aFolder.URI+","+aKey);
+  var collection1 = query.getCollection(aListener, null);
+  
+//  let query2 = Gloda.newQuery(Gloda.NOUN_MESSAGE);
+//  query2.id(36);
+//  consoleService.logStringMessage("recherche par id 36");
+//  var collection2 = query2.getCollection(aListener, null);
+}

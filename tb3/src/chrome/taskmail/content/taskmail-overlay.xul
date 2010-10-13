@@ -205,7 +205,10 @@
 				<menuitem label="states" oncommand="TASKMAIL.UI.getStatesFromPref();"/>
 				<menuitem label="list selection" oncommand="testListSelection();"/>
 				<menuitem label="list selection" oncommand="TASKMAIL.UI.updatePriority();"/>
+				<menuitem label="addListener" oncommand="testAddListener();"/>
 				<menuitem label="messageKey" oncommand="testMessageKey();"/>
+				<menuitem label="gloda" oncommand="testGloda();"/>
+				<menuitem label="getMessageIDFromKey goi was here" oncommand="testGetMsgID();"/>
 			</menupopup>				
 		</menu>			
 	</menubar>

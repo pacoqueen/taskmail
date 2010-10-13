@@ -243,58 +243,70 @@ TASKMAIL.DB = {
 	},
 	
 
-	removeTaskLinkSQLite : function(pk) {
+	removeTaskAndLinkSQLite : function(taskId) {
 		var stat = this.dbConnection
-				.createStatement("delete from tasks where rowid = :pk");
-		stat.bindInt32Parameter(0, pk);
+				.createStatement("delete from tasks where rowid = :taskId");
+		stat.bindInt32Parameter(0, taskId);
 		stat.execute();
 		var stat2 = this.dbConnection
-				.createStatement("delete from links where taskId = :pk");
-		stat2.bindInt32Parameter(0, pk);
+				.createStatement("delete from links where taskId = :taskId");
+		stat2.bindInt32Parameter(0, taskId);
 		stat2.execute();
 	},
 
-	linkTaskSQLite : function(taskId, folder, mailId) {
-		var stat = this.dbConnection
-				.createStatement("insert into links (folderURI, mailId, taskId) values (:folderURI, :mailId, :taskId)");
-		var folderURI = folder.URI;
-		stat.bindStringParameter(0, folderURI);
-		stat.bindStringParameter(1, mailId);
+	/**
+	 * @param msg
+	 *            a message.
+	 */
+	linkTaskSQLite : function(taskId, msg) {
+		
+   	var messageId = msg.folder.GetMessageHeader(msg.messageKey).messageId;
+   	var stat = TASKMAIL.DB.dbConnection
+				.createStatement("insert into links (folderURI, messageId, taskId) values (:folderURI, :mailId, :taskId)");
+		stat.bindStringParameter(0, msg.folder.URI);
+		stat.bindStringParameter(1, messageId);
 		stat.bindInt32Parameter(2, taskId);
 		stat.execute();
 	},
 
 	/**
-	 * détruit les lients
+	 * detruit les lients
 	 * 
-	 * @param msgs
-	 *            un array de msg. doit être de même longeur que tasks
-	 * @param tasks
-	 *            un array de task. doit être de même longeur que tasks
+	 * @param msg
+	 *            a message.
+	 * @param taskId
+	 *            a TaskId.
 	 * @return
 	 */
-	unlinkTaskSQLite : function(msgs, taskId) {
-		var stat = this.dbConnection
-				.createStatement("delete from links where folderURI = :URI and mailId = :MAIL_ID and taskId = :TASK_ID");
-		var folderURI = msgs.folder.URI;
-		var mailId = msgs.messageKey;
-		stat.bindStringParameter(0, folderURI);
-		stat.bindInt32Parameter(1, mailId);
+	unlinkTaskSQLite : function(msg, taskId) {
+   	var messageId = msg.folder.GetMessageHeader(msg.messageKey).messageId; 
+   	var stat = this.dbConnection
+				.createStatement("delete from links where folderURI = :folderURI and messageId = :MAIL_ID and taskId = :TASK_ID");
+		stat.bindStringParameter(0, msg.folder.URI);
+		stat.bindStringParameter(1, messageId);
 		stat.bindInt32Parameter(2, taskId);
 		stat.execute();
 	},
 
+	/**
+	 * remonte touts les liens de toutes les taches du folder fourni.
+	 */
 	getLinkSQLite : function(folder) {
-		// this.consoleService.logStringMessage("getLinkSQLite,
-		// folderName="+folderName);
+		consoleService.logStringMessage("getLinkSQLite,folderName="+folder.URI);
 		try {
-			var sql = "select mailId, taskId from links, tasks where links.folderURI = tasks.folderURI and links.taskId = tasks.rowid and tasks.folderURI = :folderURI";
+			var sql = "select links.folderURI, messageId, taskId from links, tasks where links.taskId = tasks.rowid and tasks.folderURI = :folderURI";
 			var stat = this.dbConnection.createStatement(sql);
 			var folderURI = folder.URI;
 			stat.bindStringParameter(0, folderURI);
 			while (stat.executeStep()) {
-				TASKMAIL.Link.addLink(folderURI, stat.getInt32(0), stat
-								.getInt32(1));
+  			var messageId =  stat.getString(1);
+  			consoleService.logStringMessage("messageId=" + messageId);
+				var message = folder.msgDatabase.getMsgHdrForMessageID(messageId);
+  			var messageKey = message.messageKey;
+				consoleService.logStringMessage("messageKey=" + messageKey);
+				TASKMAIL.Link.addLink(folderURI,
+				                      messageKey,
+				                      stat.getInt32(2));
 			}
 		} catch (err) {
 			Components.utils.reportError("getLinkSQLite " + err);
@@ -404,24 +416,23 @@ TASKMAIL.DB = {
 	msgsDeletedSQLite : function(aMsgs) {
 		try {
 			this.dbConnection.beginTransaction();
-			var TASK_SQL = "delete from tasks where rowid in (select taskId from links where folderURI = :URI and mailId = :ID)";
-			var LINK_SQL = "delete from links where folderURI = :URI and mailId = :ID";
+			var TASK_SQL = "delete from tasks where rowid in (select taskId from links where folderURI = :URI and messageId = :ID)";
+			var LINK_SQL = "delete from links where folderURI = :URI and messageId = :ID";
 			var msgEnum = aMsgs.enumerate();
 			while (msgEnum.hasMoreElements()) {
-				var msg = msgEnum.getNext()
-						.QueryInterface(Components.interfaces.nsIMsgDBHdr);
+				var msg = msgEnum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
 				var msgKey = msg.messageKey;
 				var folderURI = msg.folder.URI;
-				this.consoleService.logStringMessage("msgsDeletedSQLite"
-						+ folderURI + "," + msgKey);
+				var messageId = msg.folder.GetMessageHeader(msg.messageKey).messageId;
+				this.consoleService.logStringMessage("msgsDeletedSQLite" + folderURI + "," + msgKey + "," + messageId);
 				var stat = this.dbConnection.createStatement(TASK_SQL);
 				stat.bindStringParameter(0, folderURI);
-				stat.bindStringParameter(1, msgKey);
+				stat.bindStringParameter(1, messageId);
 				stat.execute();
 
 				var stat2 = this.dbConnection.createStatement(LINK_SQL);
 				stat2.bindStringParameter(0, folderURI);
-				stat2.bindStringParameter(1, msgKey);
+				stat2.bindStringParameter(1, messageId);
 				stat2.execute();
 			}
 		} catch (err) {
@@ -433,6 +444,7 @@ TASKMAIL.DB = {
 	},
 
 	/**
+	 * DÃ©placement des mails et des taches liÃ©es.
 	 * @param aSrcMsgs
 	 *            An array of the message headers in the source folder
 	 * @param aDestFolder
@@ -443,34 +455,32 @@ TASKMAIL.DB = {
 	 */
 	msgsMoveCopyCompletedSQLite : function(aSrcMsgs, aDestFolder, aDestMsgs) {
 		try {
-			var TASK_SQL = "update tasks set folderURI = :NEW_URI where rowid in (select taskId from links where folderURI = :OLD_URI and mailId = :OLD_ID)";
-			var LINK_SQL = "update links set folderURI = :NEW_URI, mailId = :NEW_MSG_KEY where folderURI = :OLD_URI and mailId = :OLD_MSG_KEY";
+			var TASK_SQL = "update tasks set folderURI = :NEW_URI where rowid in (select taskId from links where folderURI = :OLD_URI and messageId = :OLD_MSG_KEY)";
+			var LINK_SQL = "update links set folderURI = :NEW_URI where folderURI = :OLD_URI and messageId = :OLD_MSG_KEY";
 
 			var srcEnum = aSrcMsgs.enumerate();
 			var destEnum = aDestMsgs.enumerate();
 
 			while (srcEnum.hasMoreElements()) {
-				var srcMsg = srcEnum.getNext()
-						.QueryInterface(Components.interfaces.nsIMsgDBHdr);
-				var destMsg = destEnum.getNext()
-						.QueryInterface(Components.interfaces.nsIMsgDBHdr);
+				var srcMsg = srcEnum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
+				var destMsg = destEnum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
+				var messageId = destMsg.folder.GetMessageHeader(destMsg.messageKey).messageId;
+				
+				this.consoleService.logStringMessage("msgsMoveCopyCompletedSQLite"
+								+ destMsg.folder.URI + "," + srcMsg.folder.URI + "," + srcMsg.messageKey
+								+ "," + messageId);
 
-				this.consoleService
-						.logStringMessage("msgsMoveCopyCompletedSQLite"
-								+ destMsg.folder.URI + "," + srcMsg.folder.URI
-								+ "," + srcMsg.messageKey);
-
+				
 				var stat = this.dbConnection.createStatement(TASK_SQL);
 				stat.bindStringParameter(0, destMsg.folder.URI);
 				stat.bindStringParameter(1, srcMsg.folder.URI);
-				stat.bindStringParameter(2, srcMsg.messageKey);
+				stat.bindStringParameter(2, messageId);
 				stat.execute();
 
 				var stat2 = this.dbConnection.createStatement(LINK_SQL);
 				stat2.bindStringParameter(0, destMsg.folder.URI);
-				stat2.bindStringParameter(1, destMsg.messageKey);
-				stat2.bindStringParameter(2, srcMsg.folder.URI);
-				stat2.bindStringParameter(3, srcMsg.messageKey);
+				stat2.bindStringParameter(1, srcMsg.folder.URI);
+				stat2.bindStringParameter(2, messageId);
 				stat2.execute();
 			}
 		} catch (err) {
@@ -522,17 +532,15 @@ TASKMAIL.DB = {
 	},
 
 	dbInit : function() {
-		const taskmailCC = Components.classes;
-		const taskmailCI = Components.interfaces;
 
-		var dirService = taskmailCC["@mozilla.org/file/directory_service;1"]
-				.getService(taskmailCI.nsIProperties);
+		var dirService = Components.classes["@mozilla.org/file/directory_service;1"]
+				.getService(Components.interfaces.nsIProperties);
 
-		var dbFile = dirService.get("ProfD", taskmailCI.nsIFile);
+		var dbFile = dirService.get("ProfD", Components.interfaces.nsIFile);
 		dbFile.append("tasks.sqlite");
 
-		var dbService = taskmailCC["@mozilla.org/storage/service;1"]
-				.getService(taskmailCI.mozIStorageService);
+		var dbService = Components.classes["@mozilla.org/storage/service;1"]
+				.getService(Components.interfaces.mozIStorageService);
 
 		var dbConnection;
 
