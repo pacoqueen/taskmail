@@ -9,7 +9,7 @@ TASKMAIL = {
 		this.folderURI = aFolderURI;
 		this.title = aTitle;
 		this.desc = aDesc;
-		// State (code de l'état).
+		// State (code de l'Ã©tat).
 		this.state = aState;
 		this.priority = aPriority;
 	}
@@ -28,10 +28,10 @@ TASKMAIL.DB = {
 		try {
 			// recherche par mail (donc non recurssive)
 			if (mailId != null) {
-				sql = "select tasks.rowid, title, state, desc, priority from tasks, links where tasks.folderURI = links.folderURI and tasks.rowid = links.taskId and links.folderURI = :folderURI and links.mailId = :mailId ";
+				sql = "select tasks.rowid, title, state, desc, priority from tasks, links where tasks.folderURI = links.folderURI and tasks.rowid = links.taskId and links.folderURI = :folderURI and links.messageId = :mailId ";
 				// quelque soit le type de recherche (email ou folder) on
 				// applique le
-				// filtre d'état
+				// filtre d'Ã©tat
 				if (stateFilter != "") {
 					var stateExp = "";
 					for (var i = 0; i < stateFilter.length; i++) {
@@ -50,7 +50,7 @@ TASKMAIL.DB = {
 				sql = "select tasks.rowid, title, state, desc, priority from tasks where folderURI = :folderURI ";
 				// quelque soit le type de recherche (email ou folder) on
 				// applique le
-				// filtre d'état
+				// filtre d'Ã©tat
 				if (stateFilter != "") {
 					var stateExp = "";
 					for (var i = 0; i < stateFilter.length; i++) {
@@ -92,10 +92,10 @@ TASKMAIL.DB = {
 		try {
 			// recherche par mail (donc non recurssive)
 			if (mailId != null) {
-				sql = "select count(*) from tasks, links where tasks.folderURI = links.folderURI and tasks.rowid = links.taskId and links.folderURI = :folderURI and links.mailId = :mailId";
+				sql = "select count(*) from tasks, links where tasks.folderURI = links.folderURI and tasks.rowid = links.taskId and links.folderURI = :folderURI and links.messageId = :mailId";
 				// quelque soit le type de recherche (email ou folder) on
 				// applique le
-				// filtre d'état
+				// filtre d'Ã©tat
 				if (stateFilter != "") {
 					var stateExp = "";
 					for (var i = 0; i < stateFilter.length; i++) {
@@ -114,7 +114,7 @@ TASKMAIL.DB = {
 				sql = "select count(*) from tasks where folderURI = :folderURI";
 				// quelque soit le type de recherche (email ou folder) on
 				// applique le
-				// filtre d'état
+				// filtre d'Ã©tat
 				if (stateFilter != "") {
 					var stateExp = "";
 					for (var i = 0; i < stateFilter.length; i++) {
@@ -262,7 +262,7 @@ TASKMAIL.DB = {
 		
    	var messageId = msg.folder.GetMessageHeader(msg.messageKey).messageId;
    	var stat = TASKMAIL.DB.dbConnection
-				.createStatement("insert into links (folderURI, mailId, taskId) values (:folderURI, :mailId, :taskId)");
+				.createStatement("insert into links (folderURI, messageId, taskId) values (:folderURI, :mailId, :taskId)");
 		stat.bindStringParameter(0, msg.folder.URI);
 		stat.bindStringParameter(1, messageId);
 		stat.bindInt32Parameter(2, taskId);
@@ -281,7 +281,7 @@ TASKMAIL.DB = {
 	unlinkTaskSQLite : function(msg, taskId) {
    	var messageId = msg.folder.GetMessageHeader(msg.messageKey).messageId; 
    	var stat = this.dbConnection
-				.createStatement("delete from links where folderURI = :folderURI and mailId = :MAIL_ID and taskId = :TASK_ID");
+				.createStatement("delete from links where folderURI = :folderURI and messageId = :MAIL_ID and taskId = :TASK_ID");
 		stat.bindStringParameter(0, msg.folder.URI);
 		stat.bindStringParameter(1, messageId);
 		stat.bindInt32Parameter(2, taskId);
@@ -294,12 +294,13 @@ TASKMAIL.DB = {
 	getLinkSQLite : function(folder) {
 		consoleService.logStringMessage("getLinkSQLite,folderName="+folder.URI);
 		try {
-			var sql = "select links.folderURI, mailId, taskId from links, tasks where links.taskId = tasks.rowid and tasks.folderURI = :folderURI";
+			var sql = "select links.folderURI, messageId, taskId from links, tasks where links.taskId = tasks.rowid and tasks.folderURI = :folderURI";
 			var stat = this.dbConnection.createStatement(sql);
 			var folderURI = folder.URI;
 			stat.bindStringParameter(0, folderURI);
 			while (stat.executeStep()) {
   			var messageId =  stat.getString(1);
+  			consoleService.logStringMessage("messageId=" + stat.getString(0));
   			consoleService.logStringMessage("messageId=" + messageId);
 				var message = folder.msgDatabase.getMsgHdrForMessageID(messageId);
   			var messageKey = message.messageKey;
@@ -347,8 +348,8 @@ TASKMAIL.DB = {
 	},
 
 	/**
-	 * Efface un folder cad les taches et liens associés. n'efface pas les sous
-	 * folder car l'event folderDeleted est appelé plusieurs fois
+	 * Efface un folder cad les taches et liens associÃ©s. n'efface pas les sous
+	 * folder car l'event folderDeleted est appelÃ© plusieurs fois
 	 */
 	deleteFolderSQLite : function(aFolder) {
 		try {
@@ -416,8 +417,8 @@ TASKMAIL.DB = {
 	msgsDeletedSQLite : function(aMsgs) {
 		try {
 			this.dbConnection.beginTransaction();
-			var TASK_SQL = "delete from tasks where rowid in (select taskId from links where folderURI = :URI and mailId = :ID)";
-			var LINK_SQL = "delete from links where folderURI = :URI and mailId = :ID";
+			var TASK_SQL = "delete from tasks where rowid in (select taskId from links where folderURI = :URI and messageId = :ID)";
+			var LINK_SQL = "delete from links where folderURI = :URI and messageId = :ID";
 			var msgEnum = aMsgs.enumerate();
 			while (msgEnum.hasMoreElements()) {
 				var msg = msgEnum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
@@ -444,7 +445,7 @@ TASKMAIL.DB = {
 	},
 
 	/**
-	 * DÃ©placement des mails et des taches liÃ©es.
+	 * DÃƒÂ©placement des mails et des taches liÃƒÂ©es.
 	 * @param aSrcMsgs
 	 *            An array of the message headers in the source folder
 	 * @param aDestFolder
@@ -455,8 +456,8 @@ TASKMAIL.DB = {
 	 */
 	msgsMoveCopyCompletedSQLite : function(aSrcMsgs, aDestFolder, aDestMsgs) {
 		try {
-			var TASK_SQL = "update tasks set folderURI = :NEW_URI where rowid in (select taskId from links where folderURI = :OLD_URI and mailId = :OLD_MSG_KEY)";
-			var LINK_SQL = "update links set folderURI = :NEW_URI where folderURI = :OLD_URI and mailId = :OLD_MSG_KEY";
+			var TASK_SQL = "update tasks set folderURI = :NEW_URI where rowid in (select taskId from links where folderURI = :OLD_URI and messageId = :OLD_MSG_KEY)";
+			var LINK_SQL = "update links set folderURI = :NEW_URI where folderURI = :OLD_URI and messageId = :OLD_MSG_KEY";
 
 			var srcEnum = aSrcMsgs.enumerate();
 			var destEnum = aDestMsgs.enumerate();
@@ -499,7 +500,7 @@ TASKMAIL.DB = {
 	 * @param aDestFolder
 	 *            A destination folder
 	 * 
-	 * @todo Pas encore de gestion du déplacement de tache avec des liens. Gérer
+	 * @todo Pas encore de gestion du dÃ©placement de tache avec des liens. GÃ©rer
 	 *       plusieurs taches
 	 */
 	taskMoveSQLite : function(aTaskID, aDestFolder) {
@@ -526,7 +527,7 @@ TASKMAIL.DB = {
 	dbSchema : {
 		tables : {
 			tasks : "folderURI TEXT, title TEXT NOT NULL, state TEXT, desc TEXT, priority INTEGER",
-			links : "folderURI TEXT, mailId TEXT, taskId NUMBER",
+			links : "folderURI TEXT, messageId TEXT, taskId NUMBER",
 			model_version : "version NUMERIC"
 		}
 	},
@@ -582,7 +583,7 @@ TASKMAIL.DB = {
 				dbFile.append("tasks.sqlite");
 				alert("Upgrade of db model needed. A backup will be made of " + dbFile.path);
 				// Sauvegarde de la base.
-				dbFile.copyTo(null, "backup." + "tasks.sqlite" + "." + currentVersion);
+				dbFile.copyTo(null, "tasks.sqlite" + ".backup." + currentVersion);
 			}
 			if (currentVersion < 4) {
 				this.dbUpgrade4();
@@ -625,31 +626,53 @@ TASKMAIL.DB = {
 	},
 	
 	dbUpgrade6 : function() {
-		Application.console.log("update messageKey into messageId");
+		this.consoleService.logStringMessage("update messageKey into messageId");
+		var statAlter = this.dbConnection
+				.createStatement("alter table links add column messageId TEXT");
+		statAlter.execute();
 		var acctMgr = Components.classes["@mozilla.org/messenger/account-manager;1"]
                         .getService(Components.interfaces.nsIMsgAccountManager);
 		var accounts = acctMgr.accounts;
 		for (var i = 0; i < accounts.Count(); i++) {
 		  var account = accounts.QueryElementAt(i, Components.interfaces.nsIMsgAccount);
 		  var rootFolder = account.incomingServer.rootFolder; // nsIMsgFolder
-		  if (rootFolder.hasSubFolders) {
-		    var subFolders = rootFolder.subFolders; // nsIMsgFolder
+		  this.dbUpgrade6Folder(rootFolder);
+		}
+	},
+	
+	dbUpgrade6Folder : function(folder) {
+		this.consoleService.logStringMessage(folder.prettiestName);
+	  var stat = this.dbConnection
+			.createStatement("select mailId from links where folderURI = :FOLDER_URI");
+		stat.params.FOLDER_URI = folder.URI;
+	  while (stat.executeStep()) {
+	  	var messageKey =  stat.getInt64(0);
+	  	try {
+	  		var messageHdr = folder.GetMessageHeader(messageKey);
+	  		var messageId = messageHdr.messageId;
+//		  	this.consoleService.logStringMessage("key="+messageKey+"Id trouvé=" + messageId);
+		  	var statUpdate = this.dbConnection
+				.createStatement("update links set messageId = :id where folderURI = :folderURI and mailId = :key");
+				statUpdate.params.id = messageId;
+				statUpdate.params.folderURI = folder.URI;
+				statUpdate.params.key = messageKey;
+				statUpdate.execute();
+	  	} catch (err) {
+	  		this.consoleService.logStringMessage("messageKey introuvable, key=" + messageKey);
+	  		var statDelete = this.dbConnection
+				.createStatement("delete from links where folderURI = :FOLDER_URI and mailId = :MAIL_ID");
+				statDelete.params.FOLDER_URI = folder.URI;
+				statDelete.params.MAIL_ID = messageKey;
+				statDelete.execute();
+	  	}
+	  }
+		if (folder.hasSubFolders) {
+			var subFolders = folder.subFolders; // nsIMsgFolder
 		    while(subFolders.hasMoreElements()) {
-		      var folder = subFolders.getNext().QueryInterface(Components.interfaces.nsIMsgFolder);
-		      Application.console.log(folder.prettiestName);
-		      var messages = folder.messages;
-		      while(messages.hasMoreElements()) {
-		      	var message = messages.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
-		      	var stat = this.dbConnection
-						.createStatement("update links set mailId = :messageId where folderURI = :folderURI and mailId = :messageKey");
-						stat.bindStringParameter(0,message.messageId);
-						stat.bindStringParameter(1,message.folder.URI);
-						stat.bindStringParameter(2,message.messageKey);
-						stat.execute();
-		      }
+		      var subfolder = subFolders.getNext().QueryInterface(Components.interfaces.nsIMsgFolder);
+		      this.dbUpgrade6Folder(subfolder);
 		    }
-		  }
-}
+			}
 	},
 
 	_dbCreate : function(aDBService, aDBFile) {
