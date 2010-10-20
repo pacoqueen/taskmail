@@ -292,7 +292,7 @@ TASKMAIL.DB = {
 	 * remonte touts les liens de toutes les taches du folder fourni.
 	 */
 	getLinkSQLite : function(folder) {
-		consoleService.logStringMessage("getLinkSQLite,folderName="+folder.URI);
+		//consoleService.logStringMessage("getLinkSQLite,folderName="+folder.URI);
 		try {
 			var sql = "select links.folderURI, messageId, taskId from links, tasks where links.taskId = tasks.rowid and tasks.folderURI = :folderURI";
 			var stat = this.dbConnection.createStatement(sql);
@@ -300,11 +300,9 @@ TASKMAIL.DB = {
 			stat.bindStringParameter(0, folderURI);
 			while (stat.executeStep()) {
   			var messageId =  stat.getString(1);
-  			consoleService.logStringMessage("messageId=" + stat.getString(0));
-  			consoleService.logStringMessage("messageId=" + messageId);
-				var message = folder.msgDatabase.getMsgHdrForMessageID(messageId);
+  			var message = folder.msgDatabase.getMsgHdrForMessageID(messageId);
   			var messageKey = message.messageKey;
-				consoleService.logStringMessage("messageKey=" + messageKey);
+				//consoleService.logStringMessage("messageId=" + messageId + "messageKey=" + messageKey);
 				TASKMAIL.Link.addLink(folderURI,
 				                      messageKey,
 				                      stat.getInt32(2));
