@@ -628,6 +628,13 @@ TASKMAIL.UI = {
 						| notificationService.msgsMoveCopyCompleted
 						| notificationService.msgsDeleted);
 
+		// now register a compact listener on every mail folder
+  	var nsIFolderListener = Components.interfaces.nsIFolderListener;
+		Components.classes["@mozilla.org/messenger/services/session;1"]
+              .getService(Components.interfaces.nsIMsgMailSession)
+              .AddFolderListener(TASKMAIL.FolderCompactListener,
+                                 nsIFolderListener.event);
+
 		this.stringsBundle = document.getElementById("string-bundle");
 		
 		document.getElementById("folderTree").addEventListener("dragover", TASKMAIL.UIDrag.onOverFolder, false);
@@ -1289,6 +1296,29 @@ TASKMAIL.MailListener = {
 		}
 		return !stop;
 	}
+}
+
+// set up the folder listener to point to the above function
+if (!TASKMAIL.FolderCompactListener)
+	TASKMAIL.FolderCompactListener = {};
+TASKMAIL.FolderCompactListener = {
+  OnItemAdded: function(parent, item, viewString) {},
+  OnItemRemoved: function(parent, item, viewString) {},
+  OnItemPropertyChanged: function(parent, item, viewString) {},
+  OnItemIntPropertyChanged: function(aItem,aProperty,aOldValue,aNewValue) {},
+  OnItemBoolPropertyChanged: function(item, property, oldValue, newValue) {},
+  OnItemUnicharPropertyChanged: function(item, property, oldValue, newValue) {},
+  OnItemPropertyFlagChanged: function(item, property, oldFlag, newFlag) {},
+  OnItemEvent: function(item, event) {
+  	// sur le compactage d'au folder quelconque, on lance un refresh des taches 
+  	// car les messages ont pus changés.
+  	if (event.toString() == "CompactCompleted") {
+  		Application.console.log("compact completed on folder " + item.URI);
+  		TASKMAIL.UI.refreshTaskList();
+  	}
+  },
+  OnFolderLoaded: function(aFolder) {},
+  OnDeleteOrMoveMessagesCompleted: function( aFolder) {}
 }
 
 // besoin de passer par le load de la fenêtre sinon ça plante thunderbird
