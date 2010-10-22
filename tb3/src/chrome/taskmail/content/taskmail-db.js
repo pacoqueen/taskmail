@@ -4,9 +4,10 @@ if (!TASKMAIL.DB)
 	TASKMAIL.DB = {};
 
 TASKMAIL = {
-	Task : function(aId, aFolderURI, aTitle, aDesc, aState, aPriority) {
+	Task : function(aId, aFolderURI, aFolderName, aTitle, aDesc, aState, aPriority) {
 		this.id = aId;
 		this.folderURI = aFolderURI;
+		this.folderName = aFolderName;
 		this.title = aTitle;
 		this.desc = aDesc;
 		// State (code de l'Ã©tat).
@@ -71,7 +72,7 @@ TASKMAIL.DB = {
 				var desc  = stat.getString(3);
 				var prio  = stat.getInt32(4);
 
-				var task = new TASKMAIL.Task(id, folderURI, title, desc, state, prio);
+				var task = new TASKMAIL.Task(id, folderURI, folder.prettyName, title, desc, state, prio);
 				result.push(task);
 			}
 		} catch (err) {
@@ -159,7 +160,7 @@ TASKMAIL.DB = {
 				var state = stat.getString(2);
 				var desc = stat.getString(3);
 				var prio = stat.getInt32(4);
-				result = new TASKMAIL.Task(id, null, title, desc, state, prio);
+				result = new TASKMAIL.Task(id, null, null, title, desc, state, prio);
 			}
 		} catch (err) {
 			Components.utils.reportError("getTaskDetailSQLite " + err);
@@ -648,7 +649,7 @@ TASKMAIL.DB = {
 	  	try {
 	  		var messageHdr = folder.GetMessageHeader(messageKey);
 	  		var messageId = messageHdr.messageId;
-//		  	this.consoleService.logStringMessage("key="+messageKey+"Id trouvé=" + messageId);
+//		  	this.consoleService.logStringMessage("key="+messageKey+"Id trouvï¿½=" + messageId);
 		  	var statUpdate = this.dbConnection
 				.createStatement("update links set messageId = :id where folderURI = :folderURI and mailId = :key");
 				statUpdate.params.id = messageId;

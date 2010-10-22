@@ -37,7 +37,7 @@ TASKMAIL.UI = {
 
 	beginAddTask : function() {
 		// clean UI
-		this.fillTaskDetail(new TASKMAIL.Task(0, null, null, null, 1, 5));
+		this.fillTaskDetail(new TASKMAIL.Task(0, null, null, null, null, 1, 5));
 		var box = document.getElementById("addTask");
 		box.collapsed = false;
 		document.getElementById("taskTitle").focus();
@@ -75,7 +75,7 @@ TASKMAIL.UI = {
 
 		if (this.taskDetailPK == -1) {
 			TASKMAIL.DB.addTaskSQLite(new TASKMAIL.Task(idInput,
-					currentMsgFolder.URI, titleInput, desc, stateInput, prio));
+					currentMsgFolder.URI, currentMsgFolder.prettyName, titleInput, desc, stateInput, prio));
 			if (this.addWithLink) {
 				var taskId = TASKMAIL.DB.dbConnection.lastInsertRowID;
 				var selectedMessages = gFolderDisplay.selectedMessages;
@@ -84,7 +84,7 @@ TASKMAIL.UI = {
 				}
 			}
 		} else {
-			TASKMAIL.DB.updateTaskSQLite(new TASKMAIL.Task(idInput, null,
+			TASKMAIL.DB.updateTaskSQLite(new TASKMAIL.Task(idInput, null, null,
 					titleInput, desc, stateInput, prio));
 		}
 		this.refreshTaskList();
@@ -236,6 +236,9 @@ TASKMAIL.UI = {
 		cell.setAttribute('label', aTask.title);
 		row.appendChild(cell);
 
+		// place le nom du folder dans un tooltip de la ligne
+		row.setAttribute("tooltiptext",aTask.folderName);
+		
 		// le text du lien sera setté plus tard
 		var linkText = "";
 
@@ -477,7 +480,7 @@ TASKMAIL.UI = {
 		for (var i = 0; i < selectedTasks.length; i++) {
 			var folderURI = selectedTasks[i].getAttribute("folderURI");
 			var taskId = parseInt(selectedTasks[i].getAttribute("pk"));
-			var newTask = new TASKMAIL.Task(taskId, folderURI, null, null, null);
+			var newTask = new TASKMAIL.Task(taskId, folderURI, null, null, null, null);
 			result.push(newTask);
 		}
 		return result;
@@ -1345,7 +1348,7 @@ TASKMAIL.UIDrag= {
 		var uri = event.dataTransfer.getData("text/x-moz-message");
 		var folder = event.target.getAttribute("folderURI");
 		var taskId = event.target.getAttribute("pk");
-		var tasks = new Array(new TASKMAIL.Task(taskId, folder, null, null, null));
+		var tasks = new Array(new TASKMAIL.Task(taskId, folder, null, null, null, null));
 		TASKMAIL.UILink.linkTask("task", tasks);
 	},
 	
