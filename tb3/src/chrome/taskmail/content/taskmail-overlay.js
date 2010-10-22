@@ -32,6 +32,7 @@ TASKMAIL.UI = {
 		this.beginAddTask();
 		// addWithLink après pour overrider
 		this.addWithLink = true;
+		var box = document.getElementById("taskPane").collapsed = false;
 	},
 
 	beginAddTask : function() {
