@@ -268,12 +268,12 @@ TASKMAIL.UI = {
 		// consoleService.logStringMessage("refreshTaskList");
 		// le refresh du folder est lancé avant l'handler de la colonne des
 		// emails.
-		var selectedTasks = this.getSelectedTasksKeys();
-		this.emptyList();
-		this.getTaskList();
-		this.selectTasksByKeys(selectedTasks);
+		var selectedTasks = TASKMAIL.UI.getSelectedTasksKeys();
+		TASKMAIL.UI.emptyList();
+		TASKMAIL.UI.getTaskList();
+		TASKMAIL.UI.selectTasksByKeys(selectedTasks);
 		// la sauvegarde de l'élément courant n'est pas parfaite sur un changement de folder.
-		document.getElementById("taskList").currentIndex = this.getTaskIndexFromTaskID(selectedTasks)[0];
+		document.getElementById("taskList").currentIndex = TASKMAIL.UI.getTaskIndexFromTaskID(selectedTasks)[0];
 	},
 
 	refreshTaskLink : function() {
@@ -322,15 +322,16 @@ TASKMAIL.UI = {
 		if (viewFilter == 2) {
 			// recherche par mail
 			try {
-				var selectedMailKey = gDBView.keyForFirstSelectedMessage;
+				var mails = gFolderDisplay.selectedMessages;
+				var messageId = mails[0].messageId;
 				// consoleService.logStringMessage(selectedMailKey);
 				var stateFilter = this.getDBStateFilterString();
 				// il faut charger les liens avant les taches
 				TASKMAIL.DB.getLinkSQLite(currentMsgFolder);
-				temp.tasks = TASKMAIL.DB.getTaskListSQLite(selectedMailKey,
+				result.tasks = TASKMAIL.DB.getTaskListSQLite(messageId,
 						currentMsgFolder, stateFilter);
 				result.invisibleTasksCount += TASKMAIL.DB.getInvisibleTaskCountSQLite(
-						selectedMailKey, currentMsgFolder, stateFilter);
+						messageId, currentMsgFolder, stateFilter);
 			} catch (err) {
 				// Components.utils.reportError("dbUpgrade " + err);
 			}
@@ -565,20 +566,17 @@ TASKMAIL.UI = {
 	viewFilterChange : function() {
 		var viewFilter = document.getElementById("viewFilter").selectedItem.value;
 		if (viewFilter == 2) {
-			// recherche par mail
-			// il faut supprimer le refreshTaskLink et le remettre pour qui
-			// soit
-			// en
-			// 2°
+			// recherche par mail, il faut supprimer le refreshTaskLink et le 
+			// remettre pour qui soit en 2°
 			document.getElementById("threadTree").removeEventListener("select",
-					this.refreshTaskLink, false);
+					TASKMAIL.UI.refreshTaskLink, false);
 			document.getElementById("threadTree").addEventListener("select",
-					this.refreshTaskList, false);
+					TASKMAIL.UI.refreshTaskList, false);
 			document.getElementById("threadTree").addEventListener("select",
-					this.refreshTaskLink, false);
+					TASKMAIL.UI.refreshTaskLink, false);
 		} else {
 			document.getElementById("threadTree").removeEventListener("select",
-					this.refreshTaskList, false);
+					TASKMAIL.UI.refreshTaskList, false);
 		}
 		this.refreshTaskList();
 	},
@@ -610,7 +608,7 @@ TASKMAIL.UI = {
 				}, false);
 		document.getElementById("threadTree").addEventListener("select",
 				function(e) {
-					TASKMAIL.UI.refreshTaskList();
+					TASKMAIL.UI.refreshTaskLink();
 				}, false);
 		document.getElementById("taskList").addEventListener("select",
 				function(e) {
