@@ -257,7 +257,7 @@ TASKMAIL.UI = {
 		var ligne = stateList.firstChild;
 		for (var i = 0; i < ligne.childNodes.length; i++) {
 			if (ligne.childNodes[i].value == aTask.state) {
-				stateList.selectedIndex = aTask.state;
+				stateList.selectedIndex = i;
 				break;
 			}
 		}
@@ -858,6 +858,12 @@ TASKMAIL.UI = {
   decrementPriority : function (event, priority) {
   	var tasks = this.getSelectedTasks();
   	TASKMAIL.DB.decrementTaskProritySQLite(tasks);
+		this.refreshTaskList();
+  },
+  
+  updateTaskStateDone : function (event) {
+  	var taskKeys = this.getSelectedTasksKeys();
+  	TASKMAIL.DB.updateStateTaskSQLite(taskKeys, 4);
 		this.refreshTaskList();
   }
 }

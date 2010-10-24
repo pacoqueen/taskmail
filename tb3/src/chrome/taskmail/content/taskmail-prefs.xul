@@ -18,11 +18,11 @@
       <caption label="&states.caption;"/>
 	    <label control="stateList" value="&prefs.state.intro;"/>
     	<hbox>
-	      <listbox id="stateList" flex="1" rows="10" ondblclick="TASKMAIL.PREFS.editState();"></listbox>
+	      <listbox id="stateList" flex="1" rows="10" ondblclick="TASKMAIL.PREFS.editState();" onselect="TASKMAIL.PREFS.selectState();"></listbox>
 	      <vbox>
 	        <button label="&addState;" accesskey="&addState.key;" oncommand="TASKMAIL.PREFS.addState();"/>
 	        <button label="&editState;" accesskey="&editState.key;" oncommand="TASKMAIL.PREFS.editState();"/>
-	        <button label="&removeState;" accesskey="&removeState.key;" oncommand="TASKMAIL.PREFS.deleteState();"/>
+	        <button label="&removeState;" accesskey="&removeState.key;" oncommand="TASKMAIL.PREFS.deleteState();" id="deleteStateButton"/>
 	        <separator orient="horizontal"/>
 	        <button label="&upState;" accesskey="&upState.key;" oncommand="TASKMAIL.PREFS.upState();"/>
 	        <button label="&downState;" accesskey="&downState.key;" oncommand="TASKMAIL.PREFS.downState();"/>

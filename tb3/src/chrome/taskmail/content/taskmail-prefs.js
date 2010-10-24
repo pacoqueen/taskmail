@@ -126,10 +126,22 @@ TASKMAIL.PREFS = {
 	deleteState : function () {
 		var index = this.mStatesListBox.selectedIndex; 
 	  if (index > -1) {
-	    this.mStatesListBox.removeChild(this.mStatesListBox.selectedItem);
-	    this.states.splice(index, 1);
-	    this._saveStatePref();
+	  	// empeche de supprimer l'état 'fait' (4).
+	  	if (this.states[index].id ==  4) {
+	  		var message = this._stringsBundle.getString("canDelete"); 
+				alert(message);
+	  	} else {
+		    this.mStatesListBox.removeChild(this.mStatesListBox.selectedItem);
+		    this.states.splice(index, 1);
+		    this._saveStatePref();
+	  	}
 	  }
+  },
+  
+  selectState : function () {
+  	// on grise le bouton supprimer l'état si l'état en cours est 'fait' (4).
+  	var index = this.mStatesListBox.selectedIndex;
+  	var button = document.getElementById("deleteStateButton").disabled = (this.states[index].id == 4);
   },
     
   upState : function () {

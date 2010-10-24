@@ -54,6 +54,7 @@
 				<menuitem label="&update;"       accesskey="U" oncommand="TASKMAIL.UI.beginUpdateTask()"/>
 				<menuitem label="&delete;"       accesskey="D" oncommand="TASKMAIL.UI.removeTask()" id="row-menu.delete"/>
 				<menuseparator/>
+				<menuitem label="&markDone;"     accesskey="F" oncommand="TASKMAIL.UI.updateTaskStateDone(event, 4);"/>
 				<menu label="&changePriority;" accesskey="P">
 					<menupopup>
 						<menuitem label="&incrementPriority;" accesskey="I" oncommand="TASKMAIL.UI.incrementPriority(event);" key="increment-task"/>
