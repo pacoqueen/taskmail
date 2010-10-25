@@ -192,6 +192,13 @@ TASKMAIL.UI = {
 		}
 	},
 	
+	adjustTaskContextMenu : function() {
+		var menuitem = document.getElementById('row-menu.markDone');
+		var regExp = new RegExp("{s}");
+		var doneLabel = TASKMAIL.UI.states[4].label;
+		menuitem.label = menuitem.label.replace(regExp, doneLabel);
+	},
+	
 	fillTaskList : function(aTask) {
 		var row = document.createElement('listitem');
 
@@ -619,6 +626,9 @@ TASKMAIL.UI = {
 				function(e) {
 					TASKMAIL.UI.adjustContextMenu();
 				}, false);
+				
+		document.getElementById("row-menu").addEventListener("popupshowing",
+				TASKMAIL.UI.adjustTaskContextMenu, false);
 
 		var notificationService = Components.classes["@mozilla.org/messenger/msgnotificationservice;1"]
 				.getService(Components.interfaces.nsIMsgFolderNotificationService);

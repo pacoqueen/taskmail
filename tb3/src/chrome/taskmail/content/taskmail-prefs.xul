@@ -29,6 +29,7 @@
 	      </vbox>
 	    </hbox>
 	    <label value="&prefs.state.warning;"/>
+	    <label value="&prefs.state.done;"/>
     </groupbox>
   </prefpane>
   

@@ -574,6 +574,8 @@ TASKMAIL.DB = {
 		var dirService = Components.classes["@mozilla.org/file/directory_service;1"]
 				.getService(Components.interfaces.nsIProperties);
 
+		// ne pas mettre la base dans le répertoire de l'extension sinon elle serait perdue
+		// durant un upgrade.
 		var dbFile = dirService.get("ProfD", Components.interfaces.nsIFile);
 		dbFile.append("tasks.sqlite");
 

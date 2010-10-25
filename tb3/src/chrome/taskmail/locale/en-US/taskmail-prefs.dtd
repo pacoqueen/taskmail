@@ -12,6 +12,7 @@
 <!ENTITY prefs.pane.state     "States">
 <!ENTITY prefs.state.intro    "States may be used to oragnise and filter tasks.">
 <!ENTITY prefs.state.warning  "Warning, do not delete an used state.">
+<!ENTITY prefs.state.done     "The state Done could be renmmed but must retain its meaning.">
 <!ENTITY addState             "Add">
 <!ENTITY editState            "Edit">
 <!ENTITY removeState          "Delete">

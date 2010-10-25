@@ -12,7 +12,7 @@
 <!ENTITY addWithLink "Add with Link">
 <!ENTITY update      "Update">
 <!ENTITY delete      "Delete">
-<!ENTITY markDone    "Mark as done">
+<!ENTITY markDone    "Mark as {s}">
 <!ENTITY changePriority      "Change Priority">
 <!ENTITY incrementPriority      "Increment">
 <!ENTITY decrementPriority      "Decrement">

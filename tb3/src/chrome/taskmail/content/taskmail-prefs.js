@@ -119,6 +119,7 @@ TASKMAIL.PREFS = {
 	  		this.mStatesListBox.replaceChild(newListItem, item);
 				this.states[index].label = input.value;
 				this._saveStatePref();
+				this.mStatesListBox.selectedIndex = index;
 	     }
     }
    },
@@ -141,7 +142,9 @@ TASKMAIL.PREFS = {
   selectState : function () {
   	// on grise le bouton supprimer l'état si l'état en cours est 'fait' (4).
   	var index = this.mStatesListBox.selectedIndex;
-  	var button = document.getElementById("deleteStateButton").disabled = (this.states[index].id == 4);
+  	if (index >= 0) {
+	  	var button = document.getElementById("deleteStateButton").disabled = (this.states[index].id == 4);
+  	}
   },
     
   upState : function () {

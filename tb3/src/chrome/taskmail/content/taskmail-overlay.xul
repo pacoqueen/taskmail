@@ -24,8 +24,9 @@
 		<key modifiers="shift"         key="L"             oncommand="TASKMAIL.UILink.showLinked(event);" id="show-linked"/>
 		<key modifiers="shift"         key="N"             oncommand="TASKMAIL.UI.beginAddTaskWithLink();" id="add-linked"/>
 		<key                           keycode="VK_F9"     oncommand="TASKMAIL.UI.toggleTaskPane();"/>
-		<key modifiers="control alt"       keycode="VK_PAGE_UP"  oncommand="TASKMAIL.UI.incrementPriority();" id="increment-task"/>
-		<key modifiers="control alt"       keycode="VK_PAGE_DOWN"     oncommand="TASKMAIL.UI.decrementPriority();" id="decrement-task"/>
+		<key modifiers="control alt"   keycode="VK_PAGE_UP"    oncommand="TASKMAIL.UI.incrementPriority();" id="increment-task"/>
+		<key modifiers="control alt"   keycode="VK_PAGE_DOWN"  oncommand="TASKMAIL.UI.decrementPriority();" id="decrement-task"/>
+		<key modifiers="shift"         key="D"                 oncommand="TASKMAIL.UI.updateTaskStateDone(event, 4);" id="mark-done"/>
 	</keyset>
 
 	<!-- ajoute une entrée au menu contextuel de la liste des mails -->
@@ -54,7 +55,7 @@
 				<menuitem label="&update;"       accesskey="U" oncommand="TASKMAIL.UI.beginUpdateTask()"/>
 				<menuitem label="&delete;"       accesskey="D" oncommand="TASKMAIL.UI.removeTask()" id="row-menu.delete"/>
 				<menuseparator/>
-				<menuitem label="&markDone;"     accesskey="F" oncommand="TASKMAIL.UI.updateTaskStateDone(event, 4);"/>
+				<menuitem label="&markDone;"     accesskey="M" oncommand="TASKMAIL.UI.updateTaskStateDone(event, 4);" key="mark-done" id="row-menu.markDone"/>
 				<menu label="&changePriority;" accesskey="P">
 					<menupopup>
 						<menuitem label="&incrementPriority;" accesskey="I" oncommand="TASKMAIL.UI.incrementPriority(event);" key="increment-task"/>
