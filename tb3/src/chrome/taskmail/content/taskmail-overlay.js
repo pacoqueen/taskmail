@@ -269,6 +269,7 @@ TASKMAIL.UI = {
 			}
 		}
 		document.getElementById("taskPriority").selectedIndex = aTask.priority;
+		document.getElementById("taskId").value = aTask.id;
 	},
 
 	refreshTaskList : function() {

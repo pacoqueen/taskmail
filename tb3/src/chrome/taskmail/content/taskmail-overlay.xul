@@ -129,12 +129,14 @@
 							<textbox id="taskDesc" multiline="true" rows="5"/>
 						</row>			
 						<row>		
-							<label value="&state; :"/>
-							<hbox>
+							<label value="&state; :"/>  
+              <hbox>
   							<menulist  id="taskState" flex="2">
   								<menupopup>
   								</menupopup>
   							</menulist>
+  							<label value="Id :" class="minorLabel"/>
+  							<label id="taskId" value="" class="minorLabel"/>
   							<spacer flex="2"/>
   							<label value="Proirity :"/>
   							<menulist  id="taskPriority" flex="1">
@@ -199,7 +201,7 @@
 		<toolbarbutton id="qfb-task" type="checkbox"
                          crop="none" minwidth="16"
                          label="tache"
-                         tooltiptext="tache tooltip"
+                         tooltiptext="&qfb-taskTTP;"
                          />
 	</hbox>	
 	

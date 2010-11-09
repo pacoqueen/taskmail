@@ -46,3 +46,4 @@
 <!ENTITY header.subfolder    "Does task is outside the current subfolder">
 <!ENTITY colHeadLink         "Task link">
 <!ENTITY composeReport       "Compose report">
+<!ENTITY qfb-taskTTP         "Affiche seulement les messages ayant des tâches liées">
