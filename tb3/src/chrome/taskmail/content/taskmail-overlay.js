@@ -480,6 +480,7 @@ TASKMAIL.UI = {
 
 	/**
 	 * return array of selected task id.
+	 * @return [Task]
 	 */
 	getSelectedTasks : function() {
 		var listBox = document.getElementById("taskList");
@@ -1147,6 +1148,7 @@ TASKMAIL.Link = {
 
 	/**
 	 * Détermine les clé de mail correspondant à la tache spécifiée.
+	 * @return [int]
 	 */
 	getMailKeysFromTaskID : function(taskID) {
 		var result = null;

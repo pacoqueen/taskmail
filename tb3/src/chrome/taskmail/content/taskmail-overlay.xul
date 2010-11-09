@@ -194,7 +194,16 @@
 	 <statusbarpanel id="statusbar.tasks"></statusbarpanel>
 	</statusbar>
 	
-	<!--script type='application/x-javascript'  src='chrome://taskmail/content/taskmail-test.js'/>
+	<script type='application/x-javascript'  src="chrome://taskmail/content/taskmail-quickFilter.js"/>
+	<hbox id="quick-filter-bar-collapsible-buttons">
+		<toolbarbutton id="qfb-task" type="checkbox"
+                         crop="none" minwidth="16"
+                         label="tache"
+                         tooltiptext="tache tooltip"
+                         />
+	</hbox>	
+	
+	<script type='application/x-javascript'  src='chrome://taskmail/content/taskmail-test.js'/>
 	<menubar id="mail-menubar">
 		<menu id="TaskMailMenu" label="Tasks and mails">
 			<menupopup>
@@ -214,5 +223,5 @@
 				<menuitem label="reprise" oncommand="TASKMAIL.DB.dbUpgrade6();"/>
 			</menupopup>				
 		</menu>			
-	</menubar-->
+	</menubar>
 </overlay>
