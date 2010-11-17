@@ -22,7 +22,7 @@ TASKMAIL.DB = {
 			.getService(Components.interfaces.nsIConsoleService),
 
 	getTaskListSQLite : function(mailId, folder, stateFilter) {
-		this.consoleService.logStringMessage("getTaskListSQLite");
+//		this.consoleService.logStringMessage("getTaskListSQLite");
 		var sql = "";
 		var stat;
 		var folderURI = folder.URI;
@@ -83,7 +83,7 @@ TASKMAIL.DB = {
 	},
 	
 	getInvisibleTaskCountSQLite : function(mailId, folder, stateFilterVisible) {
-		this.consoleService.logStringMessage("getInvisibleTaskCountSQLite");
+//		this.consoleService.logStringMessage("getInvisibleTaskCountSQLite");
 		var sql = "";
 		var stat;
 		var folderURI = folder.URI;
@@ -325,7 +325,7 @@ TASKMAIL.DB = {
 	 * remonte touts les liens de toutes les taches du folder fourni.
 	 */
 	getLinkSQLite : function(folder) {
-		this.consoleService.logStringMessage("getLinkSQLite,folderName="+folder.URI);
+//		this.consoleService.logStringMessage("getLinkSQLite,folderName="+folder.URI);
 		try {
 			var sql = "select links.folderURI, messageId, taskId from links, tasks where links.taskId = tasks.rowid and tasks.folderURI = :folderURI";
 			var stat = this.dbConnection.createStatement(sql);

@@ -203,6 +203,11 @@
                          label="tache"
                          tooltiptext="&qfb-taskTTP;"
                          />
+    <toolbarbutton id="qfb-task-linked" style="visibility: hidden" type="checkbox"
+                         crop="none" minwidth="16"
+                         label="tache liée"
+                         tooltiptext="tache liée"
+                         oncommand="testSelect();"/>
 	</hbox>	
 	
 	<script type='application/x-javascript'  src='chrome://taskmail/content/taskmail-test.js'/>
@@ -223,6 +228,7 @@
 				<menuitem label="gloda" oncommand="testGloda();"/>
 				<menuitem label="getMessageIDFromKey goi was here" oncommand="testGetMsgID();"/>
 				<menuitem label="reprise" oncommand="TASKMAIL.DB.dbUpgrade6();"/>
+				<menuitem label="qfb" oncommand="QuickFilterBarMuxer.updateSearch();"/>
 			</menupopup>				
 		</menu>			
 	</menubar>

@@ -115,8 +115,8 @@ function testOpenTemplate2 () {
 }
 
 function testOpenTemplate () {
-	let msgFolder = gFolderDisplay ? GetFirstSelectedMsgFolder() : null;
-	let msgUris = gFolderDisplay ? gFolderDisplay.selectedMessageUris : null;
+	var msgFolder = gFolderDisplay ? GetFirstSelectedMsgFolder() : null;
+	var msgUris = gFolderDisplay ? gFolderDisplay.selectedMessageUris : null;
 //	let msgUris = "mailbox-message://gorsini@pop.free.fr/Templates#39735";
 
 	ComposeMessage(Components.interfaces.nsIMsgCompType.Template,
@@ -172,7 +172,7 @@ function testGetMsgID() {
 }
 
 
-let aListener = { 
+var aListener = { 
   /* called when new items are returned by the database query or freshly indexed */  
   onItemsAdded: function myListener_onItemsAdded(aItems, aCollection) {  
   },  
@@ -204,21 +204,21 @@ let aListener = {
   }
 }
 
-function testGloda () {
-	Components.utils.import("resource://app/modules/gloda/public.js");
-	//var aMsrHdr = gFolderDisplay.selectedMessages[0];
-	//consoleService.logStringMessage("gloda:messageKey="+aMsrHdr.messageKey+",messageId="+aMsrHdr.messageId);
-	//var collection = Gloda.getMessageCollectionForHeader(aMsrHdr, aListener, null);
-	
-	var aFolder = GetSelectedMsgFolders()[0];
-	var aKey = gFolderDisplay.selectedMessages[0].messageKey;
-	let query = Gloda.newQuery(Gloda.NOUN_MESSAGE);
-  query.folder(aFolder).messageKey(aKey);
-  consoleService.logStringMessage("recherche par key " + aFolder.URI+","+aKey);
-  var collection1 = query.getCollection(aListener, null);
-  
-//  let query2 = Gloda.newQuery(Gloda.NOUN_MESSAGE);
-//  query2.id(36);
-//  consoleService.logStringMessage("recherche par id 36");
-//  var collection2 = query2.getCollection(aListener, null);
-}
+//function testGloda () {
+//	Components.utils.import("resource://app/modules/gloda/public.js");
+//	//var aMsrHdr = gFolderDisplay.selectedMessages[0];
+//	//consoleService.logStringMessage("gloda:messageKey="+aMsrHdr.messageKey+",messageId="+aMsrHdr.messageId);
+//	//var collection = Gloda.getMessageCollectionForHeader(aMsrHdr, aListener, null);
+//	
+//	var aFolder = GetSelectedMsgFolders()[0];
+//	var aKey = gFolderDisplay.selectedMessages[0].messageKey;
+//	var query = Gloda.newQuery(Gloda.NOUN_MESSAGE);
+//  query.folder(aFolder).messageKey(aKey);
+//  consoleService.logStringMessage("recherche par key " + aFolder.URI+","+aKey);
+//  var collection1 = query.getCollection(aListener, null);
+//  
+////  let query2 = Gloda.newQuery(Gloda.NOUN_MESSAGE);
+////  query2.id(36);
+////  consoleService.logStringMessage("recherche par id 36");
+////  var collection2 = query2.getCollection(aListener, null);
+//}
