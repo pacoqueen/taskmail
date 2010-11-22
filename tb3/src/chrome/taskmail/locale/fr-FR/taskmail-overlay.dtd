@@ -46,4 +46,9 @@
 <!ENTITY header.subfolder    "La tâche est dans le folder courant">
 <!ENTITY colHeadLink         "Tâche Liée">
 <!ENTITY composeReport       "Compose le rapport">
-<!ENTITY qfb-taskTTP         "Affiche seulement les messages ayant des tâches liées">
+<!ENTITY qfb-task            "Tâche">
+<!ENTITY qfb-taskTTP         "Afficher seulement les messages ayant des tâches liées.">
+<!ENTITY qfb-task-link       "Tâche courante">
+<!ENTITY qfb-task-linkTTP    "Afficher seulement les messages liés aux tâches sélectionnées.">
+<!ENTITY qfb-task-thread     "Tâches avec discussions">
+<!ENTITY qfb-task-threadTTP  "Afficher les messages ou les discussions.">

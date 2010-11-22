@@ -200,14 +200,15 @@
 	<hbox id="quick-filter-bar-collapsible-buttons">
 		<toolbarbutton id="qfb-task" type="checkbox"
                          crop="none" minwidth="16"
-                         label="tache"
-                         tooltiptext="&qfb-taskTTP;"
-                         />
+                         label="&qfb-task;" tooltiptext="&qfb-taskTTP;"/>
     <toolbarbutton id="qfb-task-linked" style="visibility: hidden" type="checkbox"
                          crop="none" minwidth="16"
-                         label="tache liée"
-                         tooltiptext="tache liée"
-                         oncommand="testSelect();"/>
+                         label="&qfb-task-link;" tooltiptext="&qfb-task-linkTTP;" 
+                         oncommand="TASKMAIL.QFB.onCommandSubFilter();"/>
+     <toolbarbutton id="qfb-task-thread" style="visibility: hidden" type="checkbox"
+                         crop="none" minwidth="16"
+                         label="&qfb-task-thread;" tooltiptext="&qfb-task-threadTTP;"
+                         oncommand="TASKMAIL.QFB.onCommandSubFilter();"/>
 	</hbox>	
 	
 	<script type='application/x-javascript'  src='chrome://taskmail/content/taskmail-test.js'/>

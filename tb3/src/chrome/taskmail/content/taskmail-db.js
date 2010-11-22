@@ -335,9 +335,11 @@ TASKMAIL.DB = {
   			var messageId =  stat.getString(1);
   			var message = folder.msgDatabase.getMsgHdrForMessageID(messageId);
   			var messageKey = message.messageKey;
+  			var threadKey = message.threadId;
 				//consoleService.logStringMessage("messageId=" + messageId + "messageKey=" + messageKey);
 				TASKMAIL.Link.addLink(folderURI,
 				                      messageKey,
+				                      threadKey,
 				                      stat.getInt32(2));
 			}
 		} catch (err) {

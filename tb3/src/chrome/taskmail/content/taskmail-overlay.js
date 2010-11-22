@@ -1112,10 +1112,11 @@ if (!TASKMAIL.Link)
 	TASKMAIL.Link = {};
 TASKMAIL.Link = {
 
-	addLink : function(aFolderURI, aMailKey, aTaskId) {
+	addLink : function(aFolderURI, aMailKey, aThreadKey, aTaskId) {
 		var l = this.nbLinks;
 		this.folderURILinks[l] = aFolderURI;
 		this.mailKeysLinks[l] = aMailKey;
+		this.threadKeysLinks[l] = aThreadKey;
 		this.taskIdLinks[l] = aTaskId;
 		this.nbLinks++;
 	},
@@ -1233,9 +1234,56 @@ TASKMAIL.Link = {
 				: 0;
 		return result;
 	},
+	
+	/**
+	 * is the specified message has a link with a task ?
+	 */
+	isMessageLinked : function (aMessageKey) {
+		return this.mailKeysLinks.indexOf(aMessageKey) == -1 ? false : true;
+	},
+
+	/**
+	 * is the specified message as a link with the specified task ?
+	 */
+	isMessageLinkedWith : function (aMessageKey, aTaskId) {
+		var result = false;
+		for(var i=0; i<this.taskIdLinks.length; i++) {
+			if (this.taskIdLinks[i] == aTaskId) {
+				if (this.mailKeysLinks[i] == aMessageKey) {
+					result = true;
+					break;
+				}
+			}
+		}
+		return result;
+	},
+
+	/**
+	 * is the specified thread has a link with a task ?
+	 */
+	isThreadLinked : function (aThreadKey) {
+		return this.threadKeysLinks.indexOf(aThreadKey) == -1 ? false : true;
+	},
+
+	/**
+	 * is the specified thread has a link with specified task ?
+	 */
+	isThreadLinkedWith : function (aThreadKey, aTaskId) {
+		var result = false;
+		for(var i=0; i<this.taskIdLinks.length; i++) {
+			if (this.taskIdLinks[i] == aTaskId) {
+				if (this.threadKeysLinks[i] == aThreadKey) {
+					result = true;
+					break;
+				}
+			}
+		}
+		return result;
+	},
 
 	folderURILinks : new Array(),
 	mailKeysLinks : new Array(),
+	threadKeysLinks : new Array(),
 	taskIdLinks : new Array(),
 	nbLinks : 0
 

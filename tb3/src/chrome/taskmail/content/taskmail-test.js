@@ -158,7 +158,8 @@ function testListSelection () {
 function testMessageKey() {
 	var temp = gFolderDisplay.selectedMessages;
 	for(var i=0; i<temp.length; i++) {
-		consoleService.logStringMessage(temp[i].messageKey + "," + temp[i].messageId);
+		consoleService.logStringMessage(temp[i].messageKey + "," + temp[i].messageId + "," + temp[i].threadId
+		 + "," + temp[i].threadParent);
 	}	
 	//messageId reste constant après la compression de folders, après le déplacement de folder.
 	//Est-ce que messageId est unique. Surement.
@@ -170,7 +171,6 @@ function testGetMsgID() {
 	var messageHdr = folder.GetMessageHeader(messageKey);
 	consoleService.logStringMessage("messageID=" + messageHdr.messageId);
 }
-
 
 var aListener = { 
   /* called when new items are returned by the database query or freshly indexed */  
