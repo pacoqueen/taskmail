@@ -39,6 +39,7 @@ TASKMAIL.QFB = {
 	      	result = TASKMAIL.Link.isMessageLinked(msgHdr.folder.URI, msgHdr.messageKey);
 	        break;
 	    }
+	    consoleService.logStringMessage("TaskMail#TermName.match("+msgHdr.messageId+","+searchValue+","+searchOp+")="+result);
 	    return result;
 	  }
 	},
@@ -77,6 +78,7 @@ TASKMAIL.QFB = {
 	        result = TASKMAIL.Link.isThreadLinked(msgHdr.threadId);
 	        break;
 	    }
+	    consoleService.logStringMessage("TaskMail#threadLinkedTerm.match("+msgHdr.messageId+","+searchValue+","+searchOp+")="+result);
 	    return result;
 	  }
 	},
