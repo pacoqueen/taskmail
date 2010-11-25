@@ -1238,18 +1238,25 @@ TASKMAIL.Link = {
 	/**
 	 * is the specified message has a link with a task ?
 	 */
-	isMessageLinked : function (aMessageKey) {
-		return this.mailKeysLinks.indexOf(aMessageKey) == -1 ? false : true;
+	isMessageLinked : function (aFolderURI, aMessageKey) {
+		var result = false;
+		for(var i=0; i<this.mailKeysLinks.length; i++) {
+			if (this.folderURILinks[i] == aFolderURI && this.mailKeysLinks[i] == aMessageKey) {
+				result = true;
+				break;
+			}
+		}
+		return result;
 	},
 
 	/**
 	 * is the specified message as a link with the specified task ?
 	 */
-	isMessageLinkedWith : function (aMessageKey, aTaskId) {
+	isMessageLinkedWith : function (aFolderURI, aMessageKey, aTaskId) {
 		var result = false;
 		for(var i=0; i<this.taskIdLinks.length; i++) {
 			if (this.taskIdLinks[i] == aTaskId) {
-				if (this.mailKeysLinks[i] == aMessageKey) {
+				if (this.folderURILinks[i] == aFolderURI && this.mailKeysLinks[i] == aMessageKey) {
 					result = true;
 					break;
 				}

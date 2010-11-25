@@ -30,13 +30,13 @@ TASKMAIL.QFB = {
 	    var result = false;
 	    switch (searchOp) {
 	      case Components.interfaces.nsMsgSearchOp.Is:
-	        result =  TASKMAIL.Link.isMessageLinkedWith(msgHdr.messageKey, searchValue);  
+	        result =  TASKMAIL.Link.isMessageLinkedWith(msgHdr.folder.URI, msgHdr.messageKey, searchValue);  
 	        break;
 	      case Components.interfaces.nsMsgSearchOp.IsEmpty:
-	      	result = !TASKMAIL.Link.isMessageLinked(msgHdr.messageKey);  
+	      	result = !TASKMAIL.Link.isMessageLinked(msgHdr.folder.URI, msgHdr.messageKey);  
 	        break;
 	      case Components.interfaces.nsMsgSearchOp.IsntEmpty:
-	      	result = TASKMAIL.Link.isMessageLinked(msgHdr.messageKey);
+	      	result = TASKMAIL.Link.isMessageLinked(msgHdr.folder.URI, msgHdr.messageKey);
 	        break;
 	    }
 	    return result;
@@ -163,66 +163,66 @@ QuickFilterManager.defineFilter({
 	    term.booleanAnd = true;
 	    aTerms.push(term);
     }
-  },
+  }
   
   /**
    * called on a active / desactive of task's filter (qfb-task button only) 
    * not on subFilters.     
    */
-  onCommand: function(aState, aNode, aEvent, aDocument) {
-  	consoleService.logStringMessage("onCommand(" + aNode.id + ")");
-  	if (!aNode.checked) {
-    	consoleService.logStringMessage("onCommand => supprime select event");
-    	document.getElementById("taskList").removeEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
-    } else {
-	    var linkButton = document.getElementById("qfb-task-linked");
-			if (linkButton.checked) {
-				// subFilters could be checked when main filter is activating.
-				consoleService.logStringMessage("onCommand => ajout select event");
-	    	document.getElementById("taskList").addEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
-			}
-    }
-    // make subFilters visible or not.
-    if (aNode.checked) {
-    	document.getElementById("qfb-task-linked").style.visibility = "visible";
-    	document.getElementById("qfb-task-thread").style.visibility = "visible";
-    } else {
-    	document.getElementById("qfb-task-linked").style.visibility = "hidden";
-    	document.getElementById("qfb-task-thread").style.visibility = "hidden";
-    }
-    var checked = aNode.checked ? true : null;
-    return [checked, true];
-  },
+//  onCommand: function(aState, aNode, aEvent, aDocument) {
+//  	consoleService.logStringMessage("onCommand(" + aNode.id + ")");
+//  	if (!aNode.checked) {
+//    	consoleService.logStringMessage("onCommand => supprime select event");
+//    	document.getElementById("taskList").removeEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
+//    } else {
+//	    var linkButton = document.getElementById("qfb-task-linked");
+//			if (linkButton.checked) {
+//				// subFilters could be checked when main filter is activating.
+//				consoleService.logStringMessage("onCommand => ajout select event");
+//	    	document.getElementById("taskList").addEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
+//			}
+//    }
+//    // make subFilters visible or not.
+//    if (aNode.checked) {
+//    	document.getElementById("qfb-task-linked").style.visibility = "visible";
+//    	document.getElementById("qfb-task-thread").style.visibility = "visible";
+//    } else {
+//    	document.getElementById("qfb-task-linked").style.visibility = "hidden";
+//    	document.getElementById("qfb-task-thread").style.visibility = "hidden";
+//    }
+//    var checked = aNode.checked ? true : null;
+//    return [checked, true];
+//  },
   
   /*
    * called on quick-filter-bar is hidding.
    */
-  clearState: function(aState) {
-    consoleService.logStringMessage("clearState => supprime select event");
-    // remove possible task's select callback and hide subFilters.
-    document.getElementById("taskList").removeEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
-    return [null, false];
-  },
+//  clearState: function(aState) {
+//    consoleService.logStringMessage("clearState => supprime select event");
+//    // remove possible task's select callback and hide subFilters.
+//    document.getElementById("taskList").removeEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
+//    return [null, false];
+//  },
   
   /**
    * called on a folder changed and on UI binding.
    * make subFilter visible or not.
    */
-  reflectInDOM: function TFF_reflectInDOM(aNode, aFilterValue,
-                                          aDocument, aMuxer) {
-	  consoleService.logStringMessage("reflectInDom");
-	  aNode.checked = aFilterValue ? true : false;
-  	
-	  if (aFilterValue == null) {
-		  consoleService.logStringMessage("reflectInDOM => supprime select event");
-		  document.getElementById("taskList").removeEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
-		  document.getElementById("qfb-task-linked").style.visibility = "hidden";
-		  document.getElementById("qfb-task-thread").style.visibility = "hidden";
-	  } else {
-	  	// utile quand thunderbird est relancé.
-	  	// seul l'état du main filter est conservé.
-	  	document.getElementById("qfb-task-linked").style.visibility = "visible";
-	  	document.getElementById("qfb-task-thread").style.visibility = "visible";
-	  }
-  }
+//  reflectInDOM: function TFF_reflectInDOM(aNode, aFilterValue,
+//                                          aDocument, aMuxer) {
+//	  consoleService.logStringMessage("reflectInDom");
+//	  aNode.checked = aFilterValue ? true : false;
+//  	
+//	  if (aFilterValue == null) {
+//		  consoleService.logStringMessage("reflectInDOM => supprime select event");
+//		  document.getElementById("taskList").removeEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
+//		  document.getElementById("qfb-task-linked").style.visibility = "hidden";
+//		  document.getElementById("qfb-task-thread").style.visibility = "hidden";
+//	  } else {
+//	  	// utile quand thunderbird est relancé.
+//	  	// seul l'état du main filter est conservé.
+//	  	document.getElementById("qfb-task-linked").style.visibility = "visible";
+//	  	document.getElementById("qfb-task-thread").style.visibility = "visible";
+//	  }
+//  }
 });
