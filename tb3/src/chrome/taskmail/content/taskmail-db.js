@@ -311,7 +311,7 @@ TASKMAIL.DB = {
 	 * @return
 	 */
 	unlinkTaskSQLite : function(msg, taskId) {
-   	this.consoleService.logStringMessage("unlinkTaskSQLite");
+//   	this.consoleService.logStringMessage("unlinkTaskSQLite");
    	var messageId = msg.folder.GetMessageHeader(msg.messageKey).messageId; 
    	var stat = this.dbConnection
 				.createStatement("delete from links where folderURI = :folderURI and messageId = :MAIL_ID and taskId = :TASK_ID");
@@ -348,7 +348,7 @@ TASKMAIL.DB = {
 	},
 
 	renameFolderSQLite : function(aOrigFolder, aNewFolder) {
-		this.consoleService.logStringMessage("renameFolderSQLite");
+//		this.consoleService.logStringMessage("renameFolderSQLite");
 		// rename folder then rename subFolders
 		try {
 			this.dbConnection.beginTransaction();

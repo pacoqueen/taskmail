@@ -273,7 +273,7 @@ TASKMAIL.UI = {
 	},
 
 	refreshTaskList : function() {
-		// consoleService.logStringMessage("refreshTaskList");
+		consoleService.logStringMessage("refreshTaskList");
 		// le refresh du folder est lancé avant l'handler de la colonne des
 		// emails.
 		var selectedTasks = TASKMAIL.UI.getSelectedTasksKeys();
@@ -1122,6 +1122,7 @@ TASKMAIL.Link = {
 	},
 
 	resetLink : function() {
+		consoleService.logStringMessage("resetLink");
 		this.nbLinks = 0;
 	},
 
@@ -1240,12 +1241,13 @@ TASKMAIL.Link = {
 	 */
 	isMessageLinked : function (aFolderURI, aMessageKey) {
 		var result = false;
-		for(var i=0; i<this.mailKeysLinks.length; i++) {
+		for(var i=0; i<this.nbLinks; i++) {
 			if (this.folderURILinks[i] == aFolderURI && this.mailKeysLinks[i] == aMessageKey) {
 				result = true;
 				break;
 			}
 		}
+//		consoleService.logStringMessage("isMessageLinked" + aFolderURI + "," + aMessageKey + "=" + result);
 		return result;
 	},
 
@@ -1254,7 +1256,7 @@ TASKMAIL.Link = {
 	 */
 	isMessageLinkedWith : function (aFolderURI, aMessageKey, aTaskId) {
 		var result = false;
-		for(var i=0; i<this.taskIdLinks.length; i++) {
+		for(var i=0; i<this.nbLinks; i++) {
 			if (this.taskIdLinks[i] == aTaskId) {
 				if (this.folderURILinks[i] == aFolderURI && this.mailKeysLinks[i] == aMessageKey) {
 					result = true;
@@ -1277,7 +1279,7 @@ TASKMAIL.Link = {
 	 */
 	isThreadLinkedWith : function (aThreadKey, aTaskId) {
 		var result = false;
-		for(var i=0; i<this.taskIdLinks.length; i++) {
+		for(var i=0; i<this.nbLinks; i++) {
 			if (this.taskIdLinks[i] == aTaskId) {
 				if (this.threadKeysLinks[i] == aThreadKey) {
 					result = true;
