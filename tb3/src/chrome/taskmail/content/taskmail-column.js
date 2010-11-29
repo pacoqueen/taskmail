@@ -33,7 +33,7 @@ TASKMAIL.COLUMN = {
 	      taskID = taskSelectedItem.getAttribute("pk");
 	    }
 	    var mailKey = gDBView.getKeyAt(row);
-	    var type = TASKMAIL.Link.getMailLinkType(taskID, mailKey);
+	    var type = TASKMAIL.Link.getMailLinkType(taskID, gDBView.msgFolder.URI, mailKey);
 	    var linkURI = null;
 	    if (type == 3) {
 	    	linkURI = "chrome://taskmail/skin/link_task_grey.png";

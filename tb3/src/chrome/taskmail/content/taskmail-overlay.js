@@ -176,7 +176,7 @@ TASKMAIL.UI = {
 			// TODO obtenir email ayant reçu click droit.
 			var mails = gFolderDisplay.selectedMessages;
 			linkedObject = TASKMAIL.Link
-					.getTaskIDFromMailID(mails[0].messageKey);
+					.getTaskIDFromMailID(mails[0].folder.URI, mails[0].messageKey);
 		}
 		var regExp = new RegExp("[0-9]+");
 		var count = linkedObject != null ? linkedObject.length : 0;
@@ -296,7 +296,7 @@ TASKMAIL.UI = {
 		for (var i = 0; i < listBox.getRowCount(); i++) {
 			var row = listBox.getItemAtIndex(i);
 			var linkType = TASKMAIL.Link.getTaskLinkType(
-					row.getAttribute("pk"), selectedMailKey);
+					row.getAttribute("pk"), gDBView.msgFolder.URI, selectedMailKey);
 			// row.lastChild.setAttribute("label", text);
 			var linkURL = null;
 			if (linkType == 2) {
@@ -963,7 +963,7 @@ TASKMAIL.UILink = {
 			// récupére la key du 1° email selectionné
 			var mailKey = gDBView.keyForFirstSelectedMessage;
 			// recupére les ID de taches liées au mail
-			var TaskIDs = TASKMAIL.Link.getTaskIDFromMailID(mailKey);
+			var TaskIDs = TASKMAIL.Link.getTaskIDFromMailID(gDBView.msgFolder.URI, mailKey);
 			// recupére les index des taches associées
 			var taskIndex = TASKMAIL.UI.getTaskIndexFromTaskID(TaskIDs);
 			if (TaskIDs.length > 0 && taskIndex.length == 0) {
@@ -1100,7 +1100,7 @@ TASKMAIL.UILink = {
 		var temp = TASKMAIL.UI.getSelectedMailKey();
 		var temp2 = new Array();
 		for (var i = 0; i < temp.length; i++) {
-			temp2 = temp2.concat(TASKMAIL.Link.getTaskIDFromMailID(temp[i]));
+			temp2 = temp2.concat(TASKMAIL.Link.getTaskIDFromMailID(gDBView.msgFolder.URI, temp[i]));
 		}
 		document.getElementById("taskList").clearSelection();
 		TASKMAIL.UI.selectTasksByKeys(temp2);
@@ -1132,13 +1132,13 @@ TASKMAIL.Link = {
 	 * @param selectedMailKey
 	 * @return 2 = lien surligné, 1 = lien, 0 = pas de lien
 	 */
-	getTaskLinkType : function(taskID, selectedMailKey) {
+	getTaskLinkType : function(taskID, aFolderURI, selectedMailKey) {
 		// taskID à -1 si pas de tache sélectionnée
 		var direct = false;
 		var undirect = false;
 		for (var j = 0; j < this.nbLinks; j++) {
 			if (taskID == this.taskIdLinks[j]) {
-				if (selectedMailKey == this.mailKeysLinks[j]) {
+				if (aFolderURI == this.folderURILinks[j] && selectedMailKey == this.mailKeysLinks[j]) {
 					direct = true;
 				} else {
 					undirect = true;
@@ -1176,11 +1176,12 @@ TASKMAIL.Link = {
 	 *            mailKey
 	 * @return Array
 	 */
-	getTaskIDFromMailID : function(mailKey) {
+	// @todo
+	getTaskIDFromMailID : function(aFolderURI, mailKey) {
 		var result = new Array();
 		var j = 0;
 		for (var i = 0; i < this.nbLinks; i++) {
-			if (this.mailKeysLinks[i] == mailKey) {
+			if (this.folderURILinks[i] == aFolderURI && this.mailKeysLinks[i] == mailKey) {
 				result[j++] = this.taskIdLinks[i];
 			}
 		}
@@ -1208,13 +1209,13 @@ TASKMAIL.Link = {
 	 * @param selectedMailKey
 	 * @return 3 = lien grisé, 2 = lien surligné, 1 = lien, 0 = pas de lien
 	 */
-	getMailLinkType : function(taskID, selectedMailKey) {
+	getMailLinkType : function(taskID, aFolderURI, selectedMailKey) {
 		// taskID à -1 si pas de tache sélectionnée
 		var direct = false;
 		var undirect = false;
 		var oneTaskVisible = false;
 		for (var j = 0; j < this.nbLinks; j++) {
-			if (selectedMailKey == this.mailKeysLinks[j]) {
+			if (aFolderURI == this.folderURILinks[j] && selectedMailKey == this.mailKeysLinks[j]) {
 				if (taskID == this.taskIdLinks[j]) {
 					direct = true;
 				} else {
@@ -1362,7 +1363,7 @@ TASKMAIL.MailListener = {
 		// dès qu'un msg lié hors sélection, on stoppe
 		var stop = false;
 		for (var i = 0; i < selectedMsgKey.length && !stop; i++) {
-			var taskIDs = TASKMAIL.Link.getTaskIDFromMailID(selectedMsgKey[i]);
+			var taskIDs = TASKMAIL.Link.getTaskIDFromMailID(srcMsg.folder.URI, selectedMsgKey[i]);
 			for (var j = 0; j < taskIDs.length && !stop; j++) {
 				var msgKeys = TASKMAIL.Link.getMailKeysFromTaskID(taskIDs[j]);
 				for (var k = 0; k < msgKeys.length && !stop; k++) {
