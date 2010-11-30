@@ -212,7 +212,7 @@
 	</hbox>	
 	
 	<script type='application/x-javascript'  src='chrome://taskmail/content/taskmail-test.js'/>
-	<menubar id="mail-menubar">
+	<!--menubar id="mail-menubar">
 		<menu id="TaskMailMenu" label="Tasks and mails">
 			<menupopup>
 				<menuitem label="getList" oncommand="TASKMAIL.UI.refreshTaskList();"/>
@@ -232,5 +232,5 @@
 				<menuitem label="qfb" oncommand="QuickFilterBarMuxer.updateSearch();"/>
 			</menupopup>				
 		</menu>			
-	</menubar>
+	</menubar-->
 </overlay>
