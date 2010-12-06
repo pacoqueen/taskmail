@@ -571,9 +571,19 @@ TASKMAIL.UI = {
 	stateFilterChange : function() {
 		this.refreshTaskList();
 	},
+	
+	viewFilterState : "1",
 
 	viewFilterChange : function() {
 		var viewFilter = document.getElementById("viewFilter").selectedItem.value;
+		
+    if (this.viewFilterState == "3" && viewFilter != "3") {
+      document.getElementById("folderTree").addEventListener("select",
+				TASKMAIL.UI.refreshTaskList, false);
+    } else if (viewFilter == "3" && this.viewFilterState != "3") {
+      document.getElementById("folderTree").removeEventListener("select",
+				TASKMAIL.UI.refreshTaskList, false);
+    }    
 		if (viewFilter == 2) {
 			// recherche par mail, il faut supprimer le refreshTaskLink et le 
 			// remettre pour qui soit en 2°
@@ -584,10 +594,12 @@ TASKMAIL.UI = {
 			document.getElementById("threadTree").addEventListener("select",
 					TASKMAIL.UI.refreshTaskLink, false);
 		} else {
+		  // folder (0) / subfolders (1)
 			document.getElementById("threadTree").removeEventListener("select",
 					TASKMAIL.UI.refreshTaskList, false);
 		}
 		this.refreshTaskList();
+		this.viewFilterState = viewFilter;
 	},
 	 
   /**
@@ -612,9 +624,7 @@ TASKMAIL.UI = {
 
 	init : function() {
 		document.getElementById("folderTree").addEventListener("select",
-				function(e) {
-					TASKMAIL.UI.refreshTaskList();
-				}, false);
+				TASKMAIL.UI.refreshTaskList, false);
 		document.getElementById("threadTree").addEventListener("select",
 				function(e) {
 					TASKMAIL.UI.refreshTaskLink();
