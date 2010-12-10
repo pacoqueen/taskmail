@@ -13,7 +13,7 @@
 	<script type='application/x-javascript'  src='chrome://taskmail/content/taskmail-column.js'/>
   	
 	<stringbundleset id="stringbundleset">
-		<stringbundle id="string-bundle" src="chrome://taskmail/locale/taskmail-overlay.properties"/>
+		<stringbundle id="taskmail-string-bundle" src="chrome://taskmail/locale/taskmail-overlay.properties"/>
 	</stringbundleset>
 	
 	<!-- ajoute une entrée au menu contextuel de la liste des mails -->

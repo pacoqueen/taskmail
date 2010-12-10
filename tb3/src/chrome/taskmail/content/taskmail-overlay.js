@@ -659,7 +659,7 @@ TASKMAIL.UI = {
               .AddFolderListener(TASKMAIL.FolderCompactListener,
                                  nsIFolderListener.event);
 
-		this.stringsBundle = document.getElementById("string-bundle");
+		this.stringsBundle = document.getElementById("taskmail-string-bundle");
 		
 		document.getElementById("folderTree").addEventListener("dragover", TASKMAIL.UIDrag.onOverFolder, false);
 		document.getElementById("folderTree").addEventListener("drop", TASKMAIL.UIDrag.onDropFolder, false);

@@ -60,7 +60,7 @@ TASKMAIL.PREFS = {
 //		  this.mStatesListBox.appendChild(newListItem);
 			this.mStatesListBox.appendItem(this.states[i].label);
     }
-    this._stringsBundle = document.getElementById("string-bundle-prefs");
+    this._stringsBundle = document.getElementById("taskmail-string-bundle-prefs");
   },
   
 	addState : function () {
