@@ -136,8 +136,8 @@
   								<menupopup>
   								</menupopup>
   							</menulist>
-  							<label value="Id :" class="minorLabel"/>
-  							<label id="taskId" value="" class="minorLabel"/>
+  							<label hidden="true" value="Id :" class="minorLabel"/>
+  							<label hidden="true" value=""     class="minorLabel" id="taskId"/>
   							<spacer flex="2"/>
   							<label value="Proirity :"/>
   							<menulist  id="taskPriority" flex="1">
