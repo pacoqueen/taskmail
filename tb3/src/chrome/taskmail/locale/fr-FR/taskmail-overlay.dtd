@@ -1,18 +1,27 @@
-<!ENTITY linkTask    "Lier aux tâches">
-<!ENTITY linkNewTask "Lier à une nouvelle tache">
-<!ENTITY linkMail    "Lier aux emails">
-<!ENTITY unlinkTasks "Délier les taches">
-<!ENTITY unlinkMail  "Délier des emails">
-<!ENTITY goNextTask  "Aller à la tache suivante {0}">
-<!ENTITY goNextMail  "Aller à l'email suivant {0}">
-<!ENTITY selectMail  "Sélectionner les emails">
-<!ENTITY selectTask  "Sélectionner les tâches">
-<!ENTITY goFolder    "Aller au Folder">
-<!ENTITY add         "Ajouter">
-<!ENTITY addWithLink "Ajouter Liée">
-<!ENTITY update      "Modifier">
-<!ENTITY delete      "Supprimer">
-<!ENTITY markDone    "Marquer comme {s}">
+<!ENTITY menuAddTask           "Ajouter une tâche">
+<!ENTITY menuAddTaskWithLink   "Ajouter une tâche liée">
+<!ENTITY menuUpdate            "Modifier une tâches">
+<!ENTITY menuDelete            "Supprimer une tâche">
+<!ENTITY menuSelectLinked      "Sélectionner tâches ou emails">
+<!ENTITY menuViewTaskPane      "Panneau Tasks &amp; Mails">
+<!ENTITY menuGoNextTaskMail    "Aller à tâche ou email suivant">
+<!ENTITY menuLinkTaskMail      "Lier emails et tâches">
+<!ENTITY menuUnlinkTaskMail    "Délier emails et tâches">
+<!ENTITY linkTask     "Lier aux tâches">
+<!ENTITY linkNewTask  "Lier à une nouvelle tache">
+<!ENTITY linkMail     "Lier aux emails">
+<!ENTITY unlinkTasks  "Délier les taches">
+<!ENTITY unlinkMail   "Délier des emails">
+<!ENTITY goNextTask   "Aller à la tache suivante {0}">
+<!ENTITY goNextMail   "Aller à l'email suivant {0}">
+<!ENTITY selectMail   "Sélectionner les emails">
+<!ENTITY selectTask   "Sélectionner les tâches">
+<!ENTITY goFolder     "Aller au Folder">
+<!ENTITY add          "Ajouter">
+<!ENTITY addWithLink  "Ajouter Liée">
+<!ENTITY update       "Modifier">
+<!ENTITY delete       "Supprimer">
+<!ENTITY markDone     "Marquer comme {s}">
 <!ENTITY changePriority      "Changer la Priorité">
 <!ENTITY incrementPriority      "Incrémenter">
 <!ENTITY decrementPriority      "Décrémenter">

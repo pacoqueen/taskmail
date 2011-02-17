@@ -1,18 +1,27 @@
-<!ENTITY linkTask    "Link to tasks">
-<!ENTITY linkNewTask "Link to a new task">
-<!ENTITY linkMail    "Link to mails">
-<!ENTITY unlinkTasks "Unlink tasks">
-<!ENTITY unlinkMail  "Unlink mails">
-<!ENTITY goNextTask  "Go to next task {0}">
-<!ENTITY goNextMail  "Go to next mail {0}">
-<!ENTITY selectMail  "Select mails">
-<!ENTITY selectTask  "Select tasks">
-<!ENTITY goFolder    "Go to Folder">
-<!ENTITY add         "Add">
-<!ENTITY addWithLink "Add with Link">
-<!ENTITY update      "Update">
-<!ENTITY delete      "Delete">
-<!ENTITY markDone    "Mark as {s}">
+<!ENTITY menuAddTask           "Add a task">
+<!ENTITY menuAddTaskWithLink   "Add a linked task">
+<!ENTITY menuUpdate            "Update task">
+<!ENTITY menuDelete            "Delete task">
+<!ENTITY menuSelectLinked      "Select tasks or mails">
+<!ENTITY menuViewTaskPane      "Tasks &amp; Mails Pane">
+<!ENTITY menuGoNextTaskMail    "Go to next task or email">
+<!ENTITY menuLinkTaskMail      "Link to mails and tasks">
+<!ENTITY menuUnlinkTaskMail    "Unlink emails and tasks">
+<!ENTITY linkTask     "Link to tasks">
+<!ENTITY linkNewTask  "Link to a new task">
+<!ENTITY linkMail     "Link to mails">
+<!ENTITY unlinkTasks  "Unlink tasks">
+<!ENTITY unlinkMail   "Unlink mails">
+<!ENTITY goNextTask   "Go to next task {0}">
+<!ENTITY goNextMail   "Go to next mail {0}">
+<!ENTITY selectMail   "Select mails">
+<!ENTITY selectTask   "Select tasks">
+<!ENTITY goFolder     "Go to Folder">
+<!ENTITY add          "Add">
+<!ENTITY addWithLink  "Add with Link">
+<!ENTITY update       "Update">
+<!ENTITY delete       "Delete">
+<!ENTITY markDone     "Mark as {s}">
 <!ENTITY changePriority      "Change Priority">
 <!ENTITY incrementPriority      "Increment">
 <!ENTITY decrementPriority      "Decrement">
