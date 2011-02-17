@@ -16,6 +16,86 @@
 		<stringbundle id="taskmail-string-bundle" src="chrome://taskmail/locale/taskmail-overlay.properties"/>
 	</stringbundleset>
 	
+	<menubar id="mail-menubar">
+		<menu id="menu_File">
+			<menupopup id="menu_FilePopup">				
+				<menu id="menu_New">
+					<menupopup id="menu_NewPopup">
+		        <menuseparator/>
+		        <menuitem label="&menuAddTask;"          accesskey="A" oncommand="TASKMAIL.UI.beginAddTask()"/>
+						<menuitem label="&menuAddTaskWithLink;"  accesskey="L" oncommand="TASKMAIL.UI.beginAddTaskWithLink()" key="add-linked"/>
+					</menupopup>
+				</menu>
+			</menupopup>
+		</menu>
+		<menu id="menu_Edit">
+			<menupopup id="menu_EditPopup">				
+				<menuitem label="&menuUpdate;"       accesskey="U" oncommand="TASKMAIL.UI.beginUpdateTask()"                                           insertbefore="editMenuAfterDeleteSeparator"/>
+				<menuitem label="&menuDelete;"   accesskey="D" oncommand="TASKMAIL.UI.removeTask()"      id="row-menu.delete" key="taskmail-suppr" insertbefore="editMenuAfterDeleteSeparator"/>
+				<menu id="menu_select">
+					<menupopup id="menu_SelectPopup">
+						<menuseparator/>
+						<menuitem label="&menuSelectLinked;"  accesskey="T" oncommand="TASKMAIL.UILink.selectLinkedTask();"/>
+					</menupopup>
+				</menu>
+			</menupopup>
+		</menu>
+		<menu id="menu_View">
+			<menupopup id="menu_View_Popup">				
+				<menuseparator insertbefore="viewSortMenuSeparator"/>
+				<menuitem label="&menuViewTaskPane;"  accesskey="M" oncommand="TASKMAIL.UI.toggleTaskPane();" type="checkbox" checked="true" id="menu.viewTaskPane" key="viewTasksMailsPane" insertbefore="viewSortMenuSeparator" persist="checked"/>
+			</menupopup>
+		</menu>
+  	<menu id="menu_Go">
+			<menupopup id="menu_GoPopup">
+				<menuseparator/>
+				<menuitem label="&menuGoNextTaskMail;"   accesskey="A" oncommand="TASKMAIL.UILink.showLinkedMail()" id="row-menu.goNextMail" key="show-linked"/>
+			</menupopup>
+		</menu>
+  	<menu id="taskmail-menu" label="Tasks &amp; Mails" accesskey="T" insertbefore="tasksMenu">
+      <menupopup id="taskmail-popup">
+        <menuitem label="&add;"          accesskey="A" oncommand="TASKMAIL.UI.beginAddTask()"/>
+				<menuitem label="&addWithLink;"  accesskey="L" oncommand="TASKMAIL.UI.beginAddTaskWithLink()" key="add-linked"/>
+				<menuseparator/>
+				<menuitem label="&markDone;"     accesskey="M" oncommand="TASKMAIL.UI.updateTaskStateDone(event, 4);" key="mark-done" id="main-menu.markDone"/>
+				<menu label="&changePriority;" accesskey="P">
+					<menupopup>
+						<menuitem label="&incrementPriority;" accesskey="I" oncommand="TASKMAIL.UI.incrementPriority(event);" key="increment-task"/>
+						<menuitem label="&decrementPriority;" accesskey="D" oncommand="TASKMAIL.UI.decrementPriority(event);" key="decrement-task"/>
+						<menuseparator/>
+						<menuitem label="0" value="0" accesskey="0" class="taskPriority-0" oncommand="TASKMAIL.UI.updatePriority(event, 0);"/>
+						<menuitem label="1" value="1" accesskey="1" class="taskPriority-1" oncommand="TASKMAIL.UI.updatePriority(event, 1);"/>
+						<menuitem label="2" value="2" accesskey="2" class="taskPriority-2" oncommand="TASKMAIL.UI.updatePriority(event, 2);"/>
+						<menuitem label="3" value="3" accesskey="3" class="taskPriority-3" oncommand="TASKMAIL.UI.updatePriority(event, 3);"/>
+						<menuitem label="4" value="4" accesskey="4" class="taskPriority-4" oncommand="TASKMAIL.UI.updatePriority(event, 4);"/>
+						<menuitem label="5" value="5" accesskey="5" class="taskPriority-5" oncommand="TASKMAIL.UI.updatePriority(event, 5);"/>
+						<menuitem label="6" value="6" accesskey="6" class="taskPriority-6" oncommand="TASKMAIL.UI.updatePriority(event, 6);"/>
+						<menuitem label="7" value="7" accesskey="7" class="taskPriority-7" oncommand="TASKMAIL.UI.updatePriority(event, 7);"/>
+						<menuitem label="8" value="8" accesskey="8" class="taskPriority-8" oncommand="TASKMAIL.UI.updatePriority(event, 8);"/>
+						<menuitem label="9" value="9" accesskey="9" class="taskPriority-9" oncommand="TASKMAIL.UI.updatePriority(event, 9);"/>  						
+					</menupopup>
+				</menu>
+				<menu id="taskContext-moveMenu"
+					label="&moveTask;"
+					accesskey="D"
+					oncommand="TASKMAIL.UI.moveTask(event.target._folder)">
+					<menupopup id="taskContext-fileHereMenu"
+						type="folder"
+						mode="filing"
+						showFileHereLabel="true"
+						showRecent="false"
+						fileHereLabel="&moveHere;"
+						fileHereAccessKey="I"/>
+				</menu>
+				<menuseparator/>
+				<menuitem label="&menuLinkTaskMail;"     accesskey="L" oncommand="TASKMAIL.UILink.linkTask()"/>
+				<menuitem label="&menuUnlinkTaskMail;"   accesskey="U" oncommand="TASKMAIL.UILink.unlinkTask()"/>
+				<menuseparator/>
+				<menuitem label="&composeReport;" accesskey="C" oncommand="TASKMAIL.Report.composeReport()"/>
+      </menupopup>
+    </menu>
+	</menubar>
+
 	<keyset>
 		<!-- control entrée est utilisable dans le textare -->
 		<key                           keycode="VK_RETURN"     oncommand="TASKMAIL.UI.keyPressedInTaskDetail('save');"/>
@@ -23,14 +103,14 @@
 		<key modifiers="shift"         keycode="VK_ESCAPE"     oncommand="TASKMAIL.UI.keyPressedInTaskDetail('cancel');"/>
 		<key modifiers="shift"         key="L"                 oncommand="TASKMAIL.UILink.showLinked(event);" id="show-linked"/>
 		<key modifiers="shift"         key="N"                 oncommand="TASKMAIL.UI.beginAddTaskWithLink();" id="add-linked"/>
-		<key                           keycode="VK_F9"         oncommand="TASKMAIL.UI.toggleTaskPane();"/>
+		<key                           keycode="VK_F9"         oncommand="TASKMAIL.UI.toggleTaskPane();"       id="viewTasksMailsPane"/>
 		<key modifiers="control alt"   keycode="VK_PAGE_UP"    oncommand="TASKMAIL.UI.incrementPriority();" id="increment-task"/>
 		<key modifiers="control alt"   keycode="VK_PAGE_DOWN"  oncommand="TASKMAIL.UI.decrementPriority();" id="decrement-task"/>
 		<key modifiers="shift"         key="D"                 oncommand="TASKMAIL.UI.updateTaskStateDone(event, 4);" id="mark-done"/>
 		<key                           keycode="VK_DELETE"     oncommand="TASKMAIL.UI.removeTask();" id="taskmail-suppr"/>
 	</keyset>
 
-	<!-- ajoute une entrée au menu contextuel de la liste des mails -->
+  <!-- ajoute une entrée au menu contextuel de la liste des mails -->
 	<menupopup id="mailContext">
 		<menuitem label="&linkTask;"    accesskey="L" oncommand="TASKMAIL.UILink.linkTask()"/>
 		<menuitem label="&linkNewTask;" accesskey="N" oncommand="TASKMAIL.UI.beginAddTaskWithLink()" key="add-linked"/>
@@ -95,7 +175,7 @@
 				<menuseparator/>
 				<menuitem label="&composeReport;" accesskey="C" oncommand="TASKMAIL.Report.composeReport()"/>
 			</menupopup>
-      
+	
 			<listbox id="taskList" ondblclick="TASKMAIL.UI.doubleClikTask(event)" context="row-menu" 
 					 seltype="multiple" flex="1" minheight="75">
 				<listhead>
