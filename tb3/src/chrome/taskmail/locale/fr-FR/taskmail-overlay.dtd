@@ -4,7 +4,7 @@
 <!ENTITY menuDelete            "Supprimer une tâche">
 <!ENTITY menuSelectLinked      "Sélectionner tâches ou emails">
 <!ENTITY menuViewTaskPane      "Panneau Tasks &amp; Mails">
-<!ENTITY menuGoNextTaskMail    "Aller à tâche ou email suivant">
+<!ENTITY menuGoNextTaskMail    "Aller à la tâche ou email suivant">
 <!ENTITY menuLinkTaskMail      "Lier emails et tâches">
 <!ENTITY menuUnlinkTaskMail    "Délier emails et tâches">
 <!ENTITY linkTask     "Lier aux tâches">

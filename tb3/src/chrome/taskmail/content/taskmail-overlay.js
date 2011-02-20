@@ -160,14 +160,14 @@ TASKMAIL.UI = {
 	},
 
 	/**
-	 * @param sens
-	 *            String "task" or "mail"
+	 * put linked objects count.
+	 * @param sens String "task" (vers email) or "mail" (vers task) or null
 	 */
 	adjustContextMenu : function(sens) {
 		var menuitem = null;
 		var linkedObject = null;
 		if (sens == "task") {
-			menuitem = document.getElementById('row-menu.goNextMail');
+			menuitem = document.getElementById('row-menu-goNextMail');
 			linkedObject = TASKMAIL.Link
 					.getMailKeysFromTaskID(document.popupNode
 							.getAttribute("pk"));
@@ -192,11 +192,83 @@ TASKMAIL.UI = {
 		}
 	},
 	
-	adjustTaskContextMenu : function() {
-		var menuitem = document.getElementById('row-menu.markDone');
+	/**
+	 * disable update and delete task depending selected task.
+	 * change select linked object menu label. 
+	 */
+	adjustEditMenu : function () {
+		var menuitem = document.getElementById('menu.deleteTask');
+		var selectedTask = this.getSelectedTasks();
+		menuitem.disabled = selectedTask.length == 0;
+		menuitem = document.getElementById('menu.updateTask');
+		menuitem.disabled = selectedTask.length != 1;
+
+		menuitem = document.getElementById('menu-selectLinked');
+		var focused = document.commandDispatcher.focusedElement;
+		var dynaLabel = "";
+		var dynaDisbled = false;
+		if (document.getElementById("taskList") == focused) {
+			dynaLabel = this.stringsBundle.getString('menuSelectLinkedTask');
+			dynaDisbled = false;
+		} else if (document.getElementById("threadTree") == focused) {
+			dynaLabel = this.stringsBundle.getString('menuSelectLinkedMail');
+			dynaDisbled = false;
+		} else {
+			dynaLabel = this.stringsBundle.getString('menuSelectLinkedTaskMail');
+			dynaDisbled = true;
+		} 
+		menuitem.label = dynaLabel;
+		menuitem.setAttribute("disabled",dynaDisbled);
+	},
+	
+	/**
+	 * check 'view task pane' 
+	 */
+	adjustViewMenu : function (){
+		var menuitem = document.getElementById('menu.viewTaskPane');
+		var pane = document.getElementById("taskPane");
+		menuitem.setAttribute("checked", !pane.collapsed);
+	},
+	
+	/**
+	 * adjust and disable 'Go to next ...' depending of focus.
+	 */
+	adjustGoMenu : function (){
+		var menuitem = document.getElementById('menu-goNextMail');
+		var focused = document.commandDispatcher.focusedElement;
+		var dynaLabel = "";
+		var dynaDisbled = false;
+		if (document.getElementById("taskList") == focused) {
+			dynaLabel = this.stringsBundle.getString('menuGoNextMail');
+			dynaDisbled = false;
+		} else if (document.getElementById("threadTree") == focused) {
+			dynaLabel = this.stringsBundle.getString('menuGoNextTask');
+			dynaDisbled = false;
+		} else {
+			dynaLabel = this.stringsBundle.getString('menuGoNextTaskMail');
+			dynaDisbled = true;
+		} 
+		menuitem.label = dynaLabel;
+		menuitem.setAttribute("disabled",dynaDisbled);
+	},
+	
+	/**
+	 * disable mark as done, change priority if no task are selected.
+	 */
+	adjustTaskMenu : function() {
+		var menuitemrow = document.getElementById('row-menu.markDone');
+		var menuitemmenubar = document.getElementById('main-menu.markDone');
 		var regExp = new RegExp("{s}");
 		var doneLabel = TASKMAIL.UI.states[4].label;
-		menuitem.label = menuitem.label.replace(regExp, doneLabel);
+		menuitemrow.label = menuitemrow.label.replace(regExp, doneLabel);
+		menuitemmenubar.label = menuitemmenubar.label.replace(regExp, doneLabel);
+		var selected = TASKMAIL.UI.getSelectedTasks();
+		var menuitem = document.getElementById('main-menu.markDone');
+		menuitem.disabled = selected.length == 0;
+		menuitem = document.getElementById('main-menu.changePriority');
+		menuitem.disabled = selected.length == 0;
+		menuitem = document.getElementById('main-menu.move');
+		menuitem.disabled = selected.length == 0;
 	},
 	
 	fillTaskList : function(aTask) {
@@ -640,7 +712,7 @@ TASKMAIL.UI = {
 				}, false);
 				
 		document.getElementById("row-menu").addEventListener("popupshowing",
-				TASKMAIL.UI.adjustTaskContextMenu, false);
+				TASKMAIL.UI.adjustTaskMenu, false);
 
 		var notificationService = Components.classes["@mozilla.org/messenger/msgnotificationservice;1"]
 				.getService(Components.interfaces.nsIMsgFolderNotificationService);
@@ -966,6 +1038,20 @@ TASKMAIL.UILink = {
 	},
 
 	/**
+	 * sélectionne le prochain élèment lié en fonction de la zone qui a le focus
+	 * appelé par shift-L.
+	 */
+	showLinked : function (event) {
+		var focused = document.commandDispatcher.focusedElement;
+		if (document.getElementById("taskList") == focused) {
+			var item = document.getElementById("taskList").selectedItem;
+			TASKMAIL.UILink.showLinkedMail(item);
+		} else if (document.getElementById("threadTree") == focused) {
+			TASKMAIL.UILink.showLinkedTask();
+		}
+	},	
+
+	/**
 	 * Sélectionne les tâches liées aux emails sélectionnés.
 	 */
 	showLinkedTask : function() {
@@ -1063,13 +1149,12 @@ TASKMAIL.UILink = {
 	 * sélectionne le prochain élèment lié en fonction de la zone qui a le focus
 	 * appelé par shift-L.
 	 */
-	showLinked : function (event) {
+	selectLinked : function (event) {
 		var focused = document.commandDispatcher.focusedElement;
 		if (document.getElementById("taskList") == focused) {
-			var item = document.getElementById("taskList").selectedItem;
-			TASKMAIL.UILink.showLinkedMail(item);
+			TASKMAIL.UILink.selectLinkedMails();
 		} else if (document.getElementById("threadTree") == focused) {
-			TASKMAIL.UILink.showLinkedTask();
+			TASKMAIL.UILink.selectLinkedTask();
 		}
 	},	
 

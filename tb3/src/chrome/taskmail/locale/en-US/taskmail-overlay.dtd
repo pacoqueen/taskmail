@@ -2,11 +2,11 @@
 <!ENTITY menuAddTaskWithLink   "Add a linked task">
 <!ENTITY menuUpdate            "Update task">
 <!ENTITY menuDelete            "Delete task">
-<!ENTITY menuSelectLinked      "Select tasks or mails">
+<!ENTITY menuSelectLinked      "Select tasks or emails">
 <!ENTITY menuViewTaskPane      "Tasks &amp; Mails Pane">
 <!ENTITY menuGoNextTaskMail    "Go to next task or email">
-<!ENTITY menuLinkTaskMail      "Link to mails and tasks">
-<!ENTITY menuUnlinkTaskMail    "Unlink emails and tasks">
+<!ENTITY menuLinkTaskMail      "Link mails and tasks">
+<!ENTITY menuUnlinkTaskMail    "Unlink mails and tasks">
 <!ENTITY linkTask     "Link to tasks">
 <!ENTITY linkNewTask  "Link to a new task">
 <!ENTITY linkMail     "Link to mails">

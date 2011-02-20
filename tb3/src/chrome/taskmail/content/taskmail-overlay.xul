@@ -22,43 +22,43 @@
 				<menu id="menu_New">
 					<menupopup id="menu_NewPopup">
 		        <menuseparator/>
-		        <menuitem label="&menuAddTask;"          accesskey="A" oncommand="TASKMAIL.UI.beginAddTask()"/>
+		        <menuitem label="&menuAddTask;"          accesskey="A" oncommand="TASKMAIL.UI.beginAddTask()" class="menuitem-iconic" id="menuAddTask"/>
 						<menuitem label="&menuAddTaskWithLink;"  accesskey="L" oncommand="TASKMAIL.UI.beginAddTaskWithLink()" key="add-linked"/>
 					</menupopup>
 				</menu>
 			</menupopup>
 		</menu>
 		<menu id="menu_Edit">
-			<menupopup id="menu_EditPopup">				
-				<menuitem label="&menuUpdate;"       accesskey="U" oncommand="TASKMAIL.UI.beginUpdateTask()"                                           insertbefore="editMenuAfterDeleteSeparator"/>
-				<menuitem label="&menuDelete;"   accesskey="D" oncommand="TASKMAIL.UI.removeTask()"      id="row-menu.delete" key="taskmail-suppr" insertbefore="editMenuAfterDeleteSeparator"/>
+			<menupopup id="menu_EditPopup" onpopupshowing="TASKMAIL.UI.adjustEditMenu();">				
+				<menuitem label="&menuUpdate;"   accesskey="U" oncommand="TASKMAIL.UI.beginUpdateTask()" id="menu.updateTask"                      insertbefore="editMenuAfterDeleteSeparator"/>
+				<menuitem label="&menuDelete;"   accesskey="D" oncommand="TASKMAIL.UI.removeTask()"      id="menu.deleteTask" key="taskmail-suppr" insertbefore="editMenuAfterDeleteSeparator"/>
 				<menu id="menu_select">
 					<menupopup id="menu_SelectPopup">
 						<menuseparator/>
-						<menuitem label="&menuSelectLinked;"  accesskey="T" oncommand="TASKMAIL.UILink.selectLinkedTask();"/>
+						<menuitem label="&menuSelectLinked;"  accesskey="T" oncommand="TASKMAIL.UILink.selectLinked();" id="menu-selectLinked" class="menuitem-iconic"/>
 					</menupopup>
 				</menu>
 			</menupopup>
 		</menu>
 		<menu id="menu_View">
-			<menupopup id="menu_View_Popup">				
+			<menupopup id="menu_View_Popup" onpopupshowing="TASKMAIL.UI.adjustViewMenu();">				
 				<menuseparator insertbefore="viewSortMenuSeparator"/>
-				<menuitem label="&menuViewTaskPane;"  accesskey="M" oncommand="TASKMAIL.UI.toggleTaskPane();" type="checkbox" checked="true" id="menu.viewTaskPane" key="viewTasksMailsPane" insertbefore="viewSortMenuSeparator" persist="checked"/>
+				<menuitem label="&menuViewTaskPane;"  accesskey="M" oncommand="TASKMAIL.UI.toggleTaskPane();" type="checkbox" autocheck="false" id="menu.viewTaskPane" key="viewTasksMailsPane" insertbefore="viewSortMenuSeparator"/>
 			</menupopup>
 		</menu>
   	<menu id="menu_Go">
-			<menupopup id="menu_GoPopup">
+			<menupopup id="menu_GoPopup" onpopupshowing="TASKMAIL.UI.adjustGoMenu();">
 				<menuseparator/>
-				<menuitem label="&menuGoNextTaskMail;"   accesskey="A" oncommand="TASKMAIL.UILink.showLinkedMail()" id="row-menu.goNextMail" key="show-linked"/>
+				<menuitem label="&menuGoNextTaskMail;"   accesskey="A" oncommand="TASKMAIL.UILink.showLinked()" id="menu-goNextMail" key="show-linked" class="menuitem-iconic"/>
 			</menupopup>
 		</menu>
   	<menu id="taskmail-menu" label="Tasks &amp; Mails" accesskey="T" insertbefore="tasksMenu">
-      <menupopup id="taskmail-popup">
+      <menupopup id="taskmail-popup" onpopupshowing="TASKMAIL.UI.adjustTaskMenu();">
         <menuitem label="&add;"          accesskey="A" oncommand="TASKMAIL.UI.beginAddTask()"/>
 				<menuitem label="&addWithLink;"  accesskey="L" oncommand="TASKMAIL.UI.beginAddTaskWithLink()" key="add-linked"/>
 				<menuseparator/>
 				<menuitem label="&markDone;"     accesskey="M" oncommand="TASKMAIL.UI.updateTaskStateDone(event, 4);" key="mark-done" id="main-menu.markDone"/>
-				<menu label="&changePriority;" accesskey="P">
+				<menu label="&changePriority;"   accesskey="P" id="main-menu.changePriority">
 					<menupopup>
 						<menuitem label="&incrementPriority;" accesskey="I" oncommand="TASKMAIL.UI.incrementPriority(event);" key="increment-task"/>
 						<menuitem label="&decrementPriority;" accesskey="D" oncommand="TASKMAIL.UI.decrementPriority(event);" key="decrement-task"/>
@@ -75,7 +75,7 @@
 						<menuitem label="9" value="9" accesskey="9" class="taskPriority-9" oncommand="TASKMAIL.UI.updatePriority(event, 9);"/>  						
 					</menupopup>
 				</menu>
-				<menu id="taskContext-moveMenu"
+				<menu id="main-menu.move"
 					label="&moveTask;"
 					accesskey="D"
 					oncommand="TASKMAIL.UI.moveTask(event.target._folder)">
@@ -169,7 +169,7 @@
 				<menuseparator/>
 				<menuitem label="&linkMail;"     accesskey="L" oncommand="TASKMAIL.UILink.linkTask()"/>
 				<menuitem label="&unlinkMail;"   accesskey="U" oncommand="TASKMAIL.UILink.unlinkTask()"/>
-				<menuitem label="&goNextMail;"   accesskey="A" oncommand="TASKMAIL.UILink.showLinkedMail()" id="row-menu.goNextMail" key="show-linked"/>
+				<menuitem label="&goNextMail;"   accesskey="A" oncommand="TASKMAIL.UILink.showLinkedMail()" id="row-menu-goNextMail" key="show-linked"/>
 				<menuitem label="&goFolder;"     accesskey="F" oncommand="TASKMAIL.UI.goFolder()"       id="row-menu.goFolder"/>
 				<menuitem label="&selectMail;"   accesskey="S" oncommand="TASKMAIL.UILink.selectLinkedMails()"/>
 				<menuseparator/>

@@ -106,3 +106,7 @@ radio[pane=taskmail-reportPane] {list-style-image: url("chrome://taskmail/skin/r
 #qfb-task-thread {
   list-style-image:  url('chrome://messenger/skin/icons/thread.png');
 }
+
+#menuAddTask, #menu-selectLinked, #menu-goNextMail {
+  list-style-image:url('chrome://taskmail/skin/taskmail_logo_menu.png');
+}
