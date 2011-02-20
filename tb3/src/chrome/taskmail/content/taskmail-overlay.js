@@ -208,10 +208,10 @@ TASKMAIL.UI = {
 		var dynaLabel = "";
 		var dynaDisbled = false;
 		if (document.getElementById("taskList") == focused) {
-			dynaLabel = this.stringsBundle.getString('menuSelectLinkedTask');
+			dynaLabel = this.stringsBundle.getString('menuSelectLinkedMail');
 			dynaDisbled = false;
 		} else if (document.getElementById("threadTree") == focused) {
-			dynaLabel = this.stringsBundle.getString('menuSelectLinkedMail');
+			dynaLabel = this.stringsBundle.getString('menuSelectLinkedTask');
 			dynaDisbled = false;
 		} else {
 			dynaLabel = this.stringsBundle.getString('menuSelectLinkedTaskMail');

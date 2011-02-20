@@ -2,19 +2,19 @@
 <!ENTITY menuAddTaskWithLink   "Add a linked task">
 <!ENTITY menuUpdate            "Update task">
 <!ENTITY menuDelete            "Delete task">
-<!ENTITY menuSelectLinked      "Select tasks or emails">
+<!ENTITY menuSelectLinked      "Select tasks or messages">
 <!ENTITY menuViewTaskPane      "Tasks &amp; Mails Pane">
-<!ENTITY menuGoNextTaskMail    "Go to next task or email">
-<!ENTITY menuLinkTaskMail      "Link mails and tasks">
-<!ENTITY menuUnlinkTaskMail    "Unlink mails and tasks">
+<!ENTITY menuGoNextTaskMail    "Go to next task or message">
+<!ENTITY menuLinkTaskMail      "Link tasks and messages">
+<!ENTITY menuUnlinkTaskMail    "Unlink tasks and messages">
 <!ENTITY linkTask     "Link to tasks">
 <!ENTITY linkNewTask  "Link to a new task">
-<!ENTITY linkMail     "Link to mails">
+<!ENTITY linkMail     "Link to messages">
 <!ENTITY unlinkTasks  "Unlink tasks">
-<!ENTITY unlinkMail   "Unlink mails">
+<!ENTITY unlinkMail   "Unlink messages">
 <!ENTITY goNextTask   "Go to next task {0}">
-<!ENTITY goNextMail   "Go to next mail {0}">
-<!ENTITY selectMail   "Select mails">
+<!ENTITY goNextMail   "Go to next message {0}">
+<!ENTITY selectMail   "Select messages">
 <!ENTITY selectTask   "Select tasks">
 <!ENTITY goFolder     "Go to Folder">
 <!ENTITY add          "Add">
@@ -36,7 +36,7 @@
 <!ENTITY stateFilterTTP      "State filter">
 <!ENTITY activeFilterTTP     "Includes 'to do' and 'to follow'">
 <!ENTITY currentFilterTTP    "All tasks except 'done'">
-<!ENTITY linkMailHeader    "link with mails">
+<!ENTITY linkMailHeader    "link with messages">
 <!ENTITY linkTaskHeader    "link with tasks">
 <!ENTITY filter.label        "Filters : ">
 <!ENTITY toDoStateFilter     "to do">
@@ -45,12 +45,12 @@
 <!ENTITY currentStateFilter "current">
 <!ENTITY allStateFilter     "all">
 <!ENTITY allViewFilter       "all folders">
-<!ENTITY mailViewFilter      "mail">
+<!ENTITY mailViewFilter      "message">
 <!ENTITY subFolderViewFilter "subfolders">
 <!ENTITY folderViewFilter    "folder">
 <!ENTITY viewFilterTTP       "View filter">
 <!ENTITY allViewTTP          "Tasks of all folders">
-<!ENTITY mailViewTTP         "Only tasks linked to current email">
+<!ENTITY mailViewTTP         "Only tasks linked to current message">
 <!ENTITY addTask             "Add a task">
 <!ENTITY header.subfolder    "Does task is outside the current subfolder">
 <!ENTITY colHeadLink         "Task link">
