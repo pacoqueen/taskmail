@@ -11,7 +11,7 @@ TASKMAIL = {
 		this.folderName     = aFolderName;
 		this.title          = aTitle;
 		this.desc           = aDesc;
-		this.state          = aState;						// State (code de l'état).
+		this.state          = aState;						// State (code de l'état) ; 4 = done.
 		this.priority       = aPriority;
 		this.createDate     = aCreateDate;			// Les dates sont des Date Javascript, null possible.
 		this.dueDate        = aDueDate;
@@ -73,9 +73,9 @@ TASKMAIL.DB = {
 				var state = stat.getString(2);
 				var desc  = stat.getString(3);
 				var prio  = stat.getInt32(4);
-				var createDate     = parseDate(stat.getString(5));
-				var dueDate        = parseDate(stat.getString(6));
-				var completeDate   = parseDate(stat.getString(7));
+				var createDate     = this.convertSQLiteToDate(stat.getString(5));
+				var dueDate        = this.convertSQLiteToDate(stat.getString(6));
+				var completeDate   = this.convertSQLiteToDate(stat.getString(7));
 				
 				var task = new TASKMAIL.Task(id, folderURI, folder.prettyName, title, desc, state, prio,
 				                             createDate, dueDate, completeDate);
@@ -168,9 +168,9 @@ TASKMAIL.DB = {
 				var state = stat.getString(2);
 				var desc = stat.getString(3);
 				var prio = stat.getInt32(4);
-				var createDate     = parseDate(stat.getString(5));
-				var dueDate        = parseDate(stat.getString(6));
-				var completeDate   = parseDate(stat.getString(7));
+				var createDate     = this.convertSQLiteToDate(stat.getString(5));
+				var dueDate        = this.convertSQLiteToDate(stat.getString(6));
+				var completeDate   = this.convertSQLiteToDate(stat.getString(7));
 				result = new TASKMAIL.Task(id, null, null, title, desc, state, prio, 
 				                           createDate, dueDate, completeDate);
 			}
@@ -193,8 +193,8 @@ TASKMAIL.DB = {
 		stat.bindStringParameter(2, aTask.desc);
 		stat.bindStringParameter(3, aTask.folderURI);
 		stat.bindInt32Parameter (4, aTask.priority);
-		if (aTask.dueDate != null) stat.bindStringParameter(5, formatDate(aTask.dueDate));
-		if (aTask.completeDate != null) stat.bindStringParameter(6, formatDate(aTask.completeDate));
+		if (aTask.dueDate != null) stat.bindStringParameter(5, this.convertDateToSQLite(aTask.dueDate));
+		if (aTask.completeDate != null) stat.bindStringParameter(6, this.convertDateToSQLite(aTask.completeDate));
 		stat.execute();
 	},
 
@@ -205,8 +205,8 @@ TASKMAIL.DB = {
 		this.consoleService.logStringMessage("updateTaskSQLite");
 		var stat = this.dbConnection
 				.createStatement("update tasks set title = :title, state = :state, desc = :desc, priority = :priority, dueDate = :due_d, completeDate = :complete_d where rowid = :pk");
-		var dueDate = formatDate(aTask.dueDate);
-		var completeDate = formatDate(aTask.completeDate);				
+		var dueDate = this.convertDateToSQLite(aTask.dueDate);
+		var completeDate = this.convertDateToSQLite(aTask.completeDate);				
 		stat.bindStringParameter(0, aTask.title);
 		stat.bindStringParameter(1, aTask.state);
 		stat.bindStringParameter(2, aTask.desc);
@@ -743,11 +743,15 @@ TASKMAIL.DB = {
 			}
 	},
 
+	/**
+	 * rajout dates avec initilisation
+	 */
 	dbUpgrade7 : function() {
 		this.dbConnection.executeSimpleSQL("alter table tasks add column createDate TEXT");
 		this.dbConnection.executeSimpleSQL("alter table tasks add column dueDate TEXT");
 		this.dbConnection.executeSimpleSQL("alter table tasks add column completeDate TEXT");
 		this.dbConnection.executeSimpleSQL("update tasks set createDate = current_date");
+		this.dbConnection.executeSimpleSQL("update tasks set completeDate = current_date where state = '4'");
 	},
 	
 	_dbCreate : function(aDBService, aDBFile) {
@@ -768,37 +772,44 @@ TASKMAIL.DB = {
 		stat.execute();
 		this.consoleService
 				.logStringMessage("Database initialisation successful.");
+	},
+
+	/**
+	 * convert SQLite string date (YYYY-MM-DD) to javascript Date.
+	 * if null returns null.  
+	 */
+	convertSQLiteToDate : function(aStringDate) {
+		if (aStringDate != null) {
+			var year  = parseInt(aStringDate.substring(0,4));
+			var month = parseInt(aStringDate.substring(5,7), 10) - 1;
+			var day   = parseInt(aStringDate.substring(8), 10);
+			var result = new Date(year, month, day);
+			return result;
+		} else {
+			return null;
+		}
+	},
+	
+	/**
+	 * convert javascript Date to SQLite string date (YYYY-MM-DD)
+	 */
+	convertDateToSQLite : function(aDate) {
+	  if (aDate != null) {
+	  	var year = aDate.getFullYear();
+	  	var month = aDate.getMonth() + 1;  // since js month is 0-11
+	  	if ( month < 10 )
+		    month = "0" + month;
+		  var date = aDate.getDate();
+		  if ( date < 10 )
+	    	date = "0" + date;
+	  	var result = year + "-" + month + "-" + date; 
+			return result;
+	  } else { 
+	  	return null;
+		}
 	}
 };
 
 window.addEventListener("load", function(e) {
 			TASKMAIL.DB.onLoad(e);
 		}, false);
-
-function parseDate(aStringDate) {
-	if (aStringDate != null) {
-		var year  = parseInt(aStringDate.substring(0,4));
-		var month = parseInt(aStringDate.substring(5,7), 10) - 1;
-		var day   = parseInt(aStringDate.substring(8), 10);
-		var result = new Date(year, month, day);
-		return result;
-	} else {
-		return null;
-	}
-}
-
-function formatDate (aDate) {
-  if (aDate != null) {
-  	var year = aDate.getFullYear();
-  	var month = aDate.getMonth() + 1;  // since js month is 0-11
-  	if ( month < 10 )
-	    month = "0" + month;
-	  var date = aDate.getDate();
-	  if ( date < 10 )
-    	date = "0" + date;
-  	var result = year + "-" + month + "-" + date; 
-		return result;
-  } else { 
-  	return null;
-	}
-}
