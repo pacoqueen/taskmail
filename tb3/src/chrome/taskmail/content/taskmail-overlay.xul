@@ -208,7 +208,7 @@
 						<row flex="1"  minheight="75">
 							<label value="&detail; :" command="taskDesc"/>
 							<textbox id="taskDesc" multiline="true" rows="5"/>
-						</row>			
+						</row>
 						<row>		
 							<label value="&state; :"/>  
               <hbox>
@@ -219,7 +219,7 @@
   							<label hidden="true" value="Id :" class="minorLabel"/>
   							<label hidden="true" value=""     class="minorLabel" id="taskId"/>
   							<spacer flex="2"/>
-  							<label value="Proirity :"/>
+								<label value="Proirity :"/>
   							<menulist  id="taskPriority" flex="1">
   								<menupopup>
   									<menuitem label="0" value="0" accesskey="0" class="taskPriority-0"/>
@@ -234,10 +234,35 @@
   									<menuitem label="9" value="9" accesskey="9" class="taskPriority-9"/>
   								</menupopup>
   							</menulist>
-							</hbox>
+  						</hbox>
+						</row>
+						<separator/>
+						<row>
+							<label value="Dates" class="minorLabel"/>
+							<grid>
+								<columns><column/><column/><column/></columns>
+							  <rows>
+							  	<row>
+										  <label value="Création :"/>
+										  <spacer/>
+										  <datepicker id="taskCreateDate" type="grif" disabled="true"/>
+							  	</row>
+							  	<row>
+									  <label value="Echeance :"/>
+									  <checkbox id="taskDueDateChk" class="checkbox-no-label" checked="false" oncommand="TASKMAIL.UI.chkTaskDate('taskDueDate');"/>
+									  <datepicker id="taskDueDate" type="grid" readonly="true"/>
+							  	</row>
+							  	<row>
+									  <label value="Réalisation :"/>
+									  <checkbox id="taskCompleteDateChk" class="checkbox-no-label" checked="false" oncommand="TASKMAIL.UI.chkTaskDate('taskCompleteDate');"/>
+									  <datepicker id="taskCompleteDate" type="grid" readonly="true"/>
+							  	</row>
+							  </rows>
+							</grid>
 						</row>
 					</rows>
 				</grid>
+				<separator/>
 				<hbox>
 					<spacer flex="1"/>
 					<button label="&save;"  oncommand="TASKMAIL.UI.saveTask()"/>

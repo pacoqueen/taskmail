@@ -70,12 +70,14 @@ TASKMAIL.UI = {
 		var stateInput = document.getElementById("taskState").selectedItem.value;
 		var desc = document.getElementById("taskDesc").value;
 		var prio = document.getElementById("taskPriority").selectedIndex;
-		// TODO
+		var dueDate      = document.getElementById("taskDueDateChk").checked ? document.getElementById("taskDueDate").value : null;
+		var completeDate = document.getElementById("taskCompleteDateChk").checked ? document.getElementById("taskCompleteDate").value : null;		// TODO
 		var currentMsgFolder = GetSelectedMsgFolders()[0];
 
 		if (this.taskDetailPK == -1) {
 			TASKMAIL.DB.addTaskSQLite(new TASKMAIL.Task(idInput,
-					currentMsgFolder.URI, currentMsgFolder.prettyName, titleInput, desc, stateInput, prio));
+					currentMsgFolder.URI, currentMsgFolder.prettyName, titleInput, desc, stateInput,
+					prio, null, dueDate, completeDate));
 			if (this.addWithLink) {
 				var taskId = TASKMAIL.DB.dbConnection.lastInsertRowID;
 				var selectedMessages = gFolderDisplay.selectedMessages;
@@ -85,7 +87,7 @@ TASKMAIL.UI = {
 			}
 		} else {
 			TASKMAIL.DB.updateTaskSQLite(new TASKMAIL.Task(idInput, null, null,
-					titleInput, desc, stateInput, prio));
+					titleInput, desc, stateInput, prio, null, dueDate, completeDate));
 		}
 		this.refreshTaskList();
 		this.cancelSaveTask();
@@ -342,6 +344,20 @@ TASKMAIL.UI = {
 		}
 		document.getElementById("taskPriority").selectedIndex = aTask.priority;
 		document.getElementById("taskId").value = aTask.id;
+
+		document.getElementById("taskCreateDate").value = null;
+		document.getElementById("taskDueDateChk").checked = aTask.dueDate != null;			
+		document.getElementById("taskDueDate").value = aTask.dueDate != null ? aTask.dueDate : new Date();
+		document.getElementById("taskCompleteDateChk").checked = aTask.completeDate != null;
+		document.getElementById("taskCompleteDate").value = aTask.completeDate != null ? aTask.completeDate : new Date();
+		this.chkTaskDate("taskDueDate");
+		this.chkTaskDate("taskCompleteDate");
+	},
+	
+	chkTaskDate : function(id) {
+		var chk  = document.getElementById(id + "Chk");
+		var date = document.getElementById(id);
+		date.disabled = !chk.checked;
 	},
 
 	refreshTaskList : function() {

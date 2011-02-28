@@ -4,15 +4,18 @@ if (!TASKMAIL.DB)
 	TASKMAIL.DB = {};
 
 TASKMAIL = {
-	Task : function(aId, aFolderURI, aFolderName, aTitle, aDesc, aState, aPriority) {
-		this.id = aId;
-		this.folderURI = aFolderURI;
-		this.folderName = aFolderName;
-		this.title = aTitle;
-		this.desc = aDesc;
-		// State (code de l'état).
-		this.state = aState;
-		this.priority = aPriority;
+	Task : function(aId, aFolderURI, aFolderName, aTitle, aDesc, aState, aPriority,
+	                aCreateDate, aDueDate, aCompleteDate) {
+		this.id             = aId;
+		this.folderURI      = aFolderURI;
+		this.folderName     = aFolderName;
+		this.title          = aTitle;
+		this.desc           = aDesc;
+		this.state          = aState;						// State (code de l'état).
+		this.priority       = aPriority;
+		this.createDate     = aCreateDate;			// Les dates sont des Date Javascript, null possible.
+		this.dueDate        = aDueDate;
+		this.completeDate   = aCompleteDate;
 	}
 }
 
@@ -30,10 +33,9 @@ TASKMAIL.DB = {
 		try {
 			// recherche par mail (donc non recurssive)
 			if (mailId != null) {
-				sql = "select tasks.rowid, title, state, desc, priority from tasks, links where tasks.folderURI = links.folderURI and tasks.rowid = links.taskId and links.folderURI = :folderURI and links.messageId = :mailId ";
+				sql = "select tasks.rowid, title, state, desc, priority, createDate, dueDate, completeDate from tasks, links where tasks.folderURI = links.folderURI and tasks.rowid = links.taskId and links.folderURI = :folderURI and links.messageId = :mailId ";
 				// quelque soit le type de recherche (email ou folder) on
-				// applique le
-				// filtre d'état
+				// applique le filtre d'état
 				if (stateFilter != "") {
 					var stateExp = "";
 					for (var i = 0; i < stateFilter.length; i++) {
@@ -49,10 +51,9 @@ TASKMAIL.DB = {
 				stat.bindStringParameter(1, mailId);
 				// sinon recherche par folder
 			} else {
-				sql = "select tasks.rowid, title, state, desc, priority from tasks where folderURI = :folderURI ";
+				sql = "select tasks.rowid, title, state, desc, priority, createDate, dueDate, completeDate from tasks where folderURI = :folderURI ";
 				// quelque soit le type de recherche (email ou folder) on
-				// applique le
-				// filtre d'état
+				// applique le filtre d'état
 				if (stateFilter != "") {
 					var stateExp = "";
 					for (var i = 0; i < stateFilter.length; i++) {
@@ -72,8 +73,12 @@ TASKMAIL.DB = {
 				var state = stat.getString(2);
 				var desc  = stat.getString(3);
 				var prio  = stat.getInt32(4);
-
-				var task = new TASKMAIL.Task(id, folderURI, folder.prettyName, title, desc, state, prio);
+				var createDate     = parseDate(stat.getString(5));
+				var dueDate        = parseDate(stat.getString(6));
+				var completeDate   = parseDate(stat.getString(7));
+				
+				var task = new TASKMAIL.Task(id, folderURI, folder.prettyName, title, desc, state, prio,
+				                             createDate, dueDate, completeDate);
 				result.push(task);
 			}
 		} catch (err) {
@@ -155,7 +160,7 @@ TASKMAIL.DB = {
 		var result = null;
 		try {
 			var stat = this.dbConnection
-					.createStatement("select rowid, title, state, desc, priority from tasks where rowid = :pk");
+					.createStatement("select rowid, title, state, desc, priority, createDate, dueDate, completeDate from tasks where rowid = :pk");
 			stat.bindInt32Parameter(0, pk);
 			while (stat.executeStep()) {
 				var id = stat.getInt32(0);
@@ -163,7 +168,11 @@ TASKMAIL.DB = {
 				var state = stat.getString(2);
 				var desc = stat.getString(3);
 				var prio = stat.getInt32(4);
-				result = new TASKMAIL.Task(id, null, null, title, desc, state, prio);
+				var createDate     = parseDate(stat.getString(5));
+				var dueDate        = parseDate(stat.getString(6));
+				var completeDate   = parseDate(stat.getString(7));
+				result = new TASKMAIL.Task(id, null, null, title, desc, state, prio, 
+				                           createDate, dueDate, completeDate);
 			}
 		} catch (err) {
 			Components.utils.reportError("getTaskDetailSQLite " + err);
@@ -171,28 +180,40 @@ TASKMAIL.DB = {
 		return result;
 	},
 
+	/**
+	 * La date de création est celle de la base.
+	 */
 	addTaskSQLite : function(aTask) {
 		this.consoleService.logStringMessage("addTaskSQLite");
 		var folderURI = aTask.folderURI;
 		var stat = this.dbConnection
-				.createStatement("insert into tasks (title, state, desc, folderURI, priority) values (:titleInput, :stateInput, :desc, :folderURI, :priority)");
+				.createStatement("insert into tasks (title, state, desc, folderURI, priority, createDate, dueDate, completeDate) values (:titleInput, :stateInput, :desc, :folderURI, :priority, current_date, :dueDate, :completeDate)");
 		stat.bindStringParameter(0, aTask.title);
 		stat.bindStringParameter(1, aTask.state);
 		stat.bindStringParameter(2, aTask.desc);
 		stat.bindStringParameter(3, aTask.folderURI);
-		stat.bindInt32Parameter(4, aTask.priority);
+		stat.bindInt32Parameter (4, aTask.priority);
+		if (aTask.dueDate != null) stat.bindStringParameter(5, formatDate(aTask.dueDate));
+		if (aTask.completeDate != null) stat.bindStringParameter(6, formatDate(aTask.completeDate));
 		stat.execute();
 	},
 
+	/**
+	 * La date de création n'est pas modifiée.
+	 */
 	updateTaskSQLite : function(aTask) {
 		this.consoleService.logStringMessage("updateTaskSQLite");
 		var stat = this.dbConnection
-				.createStatement("update tasks set title = :title, state = :state, desc = :desc, priority = :priority where rowid = :pk");
+				.createStatement("update tasks set title = :title, state = :state, desc = :desc, priority = :priority, dueDate = :due_d, completeDate = :complete_d where rowid = :pk");
+		var dueDate = formatDate(aTask.dueDate);
+		var completeDate = formatDate(aTask.completeDate);				
 		stat.bindStringParameter(0, aTask.title);
 		stat.bindStringParameter(1, aTask.state);
 		stat.bindStringParameter(2, aTask.desc);
-		stat.bindInt32Parameter(3, aTask.priority);
-		stat.bindInt32Parameter(4, aTask.id);
+		stat.bindInt32Parameter (3, aTask.priority);
+		if (dueDate != null) stat.bindStringParameter(4, dueDate);
+		if (completeDate != null) stat.bindStringParameter(5, completeDate);
+		stat.bindInt32Parameter (6, aTask.id);
 		stat.execute();
 	},
 
@@ -562,10 +583,13 @@ TASKMAIL.DB = {
 
 	dbConnection : null,
 
-	/* la pk de la table est le rowid interne de sqlite */
+	/**
+	 * La pk de la table est le rowid interne de sqlite
+	 * createDate, dueDate, completeDate sont au format YYYY-MM-DD
+	 */
 	dbSchema : {
 		tables : {
-			tasks : "folderURI TEXT, title TEXT NOT NULL, state TEXT, desc TEXT, priority INTEGER",
+			tasks : "folderURI TEXT, title TEXT NOT NULL, state TEXT, desc TEXT, priority INTEGER, createDate TEXT, dueDate TEXT, completeDate TEXT",
 			links : "folderURI TEXT, messageId TEXT, taskId NUMBER",
 			model_version : "version NUMERIC"
 		}
@@ -595,7 +619,7 @@ TASKMAIL.DB = {
 		this.dbConnection = dbConnection;
 	},
 
-	targetVersion : 6,
+	targetVersion : 7,
 	
 	dbUpgrade : function() {
 		try {
@@ -634,6 +658,9 @@ TASKMAIL.DB = {
 			} 
 			if (currentVersion < 6) {
 				this.dbUpgrade6();
+			} 
+			if (currentVersion < 7) {
+				this.dbUpgrade7();
 			} 
 			if (currentVersion < this.targetVersion) {
 				stat = this.dbConnection
@@ -716,6 +743,13 @@ TASKMAIL.DB = {
 			}
 	},
 
+	dbUpgrade7 : function() {
+		this.dbConnection.executeSimpleSQL("alter table tasks add column createDate TEXT");
+		this.dbConnection.executeSimpleSQL("alter table tasks add column dueDate TEXT");
+		this.dbConnection.executeSimpleSQL("alter table tasks add column completeDate TEXT");
+		this.dbConnection.executeSimpleSQL("update tasks set createDate = current_date");
+	},
+	
 	_dbCreate : function(aDBService, aDBFile) {
 		var dbConnection = aDBService.openDatabase(aDBFile);
 		this._dbCreateTables(dbConnection);
@@ -736,6 +770,35 @@ TASKMAIL.DB = {
 				.logStringMessage("Database initialisation successful.");
 	}
 };
+
 window.addEventListener("load", function(e) {
 			TASKMAIL.DB.onLoad(e);
 		}, false);
+
+function parseDate(aStringDate) {
+	if (aStringDate != null) {
+		var year  = parseInt(aStringDate.substring(0,4));
+		var month = parseInt(aStringDate.substring(5,7), 10) - 1;
+		var day   = parseInt(aStringDate.substring(8), 10);
+		var result = new Date(year, month, day);
+		return result;
+	} else {
+		return null;
+	}
+}
+
+function formatDate (aDate) {
+  if (aDate != null) {
+  	var year = aDate.getFullYear();
+  	var month = aDate.getMonth() + 1;  // since js month is 0-11
+  	if ( month < 10 )
+	    month = "0" + month;
+	  var date = aDate.getDate();
+	  if ( date < 10 )
+    	date = "0" + date;
+  	var result = year + "-" + month + "-" + date; 
+		return result;
+  } else { 
+  	return null;
+	}
+}
