@@ -23,16 +23,21 @@
 <!ENTITY delete       "Delete">
 <!ENTITY markDone     "Mark as {s}">
 <!ENTITY changePriority      "Change Priority">
-<!ENTITY incrementPriority      "Increment">
-<!ENTITY decrementPriority      "Decrement">
-<!ENTITY save        "Save">
-<!ENTITY cancel      "Cancel">
-<!ENTITY moveTask    "Move to">
-<!ENTITY moveHere    "Here">
-<!ENTITY state       "State">
-<!ENTITY title       "Title">
-<!ENTITY detail      "Detail">
-<!ENTITY detailTTP   "Entrée or CTRL-Entrée = Save, SHIFT-Echap = Cancel">
+<!ENTITY incrementPriority   "Increment">
+<!ENTITY decrementPriority   "Decrement">
+<!ENTITY save                "Save">
+<!ENTITY cancel              "Cancel">
+<!ENTITY moveTask            "Move to">
+<!ENTITY moveHere            "Here">
+<!ENTITY state               "State">
+<!ENTITY title               "Title">
+<!ENTITY detail              "Detail">
+<!ENTITY priority            "Priority">
+<!ENTITY detailTTP           "Entrée or CTRL-Entrée = Save, SHIFT-Echap = Cancel">
+<!ENTITY dates               "Dates">
+<!ENTITY createDate          "Creation">
+<!ENTITY dueDate             "Due">
+<!ENTITY completeDate        "Completion">
 <!ENTITY stateFilterTTP      "State filter">
 <!ENTITY activeFilterTTP     "Includes 'to do' and 'to follow'">
 <!ENTITY currentFilterTTP    "All tasks except 'done'">

@@ -219,7 +219,7 @@
   							<label hidden="true" value="Id :" class="minorLabel"/>
   							<label hidden="true" value=""     class="minorLabel" id="taskId"/>
   							<spacer flex="2"/>
-								<label value="Proirity :"/>
+								<label value="&priority; :"/>
   							<menulist  id="taskPriority" flex="1">
   								<menupopup>
   									<menuitem label="0" value="0" accesskey="0" class="taskPriority-0"/>
@@ -238,22 +238,22 @@
 						</row>
 						<separator/>
 						<row>
-							<label value="Dates" class="minorLabel"/>
+							<label value="&dates;" class="minorLabel"/>
 							<grid>
 								<columns><column/><column/><column/></columns>
 							  <rows>
 							  	<row>
-										  <label value="Création :"/>
+										  <label value="&createDate; :"/>
 										  <spacer/>
 										  <datepicker id="taskCreateDate" type="grif" disabled="true"/>
 							  	</row>
 							  	<row>
-									  <label value="Echeance :"/>
+									  <label value="&dueDate; :"/>
 									  <checkbox id="taskDueDateChk" class="checkbox-no-label" checked="false" oncommand="TASKMAIL.UI.chkTaskDate('taskDueDate');"/>
 									  <datepicker id="taskDueDate" type="grid" readonly="true"/>
 							  	</row>
 							  	<row>
-									  <label value="Réalisation :"/>
+									  <label value="&completeDate; :"/>
 									  <checkbox id="taskCompleteDateChk" class="checkbox-no-label" checked="false" oncommand="TASKMAIL.UI.chkTaskDate('taskCompleteDate');"/>
 									  <datepicker id="taskCompleteDate" type="grid" readonly="true"/>
 							  	</row>
