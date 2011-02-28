@@ -243,12 +243,13 @@
 								<columns><column/><column/><column/></columns>
 							  <rows>
 							  	<row>
-										  <label value="&createDate; :"/>
-										  <spacer/>
-										  <datepicker id="taskCreateDate" type="grif" disabled="true"/>
+									  <label value="&createDate; :"/>
+									  <spacer/>
+									  <datepicker id="taskCreateDate" type="grif" disabled="true"/>
 							  	</row>
 							  	<row>
 									  <label value="&dueDate; :"/>
+									  <!-- heckbox id = [date field]Chk -->
 									  <checkbox id="taskDueDateChk" class="checkbox-no-label" checked="false" oncommand="TASKMAIL.UI.chkTaskDate('taskDueDate');"/>
 									  <datepicker id="taskDueDate" type="grid" readonly="true"/>
 							  	</row>
