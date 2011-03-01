@@ -261,7 +261,7 @@ TASKMAIL.UI = {
 		var menuitemrow = document.getElementById('row-menu.markDone');
 		var menuitemmenubar = document.getElementById('main-menu.markDone');
 		var regExp = new RegExp("{s}");
-		var doneLabel = TASKMAIL.UI.states[4].label;
+		var doneLabel = TASKMAIL.UI.states[TASKMAIL.done_state].label;
 		menuitemrow.label = menuitemrow.label.replace(regExp, doneLabel);
 		menuitemmenubar.label = menuitemmenubar.label.replace(regExp, doneLabel);
 		var selected = TASKMAIL.UI.getSelectedTasks();
@@ -350,16 +350,51 @@ TASKMAIL.UI = {
 		document.getElementById("taskDueDate").value = aTask.dueDate != null ? aTask.dueDate : new Date();
 		document.getElementById("taskCompleteDateChk").checked = aTask.completeDate != null;
 		document.getElementById("taskCompleteDate").value = aTask.completeDate != null ? aTask.completeDate : new Date();
-		this.chkTaskDate("taskDueDate");
-		this.chkTaskDate("taskCompleteDate");
+		this._disableDateField("taskDueDate");
+		this._disableDateField("taskCompleteDate");
 	},
 	
-	chkTaskDate : function(id) {
+	/**
+	 * disable date field according to corresponding checkbox date.
+	 * if complete date is checked then change state fto 'done'.
+	 * @param id String date field id.
+	 */
+	onChkTaskDate : function(id) {
+		this._disableDateField(id);
+		if (id == "taskCompleteDate" && document.getElementById(id + "Chk").checked) {
+			var stateList = document.getElementById("taskState");
+			var ligne = stateList.firstChild;
+			for (var i = 0; i < ligne.childNodes.length; i++) {
+				if (ligne.childNodes[i].value == 4) {
+					stateList.selectedIndex = i;
+					break;
+				}
+			}		
+		}
+	},
+
+	/**
+	 * disable date field according to corresponding checkbox date.
+	 * checkbox id = date_field id + "Chk"
+	 * @param id String date field id.
+	 */
+	_disableDateField : function(id) {
 		var chk  = document.getElementById(id + "Chk");
 		var date = document.getElementById(id);
 		date.disabled = !chk.checked;
 	},
 
+	/**
+	 * when state is changed to 'done', then set complete date.
+	 */
+	onStateChanged : function() {
+		var stateInput = document.getElementById("taskState").selectedItem.value;
+		if (stateInput == 4) {
+			document.getElementById("taskCompleteDateChk").checked = true;
+			this.onChkTaskDate("taskCompleteDate");
+		}
+	},
+	
 	refreshTaskList : function() {
 		consoleService.logStringMessage("refreshTaskList");
 		// le refresh du folder est lancé avant l'handler de la colonne des
@@ -578,7 +613,7 @@ TASKMAIL.UI = {
 		for (var i = 0; i < selectedTasks.length; i++) {
 			var folderURI = selectedTasks[i].getAttribute("folderURI");
 			var taskId = parseInt(selectedTasks[i].getAttribute("pk"));
-			var newTask = new TASKMAIL.Task(taskId, folderURI, null, null, null, null);
+			var newTask = new TASKMAIL.Task(taskId, folderURI, null, null, null, null, null, null, null);
 			result.push(newTask);
 		}
 		return result;
@@ -971,6 +1006,9 @@ TASKMAIL.UI = {
 		this.refreshTaskList();
   },
   
+  /**
+   * Change task state to done and completeDate.
+   */
   updateTaskStateDone : function (event) {
   	var taskKeys = this.getSelectedTasksKeys();
   	TASKMAIL.DB.updateStateTaskSQLite(taskKeys, 4);

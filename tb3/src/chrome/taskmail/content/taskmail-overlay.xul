@@ -212,7 +212,7 @@
 						<row>		
 							<label value="&state; :"/>  
               <hbox>
-  							<menulist  id="taskState" flex="2">
+  							<menulist  id="taskState" flex="2" oncommand="TASKMAIL.UI.onStateChanged();">
   								<menupopup>
   								</menupopup>
   							</menulist>
@@ -250,12 +250,12 @@
 							  	<row>
 									  <label value="&dueDate; :"/>
 									  <!-- heckbox id = [date field]Chk -->
-									  <checkbox id="taskDueDateChk" class="checkbox-no-label" checked="false" oncommand="TASKMAIL.UI.chkTaskDate('taskDueDate');"/>
+									  <checkbox id="taskDueDateChk" class="checkbox-no-label" checked="false" oncommand="TASKMAIL.UI.onChkTaskDate('taskDueDate');"/>
 									  <datepicker id="taskDueDate" type="grid" readonly="true"/>
 							  	</row>
 							  	<row>
 									  <label value="&completeDate; :"/>
-									  <checkbox id="taskCompleteDateChk" class="checkbox-no-label" checked="false" oncommand="TASKMAIL.UI.chkTaskDate('taskCompleteDate');"/>
+									  <checkbox id="taskCompleteDateChk" class="checkbox-no-label" checked="false" oncommand="TASKMAIL.UI.onChkTaskDate('taskCompleteDate');"/>
 									  <datepicker id="taskCompleteDate" type="grid" readonly="true"/>
 							  	</row>
 							  </rows>

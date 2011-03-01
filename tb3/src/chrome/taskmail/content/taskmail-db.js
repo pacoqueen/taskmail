@@ -4,6 +4,9 @@ if (!TASKMAIL.DB)
 	TASKMAIL.DB = {};
 
 TASKMAIL = {
+	
+	done_state : 4,
+	
 	Task : function(aId, aFolderURI, aFolderName, aTitle, aDesc, aState, aPriority,
 	                aCreateDate, aDueDate, aCompleteDate) {
 		this.id             = aId;
@@ -11,7 +14,7 @@ TASKMAIL = {
 		this.folderName     = aFolderName;
 		this.title          = aTitle;
 		this.desc           = aDesc;
-		this.state          = aState;						// State (code de l'état) ; 4 = done.
+		this.state          = aState;						// State (code de l'état) ; 4 = TASKMAIL.done_state = done.
 		this.priority       = aPriority;
 		this.createDate     = aCreateDate;			// Les dates sont des Date Javascript, null possible.
 		this.dueDate        = aDueDate;
@@ -273,6 +276,7 @@ TASKMAIL.DB = {
 	},
 
 	/**
+	 * Change state and complete date if change to 'done'.
 	 * @param taskIdArray Array[int] tasks id to update
 	 * @param state int state code
 	 */
@@ -280,12 +284,18 @@ TASKMAIL.DB = {
 		this.consoleService.logStringMessage("updateStateTaskSQLite");
 		try {
 			this.dbConnection.beginTransaction();
-			var stat = this.dbConnection
+			var statState = this.dbConnection
 				.createStatement("update tasks set state = :state where rowid = :pk");
+			var statDate = this.dbConnection
+				.createStatement("update tasks set completeDate = current_date where rowid = :pk");
 			for(var i=0; i<taskIdArray.length; i++) {
-				stat.bindStringParameter(0, state);
-				stat.bindInt32Parameter(1, taskIdArray[i]);
-				stat.execute();
+				statState.bindStringParameter(0, state);
+				statState.bindInt32Parameter(1, taskIdArray[i]);
+				statState.execute();
+				if (state == TASKMAIL.done_state) {
+					statDate.bindInt32Parameter(0, taskIdArray[i]);
+					statDate.execute();
+				}
 			}
 		} catch (err) {
 			this.dbConnection.rollbackTransaction();
@@ -751,7 +761,7 @@ TASKMAIL.DB = {
 		this.dbConnection.executeSimpleSQL("alter table tasks add column dueDate TEXT");
 		this.dbConnection.executeSimpleSQL("alter table tasks add column completeDate TEXT");
 		this.dbConnection.executeSimpleSQL("update tasks set createDate = current_date");
-		this.dbConnection.executeSimpleSQL("update tasks set completeDate = current_date where state = '4'");
+		this.dbConnection.executeSimpleSQL("update tasks set completeDate = current_date where state = '" + TASKMAIL.done_state + "'");
 	},
 	
 	_dbCreate : function(aDBService, aDBFile) {
