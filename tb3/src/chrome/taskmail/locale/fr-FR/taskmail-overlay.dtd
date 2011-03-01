@@ -1,6 +1,6 @@
 <!ENTITY menuAddTask           "Ajouter une tâche">
 <!ENTITY menuAddTaskWithLink   "Ajouter une tâche liée">
-<!ENTITY menuUpdate            "Modifier une tâches">
+<!ENTITY menuUpdate            "Modifier une tâche">
 <!ENTITY menuDelete            "Supprimer une tâche">
 <!ENTITY menuSelectLinked      "Sélectionner tâches ou messages">
 <!ENTITY menuViewTaskPane      "Panneau Tasks &amp; Mails">
