@@ -37,7 +37,7 @@ TASKMAIL.UI = {
 
 	beginAddTask : function() {
 		// clean UI
-		this.fillTaskDetail(new TASKMAIL.Task(0, null, null, null, null, 1, 5));
+		this.fillTaskDetail(new TASKMAIL.Task(0, null, null, null, null, 1, 5, null, null, null));
 		var box = document.getElementById("addTask");
 		box.collapsed = false;
 		document.getElementById("taskTitle").focus();
@@ -345,7 +345,7 @@ TASKMAIL.UI = {
 		document.getElementById("taskPriority").selectedIndex = aTask.priority;
 		document.getElementById("taskId").value = aTask.id;
 
-		document.getElementById("taskCreateDate").value = null;
+		document.getElementById("taskCreateDate").value = aTask.createDate != null ? aTask.createDate : new Date();
 		document.getElementById("taskDueDateChk").checked = aTask.dueDate != null;			
 		document.getElementById("taskDueDate").value = aTask.dueDate != null ? aTask.dueDate : new Date();
 		document.getElementById("taskCompleteDateChk").checked = aTask.completeDate != null;
