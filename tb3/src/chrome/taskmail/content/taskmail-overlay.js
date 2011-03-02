@@ -365,7 +365,7 @@ TASKMAIL.UI = {
 			var stateList = document.getElementById("taskState");
 			var ligne = stateList.firstChild;
 			for (var i = 0; i < ligne.childNodes.length; i++) {
-				if (ligne.childNodes[i].value == 4) {
+				if (ligne.childNodes[i].value == TASKMAIL.done_state) {
 					stateList.selectedIndex = i;
 					break;
 				}
@@ -389,7 +389,7 @@ TASKMAIL.UI = {
 	 */
 	onStateChanged : function() {
 		var stateInput = document.getElementById("taskState").selectedItem.value;
-		if (stateInput == 4) {
+		if (stateInput == TASKMAIL.done_state) {
 			document.getElementById("taskCompleteDateChk").checked = true;
 			this.onChkTaskDate("taskCompleteDate");
 		}

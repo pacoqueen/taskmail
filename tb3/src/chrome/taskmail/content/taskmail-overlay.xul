@@ -249,7 +249,7 @@
 							  	</row>
 							  	<row>
 									  <label value="&dueDate; :"/>
-									  <!-- heckbox id = [date field]Chk -->
+									  <!-- checkbox id = [date field id]Chk -->
 									  <checkbox id="taskDueDateChk" class="checkbox-no-label" checked="false" oncommand="TASKMAIL.UI.onChkTaskDate('taskDueDate');"/>
 									  <datepicker id="taskDueDate" type="grid" readonly="true"/>
 							  	</row>
