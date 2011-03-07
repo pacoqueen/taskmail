@@ -6,18 +6,37 @@
 	margin:0px;
 }
 
-.listcell-subfolder {
-	list-style-image: url('chrome://messenger/skin/icons/thread.png');
-	padding: 0px;
-	margin:0px 0px 0px 3px;
-}
-
 .taskColumnHeader {
 	list-style-image: url('chrome://taskmail/skin/link_task.png');
 	padding-left: 0px;
 	padding-right: 0px;
 	margin-left: 0px;
 	margin-right: 0px;
+}
+
+.listcell-subfolder {
+	list-style-image: url('chrome://messenger/skin/icons/thread.png');
+	padding: 0px;
+	margin:0px 0px 0px 3px;
+}
+
+treechildren::-moz-tree-image(subfolder)
+{
+  list-style-image: url('chrome://messenger/skin/icons/thread.png');
+}
+
+treechildren::-moz-tree-image(linked)
+{
+  list-style-image: url('chrome://taskmail/skin/link_mail.jpg');
+  padding: 0px;
+  margin:0px 0px 0px 0px;
+}
+
+treechildren::-moz-tree-image(linked_hilight)
+{
+  list-style-image: url('chrome://taskmail/skin/link_mail_hilight.jpg');
+  padding: 0px;
+  margin:0px 0px 0px 0px;
 }
 
 .icon-mail-column  {

@@ -7,6 +7,7 @@ if (!TASKMAIL.UI)
 TASKMAIL.UI = {
 	
 	goFolder : function() {
+		// TODO get folder à faire
 		var folderURI = document.popupNode.getAttribute("folderURI");
 		if (GetSelectedMsgFolders()[0].URI != folderURI) {
 			SelectFolder(folderURI);
@@ -15,10 +16,12 @@ TASKMAIL.UI = {
 
 	doubleClikTask : function(event) {
 		if (event.ctrlKey) {
+			//TODO get pk à faire
 			TASKMAIL.UILink.showLinkedMail(event.target);
 		} else {
 			var box = document.getElementById("addTask");
-			var pk = event.target.getAttribute("pk");
+			// TODO getPK à faire
+			var pk = event.target.firstChild.getAttribute("pk");
 			if (box.collapsed || this.taskDetailPK != pk) {
 				// si on double clique sur une autre tache, ça l'ouvre
 				this.beginUpdateTask();
@@ -50,7 +53,6 @@ TASKMAIL.UI = {
 	 */
 	beginUpdateTask : function() {
 		// get task detail
-		var listBox = document.getElementById("taskList");
 		var taskKeys = this.getSelectedTasksKeys();
 		if (taskKeys.length > 0) {
 			// on prend la 1° tache sélectionnée
@@ -71,7 +73,7 @@ TASKMAIL.UI = {
 		var desc = document.getElementById("taskDesc").value;
 		var prio = document.getElementById("taskPriority").selectedIndex;
 		var dueDate      = document.getElementById("taskDueDateChk").checked ? document.getElementById("taskDueDate").value : null;
-		var completeDate = document.getElementById("taskCompleteDateChk").checked ? document.getElementById("taskCompleteDate").value : null;		// TODO
+		var completeDate = document.getElementById("taskCompleteDateChk").checked ? document.getElementById("taskCompleteDate").value : null;
 		var currentMsgFolder = GetSelectedMsgFolders()[0];
 
 		if (this.taskDetailPK == -1) {
@@ -105,7 +107,6 @@ TASKMAIL.UI = {
 		// demande une confirmation
 		if (window.confirm(TASKMAIL.UI.stringsBundle
 				.getString('taskDeleteConfirm'))) {
-			var listBox = document.getElementById("taskList");
 			var taskIds = this.getSelectedTasksKeys();
 			for (var i = 0; i < taskIds.length; i++) {
 				TASKMAIL.DB.removeTaskAndLinkSQLite(taskIds[i]);
@@ -165,14 +166,18 @@ TASKMAIL.UI = {
 	 * put linked objects count.
 	 * @param sens String "task" (vers email) or "mail" (vers task) or null
 	 */
-	adjustContextMenu : function(sens) {
+	adjustContextMenu : function(sens, event) {
+		var temp = TASKMAIL.UI.getSelectedTasks();
+		consoleService.logStringMessage("refreshTaskList"+temp.length == 0 ? "vide" : temp.length + "/" + temp[0].id);
 		var menuitem = null;
 		var linkedObject = null;
 		if (sens == "task") {
 			menuitem = document.getElementById('row-menu-goNextMail');
+			// TODO getPk à faie
+			var pk = document.popupNode
+							.firstChild.getAttribute("pk");
 			linkedObject = TASKMAIL.Link
-					.getMailKeysFromTaskID(document.popupNode
-							.getAttribute("pk"));
+					.getMailKeysFromTaskID(pk);
 		} else {
 			menuitem = document.getElementById('mailContext.goNextTask');
 			// TODO obtenir email ayant reçu click droit.
@@ -188,6 +193,7 @@ TASKMAIL.UI = {
 			// on désactive 'go to folder' si la tache courante est dans le
 			// folder courant.
 			var currentFolder = GetSelectedMsgFolders()[0];
+			// TODO get folder à faire
 			var taskFolderURI = document.popupNode.getAttribute("folderURI");
 			menuitem = document.getElementById('row-menu.goFolder');
 			menuitem.disabled = currentFolder.URI == taskFolderURI;
@@ -274,62 +280,57 @@ TASKMAIL.UI = {
 	},
 	
 	fillTaskList : function(aTask) {
-		var row = document.createElement('listitem');
-
+		var item = document.createElement('treeitem');
+		var row = document.createElement('treerow');
+		
 		row.setAttribute('pk', aTask.id);
 		row.setAttribute("folderURI", aTask.folderURI);
 		
 		row.setAttribute("ondragstart", "TASKMAIL.UIDrag.onStartTask(event);");
 		row.setAttribute("ondragover",  "TASKMAIL.UIDrag.onOverTask(event);");
-		row.setAttribute("ondrop",  "TASKMAIL.UIDrag.onDropTask(event);");
-
-		var cell = document.createElement('listcell');
+		row.setAttribute("ondrop",      "TASKMAIL.UIDrag.onDropTask(event);");
+		
+		// Subfolder icon
+		var cell = document.createElement("treecell");
 		cell.setAttribute('label', null);
 		try {
 			if (aTask.folderURI != GetSelectedMsgFolders()[0].URI) {
-				cell.setAttribute('class', 'listcell-iconic listcell-subfolder');
+				cell.setAttribute('properties', 'subfolder');
 			} else {
-				cell.setAttribute('class', null);
+				cell.setAttribute('properties', null);
 			}
 		} catch (err) {
-			cell.setAttribute('class', null);
+			cell.setAttribute('properties', null);
 		}
 		row.appendChild(cell);
-
-		cell = document.createElement('listcell');
-		cell.setAttribute('label', null);
-		cell.setAttribute('class', 'listcell-iconic icon-mail-column');
-		row.appendChild(cell);
 		
-		cell = document.createElement('listcell');
+		// link icon
+		cell = document.createElement('treecell');
+		cell.setAttribute('label', null);
+		row.appendChild(cell);
+
+		// priority
+		cell = document.createElement('treecell');
 		cell.setAttribute('label', aTask.priority);
 		cell.setAttribute('class', 'taskPriority-column taskPriority-' + aTask.priority);
 		row.appendChild(cell);
-		
+
 		var stateLabel = this.getStateLabel(aTask.state);
-		// Create and attach 1st cell
-		cell = document.createElement('listcell');
+		cell = document.createElement('treecell');
 		cell.setAttribute('label', stateLabel);
 		row.appendChild(cell);
 
-		// Create and attach 2nd cell
-		cell = document.createElement('listcell');
+		cell = document.createElement('treecell');
 		cell.setAttribute('label', aTask.title);
 		row.appendChild(cell);
 
 		// place le nom du folder dans un tooltip de la ligne
 		row.setAttribute("tooltiptext",aTask.folderName);
-		
-		// le text du lien sera setté plus tard
-		var linkText = "";
 
-		document.getElementById("taskList").appendChild(row);
+		item.appendChild(row);
+		document.getElementById("taskTreeChild").appendChild(item);
 	},
 
-	selectItemByLabel : function () {
-		
-	},
-	
 	fillTaskDetail : function(aTask) {
 		document.getElementById("addTask").value = aTask.id;
 		document.getElementById("taskTitle").value = aTask.title;
@@ -396,15 +397,25 @@ TASKMAIL.UI = {
 	},
 	
 	refreshTaskList : function() {
-		consoleService.logStringMessage("refreshTaskList");
+//		consoleService.logStringMessage("refreshTaskList");
 		// le refresh du folder est lancé avant l'handler de la colonne des
 		// emails.
 		var selectedTasks = TASKMAIL.UI.getSelectedTasksKeys();
+		var oldCurrentIndex = document.getElementById("taskList").currentIndex;
+		var currentTaskKey = new Array();
+		currentTaskKey.push(TASKMAIL.UI.getCurrentTaskKey());
+	
 		TASKMAIL.UI.emptyList();
 		TASKMAIL.UI.getTaskList();
 		TASKMAIL.UI.selectTasksByKeys(selectedTasks);
+
 		// la sauvegarde de l'élément courant n'est pas parfaite sur un changement de folder.
-		document.getElementById("taskList").currentIndex = TASKMAIL.UI.getTaskIndexFromTaskID(selectedTasks)[0];
+		if (oldCurrentIndex != -1) {
+//			consoleService.logStringMessage("refreshTaskList,currentIndex="+oldCurrentIndex);
+//			consoleService.logStringMessage("refreshTaskList,currentTaskKey="+currentTaskKey);
+//			consoleService.logStringMessage("refreshTaskList,new currentIndex="+TASKMAIL.UI.getTaskIndexFromTaskID(currentTaskKey));
+			document.getElementById("taskList").currentIndex = TASKMAIL.UI.getTaskIndexFromTaskID(currentTaskKey);
+		}
 	},
 
 	refreshTaskLink : function() {
@@ -416,18 +427,18 @@ TASKMAIL.UI = {
 		}
 		// parcours tout les taches et regarde s'il existe une tache liée
 		var listBox = document.getElementById("taskList");
-		for (var i = 0; i < listBox.getRowCount(); i++) {
-			var row = listBox.getItemAtIndex(i);
+		for (var i = 0; i < listBox.view.rowCount; i++) {
+			var row = listBox.contentView.getItemAtIndex(i);
+			var pk = row.firstChild.getAttribute("pk"); 
 			var linkType = TASKMAIL.Link.getTaskLinkType(
-					row.getAttribute("pk"), gDBView.msgFolder.URI, selectedMailKey);
-			// row.lastChild.setAttribute("label", text);
+					pk, gDBView.msgFolder.URI, selectedMailKey);
 			var linkURL = null;
 			if (linkType == 2) {
-				linkURL = "chrome://taskmail/skin/link_mail_hilight.jpg";
+				linkURL = "linked_hilight";
 			} else if (linkType == 1) {
-				linkURL = "chrome://taskmail/skin/link_mail.jpg";
+				linkURL = "linked";
 			}
-			row.childNodes[1].setAttribute("image", linkURL);
+			row.childNodes[0].childNodes[1].setAttribute("properties", linkURL);
 		}
 	},
 
@@ -589,46 +600,58 @@ TASKMAIL.UI = {
 		var listBox = document.getElementById("taskList");
 		for (var j = 0; j < taskID.length; j++) {
 			var i = 0;
-			while (i < listBox.getRowCount()) {
-				var row = listBox.getItemAtIndex(i);
-				if (row.getAttribute("pk") == taskID[j]) {
+			while (i < listBox.view.rowCount) {
+				var row = listBox.contentView.getItemAtIndex(i);
+				if (row.firstChild.getAttribute("pk") == taskID[j]) {
 					result[nbResult] = i;
 					nbResult += 1;
 				}
 				i++;
 			}
 		}
-		// consoleService.logStringMessage(result);
+//		consoleService.logStringMessage("getTaskIndexFromTaskID result="+result);
 		return result;
 	},
 
 	/**
 	 * return array of selected task id.
-	 * @return [Task]
+	 * @return [Task] an empty array is no task is selected.
 	 */
 	getSelectedTasks : function() {
 		var listBox = document.getElementById("taskList");
-		var selectedTasks = listBox.selectedItems;
-		var result = new Array();
-		for (var i = 0; i < selectedTasks.length; i++) {
-			var folderURI = selectedTasks[i].getAttribute("folderURI");
-			var taskId = parseInt(selectedTasks[i].getAttribute("pk"));
-			var newTask = new TASKMAIL.Task(taskId, folderURI, null, null, null, null, null, null, null);
-			result.push(newTask);
-		}
+		var result = [];
+		var rangeCount = listBox.view.selection.getRangeCount();
+		for (var i = 0; i < rangeCount; i++)
+		{
+		   var start = {};
+		   var end = {};
+		   listBox.view.selection.getRangeAt(i, start, end);
+		   for(var c = start.value; c <= end.value; c++)
+		   {
+		   		var taskId = parseInt(listBox.view.getItemAtIndex(c).firstChild.getAttribute("pk"));
+					var folderURI = listBox.view.getItemAtIndex(c).firstChild.getAttribute("folderURI");
+		   		var newTask = new TASKMAIL.Task(taskId, folderURI, null, null, null, null, null, null, null);
+		      result.push(newTask);
+		   }
+		}		
 		return result;
 	},
 	
 	/**
 	 * return tasks selected keys.
 	 * 
-	 * @return Array[int]
+	 * @return Array[int] an empty array if no task is selected.
 	 */
 	getSelectedTasksKeys : function() {
 		var tasks = this.getSelectedTasks();
 		return this.getTasksKeys(tasks);
 	},
 
+	/**
+	 * Transforms tasks array into task key arrays.
+	 * @param [Task]
+	 * @return [int]
+	 */
 	getTasksKeys : function(tasks) {
 		var result = new Array();
 		for(var i=0; i<tasks.length; i++) {
@@ -637,6 +660,21 @@ TASKMAIL.UI = {
 		return result;
 	},
 
+	/**
+	 * return current selected task id.
+	 * @return int -1 if no current task 
+	 */
+	getCurrentTaskKey : function() {
+		var result = -1;
+		var listBox = document.getElementById("taskList");
+		var currentIndex = listBox.currentIndex;
+//		consoleService.logStringMessage("getCurrentTaskKey:currentIndex="+currentIndex);
+		if (currentIndex != -1) {
+			result  = parseInt(listBox.view.getItemAtIndex(currentIndex).firstChild.getAttribute("pk"));
+		}
+		return result;
+	},
+	
 	getSelectedMailKey : function() {
 		var selectedMessages = gFolderDisplay.selectedMessages;
 		var result = new Array();
@@ -664,7 +702,7 @@ TASKMAIL.UI = {
 	},
 
 	/**
-	 * select tasks by keys
+	 * select tasks by keys. clear the selection when beginning.
 	 * 
 	 * @param Array[int]
 	 *            keys
@@ -672,22 +710,23 @@ TASKMAIL.UI = {
 	 */
 	selectTasksByKeys : function(keys) {
 		var listBox = document.getElementById("taskList");
-		for (var i = 0; i < listBox.getRowCount(); i++) {
-			var row = listBox.getItemAtIndex(i);
+		var first = false;
+		for (var i = 0; i < listBox.view.rowCount; i++) {
+			var row = listBox.contentView.getItemAtIndex(i);
 			// parseInt car l'attribut du dom est forcement une string
-			var temp = parseInt(row.getAttribute("pk"));
+			var temp = parseInt(row.firstChild.getAttribute("pk"));
 			if (keys.indexOf(temp) > -1) {
-				// besoin d'appeler ensureIsVisible sinon la selection ne marche pas toujours.
-				listBox.ensureIndexIsVisible(i);
-				listBox.addItemToSelection(row);
+				listBox.view.selection.rangedSelect(i, i, first);
+				first = true;
 			}
+			
 		}
 	},
 
 	emptyList : function() {
-		var listBox = document.getElementById("taskList");
-		while (listBox.getRowCount() > 0) {
-			listBox.removeItemAt(0);
+		var listBox = document.getElementById("taskTreeChild");
+		while (listBox.firstChild) {
+  		listBox.removeChild(listBox.firstChild);
 		}
 	},
 
@@ -1071,19 +1110,16 @@ TASKMAIL.UILink = {
 		if (window.confirm(TASKMAIL.UI.stringsBundle
 				.getString('confirmDeleteLink'))) {
 			// parcours tous les messages sélectionnés pour trouver les
-			// taches
-			// liées
-			// dans celles sélectionnés
+			// taches liées dans celles sélectionnés
 			// TODO optimisation possible en n'invocant uniquement pour les
 			// liens liées;
 			var selectedMessages = gFolderDisplay.selectedMessages; // OK un
 			// objet msg
-			var listBox = document.getElementById("taskList");
-			var selectedTasks = listBox.selectedItems;
+			var selectedTasks = TASKMAIL.UI.getSelectedTasksKeys();
 			for (var i = 0; i < selectedMessages.length; i++) {
 				for (var j = 0; j < selectedTasks.length; j++) {
 					TASKMAIL.DB.unlinkTaskSQLite(selectedMessages[i],
-							selectedTasks[j].getAttribute("pk"));
+							selectedTasks[j]);
 				}
 			}
 			TASKMAIL.UI.refreshTaskList();
@@ -1098,7 +1134,8 @@ TASKMAIL.UILink = {
 	showLinked : function (event) {
 		var focused = document.commandDispatcher.focusedElement;
 		if (document.getElementById("taskList") == focused) {
-			var item = document.getElementById("taskList").selectedItem;
+			var item = document.getElementById("taskList").contentView.getItemAtIndex(document.getElementById("taskList").currentIndex);
+			// TODO get pk à faire
 			TASKMAIL.UILink.showLinkedMail(item);
 		} else if (document.getElementById("threadTree") == focused) {
 			TASKMAIL.UILink.showLinkedTask();
@@ -1131,7 +1168,7 @@ TASKMAIL.UILink = {
 			if (taskIndex.length > 0) {
 				var founded = false;
 				for (var i = 0; i < taskIndex.length; i++) {
-					if (document.getElementById("taskList").selectedIndex == taskIndex[i]) {
+					if (document.getElementById("taskList").currentIndex == taskIndex[i]) {
 						founded = true;
 						break;
 					}
@@ -1143,10 +1180,8 @@ TASKMAIL.UILink = {
 				} else {
 					i = -1;
 				}
-				document.getElementById("taskList").selectedIndex = taskIndex[i
-						+ 1];
-				document.getElementById("taskList").scrollToIndex(taskIndex[i
-						+ 1]);
+				document.getElementById("taskList").view.selection.select(taskIndex[i + 1]);
+				document.getElementById("taskList").treeBoxObject.ensureRowIsVisible(taskIndex[i + 1]);
 			}
 		} catch (err) {
 			Components.utils.reportError("showLinkedTask " + err);
@@ -1161,8 +1196,9 @@ TASKMAIL.UILink = {
 		if (!item) {
 			item = document.popupNode;
 		}
-		var taskID = item.getAttribute("pk");
-		var folderURI = item.getAttribute("folderURI");
+//		var taskID = item.getAttribute("pk");
+		var taskID = item.firstChild.getAttribute("pk");
+		var folderURI = item.firstChild.getAttribute("folderURI");
 		// recupére les keys de mail liés à la tache
 		var keysMails = TASKMAIL.Link.getMailKeysFromTaskID(taskID);
 		if (keysMails != null && keysMails.length > 0) {
@@ -1251,7 +1287,6 @@ TASKMAIL.UILink = {
 		for (var i = 0; i < temp.length; i++) {
 			temp2 = temp2.concat(TASKMAIL.Link.getTaskIDFromMailID(gDBView.msgFolder.URI, temp[i]));
 		}
-		document.getElementById("taskList").clearSelection();
 		TASKMAIL.UI.selectTasksByKeys(temp2);
 	}
 
@@ -1271,7 +1306,7 @@ TASKMAIL.Link = {
 	},
 
 	resetLink : function() {
-		consoleService.logStringMessage("resetLink");
+//		consoleService.logStringMessage("resetLink");
 		this.nbLinks = 0;
 	},
 
@@ -1354,7 +1389,7 @@ TASKMAIL.Link = {
 	
 	/**
 	 * @param taskID
-	 *            -1 si pas de tache sélectionnée
+	 *            [int]-1 si pas de tache sélectionnée
 	 * @param selectedMailKey
 	 * @return 3 = lien grisé, 2 = lien surligné, 1 = lien, 0 = pas de lien
 	 */
@@ -1365,7 +1400,7 @@ TASKMAIL.Link = {
 		var oneTaskVisible = false;
 		for (var j = 0; j < this.nbLinks; j++) {
 			if (aFolderURI == this.folderURILinks[j] && selectedMailKey == this.mailKeysLinks[j]) {
-				if (taskID == this.taskIdLinks[j]) {
+				if (taskID.indexOf(this.taskIdLinks[j]) > -1) {
 					direct = true;
 				} else {
 					undirect = true;
@@ -1569,6 +1604,7 @@ TASKMAIL.UIDrag= {
 	},
 	
 	onDropTask : function(event,taskId) {		
+		// TODO get pk à faire
 		var uri = event.dataTransfer.getData("text/x-moz-message");
 		var folder = event.target.getAttribute("folderURI");
 		var taskId = event.target.getAttribute("pk");

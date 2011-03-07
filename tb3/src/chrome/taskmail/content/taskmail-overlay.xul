@@ -130,7 +130,7 @@
 			<grippy/>
 		</splitter>
 		<vbox flex="0.5" persist="width collapsed" id="taskPane">
-			<menupopup id="row-menu" onpopupshowing="TASKMAIL.UI.adjustContextMenu('task');">
+			<menupopup id="row-menu" onpopupshowing="TASKMAIL.UI.adjustContextMenu('task', document.popupNode);">
 				<menuitem label="&add;"          accesskey="A" oncommand="TASKMAIL.UI.beginAddTask()"/>
 				<menuitem label="&addWithLink;"  accesskey="L" oncommand="TASKMAIL.UI.beginAddTaskWithLink()" key="add-linked"/>
 				<menuitem label="&update;"       accesskey="U" oncommand="TASKMAIL.UI.beginUpdateTask()"/>
@@ -176,7 +176,7 @@
 				<menuitem label="&composeReport;" accesskey="C" oncommand="TASKMAIL.Report.composeReport()"/>
 			</menupopup>
 	
-			<listbox id="taskList" ondblclick="TASKMAIL.UI.doubleClikTask(event)" context="row-menu" 
+			<!--listbox id="taskList" ondblclick="TASKMAIL.UI.doubleClikTask(event)" context="row-menu" 
 					 seltype="multiple" flex="1" minheight="75">
 				<listhead>
 					<listheader tooltiptext="&header.subfolder;" class="listheader-icon subfolderColumnHeader"/>
@@ -192,7 +192,19 @@
 					<listcol/>
 					<listcol flex="1"/>
 				</listcols>
-			</listbox>
+			</listbox-->
+			<tree id="taskList" ondblclick="TASKMAIL.UI.doubleClikTask(event)" context="row-menu" seltype="multiple"  flex="1" minheight="75">
+				<treecols>
+					<treecol tooltiptext="&header.subfolder;" class="listheader-icon subfolderColumnHeader"/>
+					<treecol tooltiptext="&linkMailHeader;" class="listheader-icon taskColumnHeader"/>
+					<treecol label="!" id="taskPriorityColumnHeader" sortDirection="natural" onclick="TASKMAIL.UI.clickPriorityColumn(event);" persist="sortDirection"/>
+					<treecol label="&state;"/>
+					<treecol label="&title;" flex="1"/>
+				</treecols>
+				<treechildren id="taskTreeChild">
+					
+				</treechildren>
+			</tree>
 			
 			<vbox collapsed="true" id="addTask" flex="10" tooltiptext="&detailTTP;">
 				<grid flex="1">

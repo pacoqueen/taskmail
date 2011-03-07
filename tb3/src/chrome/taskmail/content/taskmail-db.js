@@ -9,7 +9,7 @@ TASKMAIL = {
 	
 	Task : function(aId, aFolderURI, aFolderName, aTitle, aDesc, aState, aPriority,
 	                aCreateDate, aDueDate, aCompleteDate) {
-		this.id             = aId;
+		this.id             = aId;							// int
 		this.folderURI      = aFolderURI;
 		this.folderName     = aFolderName;
 		this.title          = aTitle;

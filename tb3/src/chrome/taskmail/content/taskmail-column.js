@@ -27,13 +27,10 @@ TASKMAIL.COLUMN = {
 	  getRowProperties:    function(row, props){},
 	
 	  getImageSrc:         function(row, col) {
-	  	var taskID = -1;
-	    var taskSelectedItem = document.getElementById("taskList").selectedItem; 
-	    if (taskSelectedItem != null) {
-	      taskID = taskSelectedItem.getAttribute("pk");
-	    }
+	    var selectedTaskKeys = TASKMAIL.UI.getSelectedTasksKeys();
 	    var mailKey = gDBView.getKeyAt(row);
-	    var type = TASKMAIL.Link.getMailLinkType(taskID, gDBView.msgFolder.URI, mailKey);
+	    var type = 0;
+    	type = TASKMAIL.Link.getMailLinkType(selectedTaskKeys, gDBView.msgFolder.URI, mailKey);
 	    var linkURI = null;
 	    if (type == 3) {
 	    	linkURI = "chrome://taskmail/skin/link_task_grey.png";
@@ -42,6 +39,7 @@ TASKMAIL.COLUMN = {
 	    } else if (type == 1) {
 	    	linkURI = "chrome://taskmail/skin/link_task.png";
 	    }
+//	    consoleService.logStringMessage("getImageSrc:mailKey="+mailKey+",selectedTaskKeys="+selectedTaskKeys+",result="+linkURI);
 	  	return linkURI;
 	  },
 	

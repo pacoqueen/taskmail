@@ -168,13 +168,13 @@ QuickFilterManager.defineFilter({
   },
   
   propagateState: function(aOld, aSticky) {
-    consoleService.logStringMessage("propagateState(" + aOld + "," + aSticky + ")");
+//    consoleService.logStringMessage("propagateState(" + aOld + "," + aSticky + ")");
     
     // if sticky, we need that links have been retrieved 
     // when updateSearch is called, so we call it. Not optimized :(
     // propagateState is called before appendTerms.
     if (aOld != null && aSticky) {
-    	consoleService.logStringMessage("propagateState, get links");
+//    	consoleService.logStringMessage("propagateState, get links");
     	TASKMAIL.Link.resetLink();
     	var currentMsgFolder = GetSelectedMsgFolders()[0];
     	TASKMAIL.DB.getLinkSQLite(currentMsgFolder);
@@ -232,7 +232,7 @@ QuickFilterManager.defineFilter({
 	  aNode.checked = aFilterValue ? true : false;
   	
 	  if (aFilterValue == null) {
-		  consoleService.logStringMessage("reflectInDOM => supprime select event");
+//		  consoleService.logStringMessage("reflectInDOM => supprime select event");
 		  document.getElementById("taskList").removeEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
 		  document.getElementById("qfb-task-linked").style.visibility = "hidden";
 		  document.getElementById("qfb-task-thread").style.visibility = "hidden";
