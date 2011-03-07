@@ -7,22 +7,24 @@ if (!TASKMAIL.UI)
 TASKMAIL.UI = {
 	
 	goFolder : function() {
-		// TODO get folder à faire
-		var folderURI = document.popupNode.getAttribute("folderURI");
+		// TODO rendre entrée menu disabled if more than one task selected.
+		var selectedTask = TASKMAIL.UI.getSelectedTasks();
+		var folderURI = selectedTask[0].folderURI;
 		if (GetSelectedMsgFolders()[0].URI != folderURI) {
 			SelectFolder(folderURI);
 		}
 	},
 
+	/**
+	 * Open detail or show next linked email. 
+	 */
 	doubleClikTask : function(event) {
 		if (event.ctrlKey) {
-			//TODO get pk à faire
-			TASKMAIL.UILink.showLinkedMail(event.target);
+			TASKMAIL.UILink.showLinkedMail();
 		} else {
 			var box = document.getElementById("addTask");
-			// TODO getPK à faire
-			var pk = event.target.firstChild.getAttribute("pk");
-			if (box.collapsed || this.taskDetailPK != pk) {
+			var selectedTask = TASKMAIL.UI.getSelectedTasks();
+			if (box.collapsed || this.taskDetailPK != selectedTask[0].id) {
 				// si on double clique sur une autre tache, ça l'ouvre
 				this.beginUpdateTask();
 			} else {
@@ -166,18 +168,15 @@ TASKMAIL.UI = {
 	 * put linked objects count.
 	 * @param sens String "task" (vers email) or "mail" (vers task) or null
 	 */
-	adjustContextMenu : function(sens, event) {
-		var temp = TASKMAIL.UI.getSelectedTasks();
-		consoleService.logStringMessage("refreshTaskList"+temp.length == 0 ? "vide" : temp.length + "/" + temp[0].id);
+	adjustContextMenu : function(sens) {
 		var menuitem = null;
 		var linkedObject = null;
 		if (sens == "task") {
 			menuitem = document.getElementById('row-menu-goNextMail');
-			// TODO getPk à faie
-			var pk = document.popupNode
-							.firstChild.getAttribute("pk");
+			var selectedTask = TASKMAIL.UI.getSelectedTasks();
 			linkedObject = TASKMAIL.Link
-					.getMailKeysFromTaskID(pk);
+					.getMailKeysFromTaskID(selectedTask[0].id);
+			menuitem.disabled = selectedTask.length != 1 || linkedObject == null;
 		} else {
 			menuitem = document.getElementById('mailContext.goNextTask');
 			// TODO obtenir email ayant reçu click droit.
@@ -193,10 +192,14 @@ TASKMAIL.UI = {
 			// on désactive 'go to folder' si la tache courante est dans le
 			// folder courant.
 			var currentFolder = GetSelectedMsgFolders()[0];
-			// TODO get folder à faire
-			var taskFolderURI = document.popupNode.getAttribute("folderURI");
+			var selectedTask = TASKMAIL.UI.getSelectedTasks();
 			menuitem = document.getElementById('row-menu.goFolder');
-			menuitem.disabled = currentFolder.URI == taskFolderURI;
+			if (selectedTask.length == 1) {
+				var taskFolderURI = selectedTask[0].folderURI;
+				menuitem.disabled = currentFolder.URI == taskFolderURI;
+			} else {
+				menuitem.disabled = true;
+			}
 		}
 	},
 	
@@ -1134,9 +1137,7 @@ TASKMAIL.UILink = {
 	showLinked : function (event) {
 		var focused = document.commandDispatcher.focusedElement;
 		if (document.getElementById("taskList") == focused) {
-			var item = document.getElementById("taskList").contentView.getItemAtIndex(document.getElementById("taskList").currentIndex);
-			// TODO get pk à faire
-			TASKMAIL.UILink.showLinkedMail(item);
+			TASKMAIL.UILink.showLinkedMail();
 		} else if (document.getElementById("threadTree") == focused) {
 			TASKMAIL.UILink.showLinkedTask();
 		}
@@ -1192,13 +1193,10 @@ TASKMAIL.UILink = {
 	 * selection le prochain email liée. basé sur la tache qui a reçue le click
 	 * droit ou item passé suite à un ctrl-double clic.
 	 */
-	showLinkedMail : function(item) {
-		if (!item) {
-			item = document.popupNode;
-		}
-//		var taskID = item.getAttribute("pk");
-		var taskID = item.firstChild.getAttribute("pk");
-		var folderURI = item.firstChild.getAttribute("folderURI");
+	showLinkedMail : function() {
+		var selectedTask = TASKMAIL.UI.getSelectedTasks();
+		var taskID = selectedTask[0].id;
+		var folderURI = selectedTask[0].folderURI;
 		// recupére les keys de mail liés à la tache
 		var keysMails = TASKMAIL.Link.getMailKeysFromTaskID(taskID);
 		if (keysMails != null && keysMails.length > 0) {
