@@ -289,10 +289,6 @@ TASKMAIL.UI = {
 		row.setAttribute('pk', aTask.id);
 		row.setAttribute("folderURI", aTask.folderURI);
 		
-		row.setAttribute("ondragstart", "TASKMAIL.UIDrag.onStartTask(event);");
-		row.setAttribute("ondragover",  "TASKMAIL.UIDrag.onOverTask(event);");
-		row.setAttribute("ondrop",      "TASKMAIL.UIDrag.onDropTask(event);");
-		
 		// Subfolder icon
 		var cell = document.createElement("treecell");
 		cell.setAttribute('label', null);
@@ -1064,16 +1060,17 @@ TASKMAIL.UILink = {
 	/**
 	 * lie email et tâches courants. En fonction du send du lien, un seul objet
 	 * sélectionnable
-	 * 
+	 * @param draganddropTarget        string, where the drag is drop, "task" or "mail" else undefined
+	 * @param draganddropTargetElement [task] or [message], drop's targetdropTarget else undefined 
 	 */
-	linkTask : function(dropTarget, targetElement) {
+	linkTask : function(draganddropTarget, draganddropTargetElement) {
 		var folder = GetSelectedMsgFolders()[0];
 		var tasks = TASKMAIL.UI.getSelectedTasks();
 		var mails = gFolderDisplay.selectedMessages;
-		if (dropTarget == "task") {
-			tasks = targetElement;
-		} else if (dropTarget == "mail") {
-			mails = targetElement;
+		if (draganddropTarget == "task") {
+			tasks = draganddropTargetElement;
+		} else if (draganddropTarget == "mail") {
+			mails = draganddropTargetElement;
 		}
 		if (!TASKMAIL.Link.allTasksInFolder(tasks, folder.URI)) {
 			// un des taches dans un sous folder.
@@ -1592,6 +1589,7 @@ if (!TASKMAIL.UIDrag)
 	TASKMAIL.UIDrag = {};
 TASKMAIL.UIDrag= {
 	onStartTask : function(event, aTask){
+//		consoleService.logStringMessage("onStartTask");
 		event.dataTransfer.setData('application/taskmail', "task");
 	},
 	
@@ -1602,17 +1600,25 @@ TASKMAIL.UIDrag= {
 	},
 	
 	onDropTask : function(event,taskId) {		
-		// TODO get pk à faire
-		var uri = event.dataTransfer.getData("text/x-moz-message");
-		var folder = event.target.getAttribute("folderURI");
-		var taskId = event.target.getAttribute("pk");
-		var tasks = new Array(new TASKMAIL.Task(taskId, folder, null, null, null, null));
-		TASKMAIL.UILink.linkTask("task", tasks);
+//		consoleService.logStringMessage("onDropTask");
+		var isMessage = event.dataTransfer.types.contains("text/x-moz-message");
+  	if (isMessage) {
+			var index = event.currentTarget.treeBoxObject.getRowAt(event.clientX, event.clientY);
+			if (index != -1) {
+				var row = event.currentTarget.contentView.getItemAtIndex(index);
+				var taskId = row.firstChild.getAttribute("pk");
+				var folder = row.firstChild.getAttribute("folderURI");
+				var task = new TASKMAIL.Task(taskId, folder, null, null, null, null);
+				var tasks = new Array(task);
+				TASKMAIL.UILink.linkTask("task", tasks)
+			}
+		}			
 	},
 	
 	onOverMail : function (event) {
 		var isTask = event.dataTransfer.types.contains("application/taskmail");
   	if (isTask) {
+//  		consoleService.logStringMessage("onOverMail , is a task");
   		event.preventDefault();
   	}
 	},
