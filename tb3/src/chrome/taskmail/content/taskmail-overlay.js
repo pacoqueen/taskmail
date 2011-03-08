@@ -668,7 +668,8 @@ TASKMAIL.UI = {
 		var listBox = document.getElementById("taskList");
 		var currentIndex = listBox.currentIndex;
 //		consoleService.logStringMessage("getCurrentTaskKey:currentIndex="+currentIndex);
-		if (currentIndex != -1) {
+		if (currentIndex != -1 && listBox.view.getItemAtIndex(currentIndex) != null) {
+			// getItemAtIndex can return null even currentIndex != -1 !
 			result  = parseInt(listBox.view.getItemAtIndex(currentIndex).firstChild.getAttribute("pk"));
 		}
 		return result;
