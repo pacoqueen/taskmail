@@ -20,6 +20,18 @@
 	text-align:center; 		/* as the header doesn't a label we can center the column. */
 }
 
+.priorityAscendingColumnHeader {
+	list-style-image: url('chrome://taskmail/skin/exclamAscending.png');
+	padding-top:1px;
+	text-align:center; 		/* as the header doesn't a label we can center the column. */
+}
+
+.priorityDescendingColumnHeader {
+	list-style-image: url('chrome://taskmail/skin/exclamDescending.png');
+	padding-top:1px;
+	text-align:center; 		/* as the header doesn't a label we can center the column. */
+}
+
 .stateColumnHeader {
 }
 

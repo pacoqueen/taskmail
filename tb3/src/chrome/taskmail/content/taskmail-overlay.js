@@ -323,6 +323,18 @@ TASKMAIL.UI = {
 		cell.setAttribute('label', aTask.title);
 		row.appendChild(cell);
 
+		cell = document.createElement('treecell');
+		cell.setAttribute('label', this.formatDate(aTask.createDate));
+		row.appendChild(cell);
+
+		cell = document.createElement('treecell');
+		cell.setAttribute('label', this.formatDate(aTask.dueDate));
+		row.appendChild(cell);
+
+		cell = document.createElement('treecell');
+		cell.setAttribute('label', this.formatDate(aTask.completeDate));
+		row.appendChild(cell);
+
 		// place le nom du folder dans un tooltip de la ligne
 		row.setAttribute("tooltiptext",aTask.folderName);
 
@@ -829,6 +841,10 @@ TASKMAIL.UI = {
 		document.getElementById("threadTree").addEventListener("dragover", TASKMAIL.UIDrag.onOverMail, false);
 		document.getElementById("threadTree").addEventListener("drop", TASKMAIL.UIDrag.onDropMail, false);
 		
+		// for date formating
+		this.dateService = Components.classes["@mozilla.org/intl/scriptabledateformat;1"]
+	                              .getService(Components.interfaces.nsIScriptableDateFormat);
+	
 		// pose un observe sur les états définis dans les préférences
 		this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
          .getService(Components.interfaces.nsIPrefService)
@@ -855,8 +871,10 @@ TASKMAIL.UI = {
 	/*
 	 * States array [{id, label}].
 	 */
-	prefs : null,
 	states : new Array(),
+	
+	prefs : null,
+	dateService : null,
 	
 	/**
 	 * Récupére les états depuis les préférences et remplie la liste déroule du détail de tâche.
@@ -1016,12 +1034,15 @@ TASKMAIL.UI = {
   	switch (currentOrder) {
   		case "natural" :
   			event.target.setAttribute("sortDirection","ascending");
+  			event.target.setAttribute("class","treecol-image priorityAscendingColumnHeader");
   			break;
   		case "ascending" :
   			event.target.setAttribute("sortDirection","descending");
+  			event.target.setAttribute("class","treecol-image priorityDescendingColumnHeader");
   			break;  			
   		case "descending" :
   			event.target.setAttribute("sortDirection","natural");
+  			event.target.setAttribute("class","treecol-image priorityColumnHeader");
   			break;
   	}
   	this.refreshTaskList();
@@ -1052,6 +1073,22 @@ TASKMAIL.UI = {
   	var taskKeys = this.getSelectedTasksKeys();
   	TASKMAIL.DB.updateStateTaskSQLite(taskKeys, 4);
 		this.refreshTaskList();
+  },
+  
+ 	/**
+ 	 * format a date with OS settings.
+ 	 * @param a Date
+ 	 * @return a string (dd/mm/yyyy). si aDate is null, then null
+ 	 */
+  formatDate : function (aDate) {
+  	var result = null;
+  	if (aDate != null)  {
+			result = this.dateService.FormatDate("", this.dateService.dateFormatShort,
+	                              aDate.getFullYear(),
+	                              aDate.getMonth()+1,
+	                              aDate.getDate());
+  	}
+		return result;
   }
 }
 

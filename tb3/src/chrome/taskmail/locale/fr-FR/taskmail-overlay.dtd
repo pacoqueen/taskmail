@@ -61,6 +61,9 @@
 <!ENTITY msgColHeadLink        "Tâche Liée">
 <!ENTITY taskColHeadLink       "Message lié">
 <!ENTITY taskColHeadSubfolder  "Dans sous-folder">
+<!ENTITY createDateCol         "Création">
+<!ENTITY dueDateCol            "Echéance">
+<!ENTITY completeDateCol       "Réalisation">
 <!ENTITY composeReport         "Compose le rapport">
 <!ENTITY qfb-task              "Tâche">
 <!ENTITY qfb-taskTTP           "Afficher seulement les messages ayant des tâches liées.">
