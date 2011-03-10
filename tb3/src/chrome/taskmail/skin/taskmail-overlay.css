@@ -14,10 +14,13 @@
 	margin-right: 0px;
 }
 
-.listcell-subfolder {
-	list-style-image: url('chrome://messenger/skin/icons/thread.png');
-	padding: 0px;
-	margin:0px 0px 0px 3px;
+.priorityColumnHeader {
+	list-style-image: url('chrome://taskmail/skin/exclam.png');
+	padding-top:1px;
+	text-align:center; 		/* as the header doesn't a label we can center the column. */
+}
+
+.stateColumnHeader {
 }
 
 treechildren::-moz-tree-image(subfolder)
@@ -28,19 +31,11 @@ treechildren::-moz-tree-image(subfolder)
 treechildren::-moz-tree-image(linked)
 {
   list-style-image: url('chrome://taskmail/skin/link_mail.jpg');
-  padding: 0px;
-  margin:0px 0px 0px 0px;
 }
 
 treechildren::-moz-tree-image(linked_hilight)
 {
   list-style-image: url('chrome://taskmail/skin/link_mail_hilight.jpg');
-  padding: 0px;
-  margin:0px 0px 0px 0px;
-}
-
-.icon-mail-column  {
-	padding-left:3px;
 }
 
 #taskList {
@@ -61,53 +56,48 @@ treechildren::-moz-tree-image(linked_hilight)
 	margin-top: 5px;
 }
 
-.taskPriority-column {
-	background-color: #FF0000;
+treechildren::-moz-tree-cell-text(taskPriority) {
 	color: #FFFFFF;
 	text-align: center;
 }
 
-.taskPriority-column label {
-	padding-left: 0px;
-}
-
-.taskPriority-0 {
+treechildren::-moz-tree-cell(taskPriority0) {
 	background-color: #00e43f;
 }
 
-.taskPriority-1 {
+treechildren::-moz-tree-cell(taskPriority1) {
 	background-color: #00e7a0;
 }
 
-.taskPriority-2 {
+treechildren::-moz-tree-cell(taskPriority2) {
 	background-color: #00d1ea;
 }
 
-.taskPriority-3 {
+treechildren::-moz-tree-cell(taskPriority3) {
 	background-color: #0071ed;
 }
 
-.taskPriority-4 {
+treechildren::-moz-tree-cell(taskPriority4) {
 	background-color: #000ff0;
 }
 
-.taskPriority-5 {
+treechildren::-moz-tree-cell(taskPriority5) {
 	background-color: #5400f3;
 }
 
-.taskPriority-6 { 
+treechildren::-moz-tree-cell(taskPriority6) { 
 	background-color: #ba00f6;
 }
 
-.taskPriority-7 {
+treechildren::-moz-tree-cell(taskPriority7) {
 	background-color: #f900cd;
 }
 
-.taskPriority-8 {
+treechildren::-moz-tree-cell(taskPriority8) {
 	background-color: #fc0068;
 }
 
-.taskPriority-9 {
+treechildren::-moz-tree-cell(taskPriority9) {
 	background-color: #ff0000;
 }
 

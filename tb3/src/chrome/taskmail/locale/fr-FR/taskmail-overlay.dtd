@@ -46,23 +46,25 @@
 <!ENTITY filter.label        "Filtres : ">
 <!ENTITY toDoStateFilter       "à faire">
 <!ENTITY toFollowStateFilter   "à suivre">
-<!ENTITY activeStateFilter   "active">
-<!ENTITY currentStateFilter  "en cours">
-<!ENTITY allStateFilter      "tout">
-<!ENTITY allViewFilter       "tous les folders">
-<!ENTITY mailViewFilter      "message">
-<!ENTITY subFolderViewFilter "subfolders">
-<!ENTITY folderViewFilter    "folder">
-<!ENTITY viewFilterTTP       "Filtre de visibilité">
-<!ENTITY allViewTTP          "Tâches de tous les folders">
-<!ENTITY mailViewTTP         "Les tâches liées aux messages courants">
-<!ENTITY addTask             "Ajouter une tâche">
-<!ENTITY header.subfolder    "La tâche est dans le folder courant">
-<!ENTITY colHeadLink         "Tâche Liée">
-<!ENTITY composeReport       "Compose le rapport">
-<!ENTITY qfb-task            "Tâche">
-<!ENTITY qfb-taskTTP         "Afficher seulement les messages ayant des tâches liées.">
-<!ENTITY qfb-task-link       "Tâche courante">
-<!ENTITY qfb-task-linkTTP    "Afficher seulement les messages liés aux tâches sélectionnées.">
-<!ENTITY qfb-task-thread     "Tâches avec discussions">
-<!ENTITY qfb-task-threadTTP  "Afficher les messages ou les discussions.">
+<!ENTITY activeStateFilter     "active">
+<!ENTITY currentStateFilter    "en cours">
+<!ENTITY allStateFilter        "tout">
+<!ENTITY allViewFilter         "tous les folders">
+<!ENTITY mailViewFilter        "message">
+<!ENTITY subFolderViewFilter   "subfolders">
+<!ENTITY folderViewFilter      "folder">
+<!ENTITY viewFilterTTP         "Filtre de visibilité">
+<!ENTITY allViewTTP            "Tâches de tous les folders">
+<!ENTITY mailViewTTP           "Les tâches liées aux messages courants">
+<!ENTITY addTask               "Ajouter une tâche">
+<!ENTITY header.subfolder      "La tâche est dans le folder courant">
+<!ENTITY msgColHeadLink        "Tâche Liée">
+<!ENTITY taskColHeadLink       "Message lié">
+<!ENTITY taskColHeadSubfolder  "Dans sous-folder">
+<!ENTITY composeReport         "Compose le rapport">
+<!ENTITY qfb-task              "Tâche">
+<!ENTITY qfb-taskTTP           "Afficher seulement les messages ayant des tâches liées.">
+<!ENTITY qfb-task-link         "Tâche courante">
+<!ENTITY qfb-task-linkTTP      "Afficher seulement les messages liés aux tâches sélectionnées.">
+<!ENTITY qfb-task-thread       "Tâches avec discussions">
+<!ENTITY qfb-task-threadTTP    "Afficher les messages ou les discussions.">

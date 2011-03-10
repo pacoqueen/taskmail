@@ -311,7 +311,7 @@ TASKMAIL.UI = {
 		// priority
 		cell = document.createElement('treecell');
 		cell.setAttribute('label', aTask.priority);
-		cell.setAttribute('class', 'taskPriority-column taskPriority-' + aTask.priority);
+		cell.setAttribute("properties", "taskPriority taskPriority" + aTask.priority);
 		row.appendChild(cell);
 
 		var stateLabel = this.getStateLabel(aTask.state);
@@ -547,7 +547,7 @@ TASKMAIL.UI = {
 	 * tri un content
 	 */
 	sortTaskList : function (temp) {
-		var currentOrder = document.getElementById("taskPriorityColumnHeader").getAttribute("sortDirection");
+		var currentOrder = document.getElementById("taskPriorityCol").getAttribute("sortDirection");
 		switch (currentOrder) {
 			case "natural" :
 				break;

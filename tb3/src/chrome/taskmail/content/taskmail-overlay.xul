@@ -176,33 +176,24 @@
 				<menuitem label="&composeReport;" accesskey="C" oncommand="TASKMAIL.Report.composeReport()"/>
 			</menupopup>
 	
-			<!--listbox id="taskList" ondblclick="TASKMAIL.UI.doubleClikTask(event)" context="row-menu" 
-					 seltype="multiple" flex="1" minheight="75">
-				<listhead>
-					<listheader tooltiptext="&header.subfolder;" class="listheader-icon subfolderColumnHeader"/>
-					<listheader tooltiptext="&linkMailHeader;" class="listheader-icon taskColumnHeader"/>
-					<listheader id="taskPriorityColumnHeader" label="!" sortDirection="natural" onclick="TASKMAIL.UI.clickPriorityColumn(event);" persist="sortDirection"/>
-					<listheader label="&state;"/>
-					<listheader label="&title;"/>
-				</listhead>
-				<listcols>
-					<listcol />
-					<listcol/>
-					<listcol/>
-					<listcol/>
-					<listcol flex="1"/>
-				</listcols>
-			</listbox-->
 			<tree id="taskList" ondblclick="TASKMAIL.UI.doubleClikTask(event)" context="row-menu" seltype="multiple"  flex="1" minheight="75"
-						ondragstart="TASKMAIL.UIDrag.onStartTask(event);"
-						ondragover="TASKMAIL.UIDrag.onOverTask(event);"
-						ondrop="TASKMAIL.UIDrag.onDropTask(event);">
+						enableColumnDrag="true">
 				<treecols>
-					<treecol tooltiptext="&header.subfolder;" class="listheader-icon subfolderColumnHeader"/>
-					<treecol tooltiptext="&linkMailHeader;" class="listheader-icon taskColumnHeader"/>
-					<treecol label="!" id="taskPriorityColumnHeader" sortDirection="natural" onclick="TASKMAIL.UI.clickPriorityColumn(event);" persist="sortDirection"/>
-					<treecol label="&state;"/>
-					<treecol label="&title;" flex="1"/>
+					<treecol id="taskSubfolderCol" tooltiptext="&header.subfolder;" class="treecol-image subfolderColumnHeader"
+							label="&taskColHeadSubfolder;" fixed="true"
+							persist="ordinal hidden"/>
+					<splitter class="tree-splitter"/>
+					<treecol id="taskLinkCol" tooltiptext="&linkMailHeader;" class="treecol-image taskColumnHeader"
+							label="&taskColHeadLink;" fixed="true"
+							persist="ordinal hidden"/>
+					<splitter class="tree-splitter"/>
+					<treecol id="taskPriorityCol" class="treecol-image priorityColumnHeader"
+							sortDirection="natural" onclick="TASKMAIL.UI.clickPriorityColumn(event);"
+							persist="sortDirection ordinal hidden" label="&priority;" fixed="true"/>
+					<splitter class="tree-splitter"/>
+					<treecol id="taskStateCol" label="&state;" class="stateColumnHeader" persist="width ordinal hidden"/>
+					<splitter class="tree-splitter"/>
+					<treecol id="taskTitleCol" label="&title;" flex="1" ignoreincolumnpicker="true" persist="width ordinal hidden"/>
 				</treecols>
 				<treechildren id="taskTreeChild">
 					
@@ -308,7 +299,7 @@
 	<tree id="threadTree" >
 		<treecols id="threadCols">
 			<splitter class="tree-splitter" />
-			<treecol id="colTask" persist="hidden ordinal" label="&colHeadLink;"
+			<treecol id="colTask" persist="hidden ordinal" label="&msgColHeadLink;"
 				currentView="unthreaded" fixed="true" class="treecol-image taskColumnHeader"
 				tooltiptext="&linkTaskHeader;" editable="true"/>
 		</treecols>
