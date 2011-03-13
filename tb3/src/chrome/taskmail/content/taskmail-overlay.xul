@@ -180,27 +180,41 @@
 						enableColumnDrag="true">
 				<treecols>
 					<treecol id="taskSubfolderCol" tooltiptext="&header.subfolder;" class="treecol-image subfolderColumnHeader"
-							label="&taskColHeadSubfolder;" fixed="true"
-							persist="ordinal hidden"/>
+									label="&taskColHeadSubfolder;" fixed="true"
+									persist="ordinal hidden"/>
 					<splitter class="tree-splitter"/>
 					<treecol id="taskLinkCol" tooltiptext="&linkMailHeader;" class="treecol-image taskColumnHeader"
-							label="&taskColHeadLink;" fixed="true"
-							persist="ordinal hidden"/>
+									label="&taskColHeadLink;" fixed="true"
+									persist="ordinal hidden"/>
 					<splitter class="tree-splitter"/>
 					<treecol id="taskPriorityCol" class="treecol-image priorityColumnHeader"
-							sortDirection="natural" onclick="TASKMAIL.UI.clickPriorityColumn(event);"
-							persist="sortDirection ordinal hidden class" label="&priority;" fixed="true"/>
+									label="&priority;" fixed="true"
+									sortDirection="natural"
+									onclick="TASKMAIL.UI.onChangeOrder(event);"
+									persist="sortDirection ordinal hidden class"/>
 					<splitter class="tree-splitter"/>
-					<treecol id="taskStateCol" label="&state;" class="stateColumnHeader" persist="width ordinal hidden"/>
+					<treecol id="taskStateCol" label="&state;" class="stateColumnHeader"
+									onclick="TASKMAIL.UI.onChangeOrder(event);"
+									persist="sortDirection ordinal hidden width"/>
 					<splitter class="tree-splitter"/>
-					<treecol id="taskTitleCol" label="&title;" flex="1" ignoreincolumnpicker="true" persist="width ordinal hidden"/>
+					<treecol id="taskTitleCol" label="&title;" flex="1" ignoreincolumnpicker="true"
+									persist="width ordinal hidden"/>
 
 					<splitter class="tree-splitter"/>
-					<treecol id="taskCreateDateCol" label="&createDateCol;" hidden="true" persist="width ordinal hidden"/>
+					<treecol id="taskCreateDateCol" label="&createDateCol;" hidden="true"
+									onclick="TASKMAIL.UI.onChangeOrder(event);"
+									persist="sortDirection ordinal hidden width"/>
 					<splitter class="tree-splitter"/>
-					<treecol id="taskDueDateCol" label="&dueDateCol;" persist="width ordinal hidden"/>
+					<treecol id="taskDueDateCol" label="&dueDateCol;" 
+									onclick="TASKMAIL.UI.onChangeOrder(event);"
+									persist="sortDirection ordinal hidden width"/>
 					<splitter class="tree-splitter"/>
-					<treecol id="taskCompleteDateCol" label="&completeDateCol;" hidden="true" persist="width ordinal hidden"/>
+					<treecol id="taskCompleteDateCol" label="&completeDateCol;" hidden="true" 
+									onclick="TASKMAIL.UI.onChangeOrder(event);"
+									persist="sortDirection ordinal hidden width"/>
+
+					<splitter class="tree-splitter"/>
+					<treecol id="taskFoldernameCol" label="&foldernameCol;" hidden="true" persist="width ordinal hidden"/>
 				</treecols>
 				<treechildren id="taskTreeChild">
 					

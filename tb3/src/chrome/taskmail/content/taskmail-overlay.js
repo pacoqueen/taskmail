@@ -335,9 +335,11 @@ TASKMAIL.UI = {
 		cell.setAttribute('label', this.formatDate(aTask.completeDate));
 		row.appendChild(cell);
 
-		// place le nom du folder dans un tooltip de la ligne
-		row.setAttribute("tooltiptext",aTask.folderName);
-
+		// folderName
+		cell = document.createElement('treecell');
+		cell.setAttribute('label', aTask.folderName);
+		row.appendChild(cell);
+		
 		item.appendChild(row);
 		document.getElementById("taskTreeChild").appendChild(item);
 	},
@@ -557,19 +559,35 @@ TASKMAIL.UI = {
 	
 	/**
 	 * tri un content
+	 * @var this.currentOrder
 	 */
 	sortTaskList : function (temp) {
-		var currentOrder = document.getElementById("taskPriorityCol").getAttribute("sortDirection");
-		switch (currentOrder) {
-			case "natural" :
+			function sortTask (a, b, property, sens) {
+				var valueA = eval("a." + property);
+				var valueB = eval("b." + property);
+				if (valueA == valueB) return 0; 
+				else if (valueA < valueB) return (sens == "ascending") ? -1 : 1; 
+				else return (sens == "ascending") ? 1 : -1;
+			};
+
+		switch (this.currentOrder.columnId) {
+			case "taskPriorityCol":
+				temp.tasks = temp.tasks.sort(function (a,b) { return sortTask(a,b,"priority",TASKMAIL.UI.currentOrder.order);});
 				break;
-			case "ascending" :
-				temp.tasks = temp.tasks.sort(function (a,b) { if (a.priority == b.priority) return 0; else if (a.priority < b.priority) return -1; else return 1;});
+			case "taskStateCol":
+				temp.tasks = temp.tasks.sort(function (a,b) { return sortTask(a,b,"state",TASKMAIL.UI.currentOrder.order);});
 				break;
-			case "descending" :
-				temp.tasks = temp.tasks.sort(function (a,b) { if (a.priority == b.priority) return 0; else if (a.priority < b.priority) return 1; else return -1;});
+			case "taskCreateDateCol":
+				temp.tasks = temp.tasks.sort(function (a,b) { return sortTask(a,b,"createDate",TASKMAIL.UI.currentOrder.order);});
+				break;
+			case "taskDueDateCol":
+				temp.tasks = temp.tasks.sort(function (a,b) { return sortTask(a,b,"dueDate",TASKMAIL.UI.currentOrder.order);});
+				break;
+			case "taskCompleteDateCol":
+				temp.tasks = temp.tasks.sort(function (a,b) { return sortTask(a,b,"completeDate",TASKMAIL.UI.currentOrder.order);});
 				break;
 		}
+		
 		return temp;
 	},
 	
@@ -853,6 +871,8 @@ TASKMAIL.UI = {
     this.prefs.addObserver("", this, false);
     // charge les états pour la liste de tâches et le détail d'une tâche.
     this.getStatesFromPref();
+    
+    this.initialiseOrder();
 	},
 	
 	observe : function (subject, topic, data) {
@@ -1028,23 +1048,88 @@ TASKMAIL.UI = {
   	pane.collapsed = !pane.collapsed; 
   },
   
-  clickPriorityColumn : function (event) {
-  	var currentOrder = event.target.getAttribute("sortDirection");
-  	var order = null;
-  	switch (currentOrder) {
+  /**
+   * put the right css class to put the right arrow on priority column 
+   */
+  updatePriorityColumnHeader : function () {
+  	var col = document.getElementById("taskList").columns.getNamedColumn("taskPriorityCol");
+  	switch (col.element.getAttribute("sortDirection")) {
+  		case "ascending" :
+  			col.element.setAttribute("class","treecol-image priorityAscendingColumnHeader");
+  			break;
+  		case "descending" :
+  			col.element.setAttribute("class","treecol-image priorityDescendingColumnHeader");
+  			break;
   		case "natural" :
+  			col.element.setAttribute("class","treecol-image priorityColumnHeader");
+  			break;
+  	}
+  },
+  
+  /**
+   * current order
+   */
+  currentOrder : {
+  	columnId : "", 
+    order : "" /* "ascending" or "descending" or "" */
+  },
+  
+  /**
+   * set the initial state of the previous currentOrder object. Called on extension's initialisation.
+   * use the columns's persistant attributes "sortDirection".   
+   */
+  initialiseOrder : function () {
+  	// reset order
+  	this.currentOrder = {columnId : "", order : ""};
+  	// find the current ordered column if any
+  	var taskList = document.getElementById("taskList");
+  	for(var i=0; i<taskList.columns.length; i++) {
+	  	var column = taskList.columns.getColumnAt(i);
+	  	var order = column.element.getAttribute("sortDirection");
+	  	if (order == "ascending" || order == "descending") {
+	  		this.currentOrder.columnId = column.id;
+	  		this.currentOrder.order = order;
+	  	}
+  	}
+  },
+  
+  /**
+   * manage header during order changes
+   * only one column ordered. order walks trought "ascending", "descending", "natural".
+   */
+  onChangeOrder : function (event) {
+  	consoleService.logStringMessage("onChangeOrder");
+  	// if asking to make an new column ordered and there is a previous order*
+  	// then reset previous order
+  	if(this.currentOrder.columnId != "" && event.target.getAttribute("id") != this.currentOrder.columnId) {
+	  	var taskList = document.getElementById("taskList");
+  		var previousOrderedColumn = taskList.columns.getNamedColumn(this.currentOrder.columnId); 
+  		previousOrderedColumn.element.setAttribute("sortDirection", "natural");
+		}
+ 		// determine if the new order is ascending, descending or neutral
+ 		// and change DOM attribute and this.currentOrder
+ 		var currentOrder = event.target.getAttribute("sortDirection");
+  	var order = null;
+ 		switch (currentOrder) {
+  		case "natural" :
+  		case "" :
   			event.target.setAttribute("sortDirection","ascending");
-  			event.target.setAttribute("class","treecol-image priorityAscendingColumnHeader");
+  			this.currentOrder.columnId = event.target.getAttribute("id");
+  			this.currentOrder.order = "ascending";
   			break;
   		case "ascending" :
   			event.target.setAttribute("sortDirection","descending");
-  			event.target.setAttribute("class","treecol-image priorityDescendingColumnHeader");
+  			this.currentOrder.columnId = event.target.getAttribute("id");
+  			this.currentOrder.order = "descending";
   			break;  			
   		case "descending" :
   			event.target.setAttribute("sortDirection","natural");
-  			event.target.setAttribute("class","treecol-image priorityColumnHeader");
+  			this.currentOrder.columnId = "";
+  			this.currentOrder.order = "";
   			break;
   	}
+  	// update class on priority column to display the right iconic arrow.
+ 		this.updatePriorityColumnHeader();
   	this.refreshTaskList();
   },
   

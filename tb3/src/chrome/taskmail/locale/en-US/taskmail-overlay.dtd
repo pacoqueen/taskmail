@@ -64,6 +64,7 @@
 <!ENTITY createDateCol         "Creation">
 <!ENTITY dueDateCol            "Due">
 <!ENTITY completeDateCol       "Completion">
+<!ENTITY foldernameCol         "Folder">
 <!ENTITY composeReport         "Compose report">
 <!ENTITY qfb-task              "Task">
 <!ENTITY qfb-taskTTP           "Show only messages with tasks.">
