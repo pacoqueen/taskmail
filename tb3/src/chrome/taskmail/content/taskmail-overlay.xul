@@ -216,7 +216,10 @@
 					<splitter class="tree-splitter"/>
 					<treecol id="taskFoldernameCol" label="&foldernameCol;" hidden="true" persist="width ordinal hidden"/>
 				</treecols>
-				<treechildren id="taskTreeChild">
+				<treechildren id="taskTreeChild"
+									ondragstart="TASKMAIL.UIDrag.onStartTask(event);"
+									ondragover="TASKMAIL.UIDrag.onOverTask(event);"
+									ondrop="TASKMAIL.UIDrag.onDropTask(event);">
 					
 				</treechildren>
 			</tree>

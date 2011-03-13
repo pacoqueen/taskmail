@@ -1747,6 +1747,8 @@ TASKMAIL.UIDrag= {
 	},
 	
 	onDropMail : function (event) {
+		// ThreadPaneOnDrop is called before this function.
+		// It isn't very clean but it works.
 		var isTask = event.dataTransfer.types.contains("application/taskmail");
   	if (isTask) {
 			var row = event.currentTarget.treeBoxObject.getRowAt(event.clientX, event.clientY);
