@@ -1726,9 +1726,10 @@ TASKMAIL.UIDrag= {
 //		consoleService.logStringMessage("onDropTask");
 		var isMessage = event.dataTransfer.types.contains("text/x-moz-message");
   	if (isMessage) {
-			var index = event.currentTarget.treeBoxObject.getRowAt(event.clientX, event.clientY);
+  		var taskList = document.getElementById("taskList");
+			var index = taskList.treeBoxObject.getRowAt(event.clientX, event.clientY);
 			if (index != -1) {
-				var row = event.currentTarget.contentView.getItemAtIndex(index);
+				var row = taskList.contentView.getItemAtIndex(index);
 				var taskId = row.firstChild.getAttribute("pk");
 				var folder = row.firstChild.getAttribute("folderURI");
 				var task = new TASKMAIL.Task(taskId, folder, null, null, null, null);
