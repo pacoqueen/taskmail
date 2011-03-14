@@ -697,11 +697,14 @@ TASKMAIL.UI = {
 		var result = -1;
 		var listBox = document.getElementById("taskList");
 		var currentIndex = listBox.currentIndex;
-//		consoleService.logStringMessage("getCurrentTaskKey:currentIndex="+currentIndex);
-		if (currentIndex != -1 && listBox.view.getItemAtIndex(currentIndex) != null) {
-			// getItemAtIndex can return null even currentIndex != -1 !
-			result  = parseInt(listBox.view.getItemAtIndex(currentIndex).firstChild.getAttribute("pk"));
-		}
+		try {
+      if (currentIndex != -1 && listBox.view.getItemAtIndex(currentIndex) != null) {
+  			// getItemAtIndex can return null even currentIndex != -1 !
+  			result  = parseInt(listBox.view.getItemAtIndex(currentIndex).firstChild.getAttribute("pk"));
+  		}
+    } catch (ex) {
+      consoleService.logStringMessage("getCurrentTaskKey:currentIndex="+currentIndex);
+    }
 		return result;
 	},
 	
