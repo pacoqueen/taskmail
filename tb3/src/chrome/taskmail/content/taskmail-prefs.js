@@ -18,7 +18,8 @@ TASKMAIL.PREFS = {
 	},
 	
 	loadManual : function (aEvent) {
-	 window.opener.openURL(aEvent.target.getAttribute("href"));
+		var href = this._stringsBundle.getString("docUrl");		
+	 	window.opener.openURL(href);
   },
   
 	/*
