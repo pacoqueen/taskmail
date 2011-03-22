@@ -28,9 +28,7 @@ TASKMAIL = {
 	 */
 	isNext : function (aTask) {
 		if (aTask == null) return false;
-		var diff = aTask.dueDate - new Date(); 
-		var days = Math.round(diff/(1000*60*60*24)); 
-		return (days > 0 && days < 7);  
+		return aTask.dueDate >= (new Date() - 1*24*60*60*1000) && (aTask.dueDate - 7*24*60*60*1000) <= new Date();  
 	},
 	
 	/**
@@ -40,9 +38,7 @@ TASKMAIL = {
 	 */
 	isOverdue : function (aTask) {
 		if (aTask == null) return false;
-		var diff = aTask.dueDate - new Date(); 
-		var days = Math.round(diff/(1000*60*60*24)); 
-		return (days < 0);  
+		return (aTask.dueDate <= (new Date() - 1*24*60*60*1000));  
 	}
 }
 
