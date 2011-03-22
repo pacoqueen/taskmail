@@ -19,6 +19,30 @@ TASKMAIL = {
 		this.createDate     = aCreateDate;			// Les dates sont des Date Javascript, null possible.
 		this.dueDate        = aDueDate;
 		this.completeDate   = aCompleteDate;
+	},
+	
+	/**
+	 * return true if the task has a due date in the next 7 days.
+	 * @param Task
+	 * @return boolean
+	 */
+	isNext : function (aTask) {
+		if (aTask == null) return false;
+		var diff = aTask.dueDate - new Date(); 
+		var days = Math.round(diff/(1000*60*60*24)); 
+		return (days > 0 && days < 7);  
+	},
+	
+	/**
+	 * return true if the task has a due date overdued.
+	 * @param Task
+	 * @return boolean
+	 */
+	isOverdue : function (aTask) {
+		if (aTask == null) return false;
+		var diff = aTask.dueDate - new Date(); 
+		var days = Math.round(diff/(1000*60*60*24)); 
+		return (days < 0);  
 	}
 }
 

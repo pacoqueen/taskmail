@@ -329,7 +329,13 @@ TASKMAIL.UI = {
 
 		cell = document.createElement('treecell');
 		cell.setAttribute('label', this.formatDate(aTask.dueDate));
+		if (TASKMAIL.isNext(aTask)) {
+			cell.setAttribute("properties", "next-task");
+		} else if (TASKMAIL.isOverdue(aTask)) {
+			cell.setAttribute("properties", "overdue-task");
+		}
 		row.appendChild(cell);
+		
 
 		cell = document.createElement('treecell');
 		cell.setAttribute('label', this.formatDate(aTask.completeDate));
