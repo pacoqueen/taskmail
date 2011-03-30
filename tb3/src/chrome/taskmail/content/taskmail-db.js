@@ -553,7 +553,9 @@ TASKMAIL.DB = {
 
 			while (srcEnum.hasMoreElements()) {
 				var srcMsg = srcEnum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
+				this.consoleService.logStringMessage(srcMsg.messageKey);
 				var destMsg = destEnum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
+				this.consoleService.logStringMessage(destMsg.messageKey);
 				var messageId = destMsg.folder.GetMessageHeader(destMsg.messageKey).messageId;
 				
 				this.consoleService.logStringMessage("msgsMoveCopyCompletedSQLite"
