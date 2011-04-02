@@ -48,6 +48,7 @@ TASKMAIL.UI = {
 		document.getElementById("taskTitle").focus();
 		this.taskDetailPK = -1;
 		this.addWithLink = false;
+		document.getElementById("taskPane").collapsed = false;
 	},
 
 	/*
@@ -1096,7 +1097,7 @@ TASKMAIL.UI = {
   
   /**
    * manage header during order changes
-   * only one column ordered. order walks trought "ascending", "descending", "natural".
+   * only one column ordered. order walks trought "natural", "descending", "ascending".
    */
   onChangeOrder : function (event) {
   	consoleService.logStringMessage("onChangeOrder");
@@ -1114,20 +1115,20 @@ TASKMAIL.UI = {
  		switch (currentOrder) {
   		case "natural" :
   		case "" :
-  			event.target.setAttribute("sortDirection","ascending");
+  			event.target.setAttribute("sortDirection","descending");
+  			this.currentOrder.order = "descending";
   			this.currentOrder.columnId = event.target.getAttribute("id");
+  			break;
+  		case "descending" :
+  			event.target.setAttribute("sortDirection","ascending");
   			this.currentOrder.order = "ascending";
+  			this.currentOrder.columnId = event.target.getAttribute("id");
   			break;
   		case "ascending" :
-  			event.target.setAttribute("sortDirection","descending");
-  			this.currentOrder.columnId = event.target.getAttribute("id");
-  			this.currentOrder.order = "descending";
-  			break;  			
-  		case "descending" :
   			event.target.setAttribute("sortDirection","natural");
-  			this.currentOrder.columnId = "";
   			this.currentOrder.order = "";
-  			break;
+  			this.currentOrder.columnId = "";
+  			break;  			
   	}
   	// update class on priority column to display the right iconic arrow.
  		this.updatePriorityColumnHeader();
