@@ -568,29 +568,21 @@ TASKMAIL.UI = {
 	 * @var this.currentOrder
 	 */
 	sortTaskList : function (temp) {
-			function sortTask (a, b, property, sens) {
-				var valueA = eval("a." + property);
-				var valueB = eval("b." + property);
-				if (valueA == valueB) return 0; 
-				else if (valueA < valueB) return (sens == "ascending") ? -1 : 1; 
-				else return (sens == "ascending") ? 1 : -1;
-			};
-
 		switch (this.currentOrder.columnId) {
 			case "taskPriorityCol":
-				temp.tasks = temp.tasks.sort(function (a,b) { return sortTask(a,b,"priority",TASKMAIL.UI.currentOrder.order);});
+				temp.tasks = temp.tasks.sort(function (a,b) { return TASKMAIL.sortTask(a,b,"priority",TASKMAIL.UI.currentOrder.order);});
 				break;
 			case "taskStateCol":
-				temp.tasks = temp.tasks.sort(function (a,b) { return sortTask(a,b,"state",TASKMAIL.UI.currentOrder.order);});
+				temp.tasks = temp.tasks.sort(function (a,b) { return TASKMAIL.sortTask(a,b,"state",TASKMAIL.UI.currentOrder.order);});
 				break;
 			case "taskCreateDateCol":
-				temp.tasks = temp.tasks.sort(function (a,b) { return sortTask(a,b,"createDate",TASKMAIL.UI.currentOrder.order);});
+				temp.tasks = temp.tasks.sort(function (a,b) { return TASKMAIL.sortTask(a,b,"createDate",TASKMAIL.UI.currentOrder.order);});
 				break;
 			case "taskDueDateCol":
-				temp.tasks = temp.tasks.sort(function (a,b) { return sortTask(a,b,"dueDate",TASKMAIL.UI.currentOrder.order);});
+				temp.tasks = temp.tasks.sort(function (a,b) { return TASKMAIL.sortTask(a,b,"dueDate",TASKMAIL.UI.currentOrder.order);});
 				break;
 			case "taskCompleteDateCol":
-				temp.tasks = temp.tasks.sort(function (a,b) { return sortTask(a,b,"completeDate",TASKMAIL.UI.currentOrder.order);});
+				temp.tasks = temp.tasks.sort(function (a,b) { return TASKMAIL.sortTask(a,b,"completeDate",TASKMAIL.UI.currentOrder.order);});
 				break;
 		}
 		
