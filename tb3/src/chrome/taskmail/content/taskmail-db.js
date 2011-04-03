@@ -353,8 +353,7 @@ TASKMAIL.DB = {
 	},
 
 	/**
-	 * @param msg
-	 *            a message.
+	 * @param msg nsIMsgDBHdr a message.
 	 */
 	linkTaskSQLite : function(taskId, msg) {
 		this.consoleService.logStringMessage("linkTaskSQLite");

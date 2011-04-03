@@ -34,15 +34,39 @@ TASKMAIL.UI = {
 	},
 
 	beginAddTaskWithLink : function() {
-		this.beginAddTask();
+		this.beginAddTask("message");
 		// addWithLink après pour overrider
 		this.addWithLink = true;
 		var box = document.getElementById("taskPane").collapsed = false;
 	},
 
-	beginAddTask : function() {
+	/**
+	 * @return Task A new task initialised with the current message. subject becomes title 
+	 * 				 and current selection becomes description. Is no message selected returns 
+	 * 				 new default Task. 
+	 */
+	newTaskFromMessage : function () {
+		var mails = gFolderDisplay.selectedMessages;
+		var doc = document.getElementById("messagepane").contentDocument;
+		var selection = doc.getSelection();
+		var title = mails.length == 1 ? mails[0].subject : null;
+		var desc = selection != "" ? selection.toString() : null;
+		var task = new TASKMAIL.Task(0, null, null, title, desc, 1, 5, null, null, null);
+		return task;
+	},
+
+	/**
+	 * @param defaultValue String "empty" to make a new empty task and "message" to use current message
+	 */
+	beginAddTask : function(defaultValue) {
 		// clean UI
-		this.fillTaskDetail(new TASKMAIL.Task(0, null, null, null, null, 1, 5, null, null, null));
+		var newTask = null;
+		if (defaultValue == "message") {
+			newTask = this.newTaskFromMessage();
+		} else {
+			newTask = new TASKMAIL.Task(0, null, null, null, null, 1, 5, null, null, null);
+		}
+		this.fillTaskDetail(newTask);
 		var box = document.getElementById("addTask");
 		box.collapsed = false;
 		document.getElementById("taskTitle").focus();
