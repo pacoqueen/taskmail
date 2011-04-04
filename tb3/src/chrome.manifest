@@ -7,3 +7,4 @@ skin	taskmail		classic	chrome/taskmail/skin/
 locale	taskmail		en-US	chrome/taskmail/locale/en-US/
 locale	taskmail		fr-FR	chrome/taskmail/locale/fr-FR/
 locale	taskmail		it-IT	chrome/taskmail/locale/it-IT/
+locale	taskmail		nl-NL	chrome/taskmail/locale/nl-NL/
