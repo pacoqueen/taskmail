@@ -2,7 +2,7 @@
 <!ENTITY prefs.pane.report    "Rapportage">
 <!ENTITY states.caption       "Taak statussen">
 <!ENTITY report.caption       "Taak rapportage">
-<!ENTITY fields.comment       "In velden Aan en CC : adressen scheiden met een komma.">
+<!ENTITY fields.comment       "In velden 'AAN' en 'CC': Adressen scheiden met een komma.">
 <!ENTITY field.to             "Aan">
 <!ENTITY field.cc             "CC">
 <!ENTITY field.subject        "Onderwerp">
@@ -12,7 +12,7 @@
 <!ENTITY prefs.pane.state     "Statussen">
 <!ENTITY prefs.state.intro    "Statussen kunnen worden gebruikt om taken te organiseren en filteren.">
 <!ENTITY prefs.state.warning  "Waarschuwing: verwijder geen actieve status.">
-<!ENTITY prefs.state.done     "De status Klaar kan wel worden hernoemd, maar moet dezelfde betekenis houden.">
+<!ENTITY prefs.state.done     "De status 'klaar' kan wel worden hernoemd, maar moet dezelfde betekenis houden.">
 <!ENTITY addState             "Toevoegen">
 <!ENTITY editState            "Bewerken">
 <!ENTITY removeState          "Verwijderen">

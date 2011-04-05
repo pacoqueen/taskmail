@@ -4,21 +4,21 @@
 <!ENTITY menuDelete            "Taak verwijderen">
 <!ENTITY menuSelectLinked      "Selecteer taken of berichten">
 <!ENTITY menuViewTaskPane      "Tasks &amp; Mails Scherm">
-<!ENTITY menuGoNextTaskMail    "Ga naar volgende taak of bericht">
+<!ENTITY menuGoNextTaskMail    "Ga naar volgende taak/bericht">
 <!ENTITY menuLinkTaskMail      "Link taken en berichten">
-<!ENTITY menuUnlinkTaskMail    "Verbreek link taken en berichten">
+<!ENTITY menuUnlinkTaskMail    "Verbreek link">
 <!ENTITY linkTask     "Link aan taken">
 <!ENTITY linkNewTask  "Link aan een nieuwe taak">
 <!ENTITY linkMail     "Link aan berichten">
 <!ENTITY unlinkTasks  "Link van taken verbreken">
-<!ENTITY unlinkMail   "Verbinding van berichten verbreken">
+<!ENTITY unlinkMail   "Link van berichten verbreken">
 <!ENTITY goNextTask   "Ga naar volgende taak {0}">
 <!ENTITY goNextMail   "Ga naar volgend bericht {0}">
 <!ENTITY selectMail   "Selecteer berichten">
 <!ENTITY selectTask   "Selecteer taken">
 <!ENTITY goFolder     "Ga naar folder">
 <!ENTITY add          "Voeg toe">
-<!ENTITY addWithLink  "Voeg toe en verbind">
+<!ENTITY addWithLink  "Voeg toe en link">
 <!ENTITY update       "Bijwerken">
 <!ENTITY delete       "Verwijderen">
 <!ENTITY markDone     "Markeer als {s}">
@@ -36,8 +36,8 @@
 <!ENTITY detailTTP           "Enter of CTRL-Enter = Opslaan, SHIFT-Esc = Negeren">
 <!ENTITY dates               "Data">
 <!ENTITY createDate          "Aangemaakt">
-<!ENTITY dueDate             "Eind">
-<!ENTITY completeDate        "Afwerking">
+<!ENTITY dueDate             "Streefdatum">
+<!ENTITY completeDate        "Afgewerkt">
 <!ENTITY stateFilterTTP      "Status filter">
 <!ENTITY activeFilterTTP     "Inclusief 'doen' en 'volgen'">
 <!ENTITY currentFilterTTP    "Alle taken behalve 'gedaan'">
@@ -61,11 +61,11 @@
 <!ENTITY msgColHeadLink        "Gelinkte taak">
 <!ENTITY taskColHeadLink       "Gelinkt bericht">
 <!ENTITY taskColHeadSubfolder  "In Subfolder">
-<!ENTITY createDateCol         "Aanmaken">
-<!ENTITY dueDateCol            "Eind">
-<!ENTITY completeDateCol       "Afwerking">
+<!ENTITY createDateCol         "Aangemaakt">
+<!ENTITY dueDateCol            "Streefdatum">
+<!ENTITY completeDateCol       "Afgewerkt">
 <!ENTITY foldernameCol         "Folder">
-<!ENTITY composeReport         "Rapport aanmaken">
+<!ENTITY composeReport         "Genereer rapportage">
 <!ENTITY qfb-task              "Taak">
 <!ENTITY qfb-taskTTP           "Toon alleen berichten met taken.">
 <!ENTITY qfb-task-link         "Geselecteerde taak">
