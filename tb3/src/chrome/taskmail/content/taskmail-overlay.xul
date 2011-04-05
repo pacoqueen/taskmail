@@ -131,14 +131,14 @@
 			<menupopup id="row-menu" onpopupshowing="TASKMAIL.UI.adjustContextMenu('task');">
 				<menuitem label="&add;"          accesskey="A" oncommand="TASKMAIL.UI.beginAddTask('empty')"/>
 				<menuitem label="&addWithLink;"  accesskey="L" oncommand="TASKMAIL.UI.beginAddTaskWithLink()" key="add-linked"/>
-				<menuitem label="&update;"       accesskey="U" oncommand="TASKMAIL.UI.beginUpdateTask()"/>
+				<menuitem label="&update;"       accesskey="T" oncommand="TASKMAIL.UI.beginUpdateTask()"/>
 				<menuitem label="&delete;"       accesskey="D" oncommand="TASKMAIL.UI.removeTask()" id="row-menu.delete" key="taskmail-suppr"/>
 				<menuseparator/>
 				<menuitem label="&markDone;"     accesskey="M" oncommand="TASKMAIL.UI.updateTaskStateDone(event, 4);" key="mark-done" id="row-menu.markDone"/>
-				<menu label="&changePriority;" accesskey="P">
+				<menu label="&changePriority;"   accesskey="P">
 					<menupopup>
 						<menuitem label="&incrementPriority;" accesskey="I" oncommand="TASKMAIL.UI.incrementPriority(event);" key="increment-task"/>
-						<menuitem label="&decrementPriority;" accesskey="D" oncommand="TASKMAIL.UI.decrementPriority(event);" key="decrement-task"/>
+						<menuitem label="&decrementPriority;" accesskey="M" oncommand="TASKMAIL.UI.decrementPriority(event);" key="decrement-task"/>
 						<menuseparator/>
 						<menuitem label="0" value="0" accesskey="0" class="taskPriority-0" oncommand="TASKMAIL.UI.updatePriority(event, 0);"/>
 						<menuitem label="1" value="1" accesskey="1" class="taskPriority-1" oncommand="TASKMAIL.UI.updatePriority(event, 1);"/>
@@ -154,7 +154,7 @@
 				</menu>
 				<menu id="taskContext-moveMenu"
 					label="&moveTask;"
-					accesskey="D"
+					accesskey="O"
 					oncommand="TASKMAIL.UI.moveTask(event.target._folder)">
 					<menupopup id="taskContext-fileHereMenu"
 						type="folder"
@@ -165,9 +165,9 @@
 						fileHereAccessKey="I"/>
 				</menu>
 				<menuseparator/>
-				<menuitem label="&linkMail;"     accesskey="L" oncommand="TASKMAIL.UILink.linkTask()"/>
+				<menuitem label="&linkMail;"     accesskey="I" oncommand="TASKMAIL.UILink.linkTask()"/>
 				<menuitem label="&unlinkMail;"   accesskey="U" oncommand="TASKMAIL.UILink.unlinkTask()"/>
-				<menuitem label="&goNextMail;"   accesskey="A" oncommand="TASKMAIL.UILink.showLinkedMail()" id="row-menu-goNextMail" key="show-linked"/>
+				<menuitem label="&goNextMail;"   accesskey="X" oncommand="TASKMAIL.UILink.showLinkedMail()" id="row-menu-goNextMail" key="show-linked"/>
 				<menuitem label="&goFolder;"     accesskey="F" oncommand="TASKMAIL.UI.goFolder()"       id="row-menu.goFolder"/>
 				<menuitem label="&selectMail;"   accesskey="S" oncommand="TASKMAIL.UILink.selectLinkedMails()"/>
 				<menuseparator/>
@@ -347,7 +347,7 @@
 	</hbox>	
 	
 	<script type='application/x-javascript'  src='chrome://taskmail/content/taskmail-test.js'/>
-	<menubar id="mail-menubar">
+	<!--menubar id="mail-menubar">
 		<menu id="TaskMailMenu" label="Tasks and mails">
 			<menupopup>
 				<menuitem label="getList" oncommand="TASKMAIL.UI.refreshTaskList();"/>
@@ -368,5 +368,5 @@
 				<menuitem label="get selection" oncommand="testGetSelection();"/>
 			</menupopup>				
 		</menu>			
-	</menubar>
+	</menubar-->
 </overlay>
