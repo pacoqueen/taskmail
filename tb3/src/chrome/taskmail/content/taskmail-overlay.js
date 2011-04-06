@@ -49,7 +49,7 @@ TASKMAIL.UI = {
 		var mails = gFolderDisplay.selectedMessages;
 		var doc = document.getElementById("messagepane").contentDocument;
 		var selection = doc.getSelection();
-		var title = mails.length == 1 ? mails[0].subject : null;
+		var title = mails.length == 1 ? mails[0].mime2DecodedSubject : null;
 		var desc = selection != "" ? selection.toString() : null;
 		var task = new TASKMAIL.Task(0, null, null, title, desc, 1, 5, null, null, null);
 		return task;
@@ -1749,7 +1749,7 @@ TASKMAIL.UIDrag= {
 	},
 	
 	onDropTask : function(event,taskId) {		
-//		consoleService.logStringMessage("onDropTask");
+		consoleService.logStringMessage("onDropTask" + event.dataTransfer.types);
 		var isMessage = event.dataTransfer.types.contains("text/x-moz-message");
   	if (isMessage) {
   		var taskList = document.getElementById("taskList");
@@ -1761,7 +1761,10 @@ TASKMAIL.UIDrag= {
 				var task = new TASKMAIL.Task(taskId, folder, null, null, null, null);
 				var tasks = new Array(task);
 				TASKMAIL.UILink.linkTask("task", tasks)
-			}
+			} else {
+			 // Drop on no task => create new one with link.
+			 TASKMAIL.UI.beginAddTaskWithLink();
+      }
 		}			
 	},
 	
