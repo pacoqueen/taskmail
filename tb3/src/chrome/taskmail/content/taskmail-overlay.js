@@ -1743,18 +1743,21 @@ TASKMAIL.UIDrag= {
 	},
 	
 	onOverTask : function (event) {
+		consoleService.logStringMessage("onOverTask");
 		for(var i=0; i<event.dataTransfer.types.length; i++) {
 			consoleService.logStringMessage(event.dataTransfer.types[i]);
 		}
-		//text/_moz_htmlcontext
-		var isMail = event.dataTransfer.types.contains("text/x-moz-message");
+		var isMail = event.dataTransfer.types.contains("text/x-moz-message") ||
+								 // autorise le drag d'un paragraphe de corps de message.
+		             event.dataTransfer.types.contains("text/_moz_htmlcontext");
   	if (isMail)
   		event.preventDefault();
 	},
 	
 	onDropTask : function(event,taskId) {		
 		consoleService.logStringMessage("onDropTask" + event.dataTransfer.types);
-		var isMessage = event.dataTransfer.types.contains("text/x-moz-message");
+		var isMessage = event.dataTransfer.types.contains("text/x-moz-message") ||
+		                event.dataTransfer.types.contains("text/_moz_htmlcontext");
   	if (isMessage) {
   		var taskList = document.getElementById("taskList");
 			var index = taskList.treeBoxObject.getRowAt(event.clientX, event.clientY);
