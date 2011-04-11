@@ -1743,6 +1743,10 @@ TASKMAIL.UIDrag= {
 	},
 	
 	onOverTask : function (event) {
+		for(var i=0; i<event.dataTransfer.types.length; i++) {
+			consoleService.logStringMessage(event.dataTransfer.types[i]);
+		}
+		//text/_moz_htmlcontext
 		var isMail = event.dataTransfer.types.contains("text/x-moz-message");
   	if (isMail)
   		event.preventDefault();
