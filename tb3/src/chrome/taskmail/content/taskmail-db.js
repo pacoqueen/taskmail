@@ -29,8 +29,8 @@ TASKMAIL = {
 	 * @param sens String "natural", "descending", "ascending"
 	 */
 	sortTask : function (a, b, property, sens) {
-		var valueA = eval("a." + property);
-		var valueB = eval("b." + property);
+		var valueA = a[property];
+		var valueB = b[property];
 		if (valueA == valueB) return 0; 
 		else if (valueA < valueB) return (sens == "ascending") ? -1 : 1; 
 		else return (sens == "ascending") ? 1 : -1;
