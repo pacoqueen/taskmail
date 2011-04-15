@@ -273,18 +273,18 @@
 							  	<row>
 									  <label value="&createDate; :"/>
 									  <spacer/>
-									  <datepicker id="taskCreateDate" type="grif" disabled="true"/>
+									  <datepicker id="taskCreateDate" disabled="true"/>
 							  	</row>
 							  	<row>
 									  <label value="&dueDate; :"/>
 									  <!-- checkbox id = [date field id]Chk -->
 									  <checkbox id="taskDueDateChk" class="checkbox-no-label" checked="false" oncommand="TASKMAIL.UI.onChkTaskDate('taskDueDate');"/>
-									  <datepicker id="taskDueDate" type="grid" readonly="true"/>
+									  <datepicker id="taskDueDate" type="popup"/>
 							  	</row>
 							  	<row>
 									  <label value="&completeDate; :"/>
 									  <checkbox id="taskCompleteDateChk" class="checkbox-no-label" checked="false" oncommand="TASKMAIL.UI.onChkTaskDate('taskCompleteDate');"/>
-									  <datepicker id="taskCompleteDate" type="grid" readonly="true"/>
+									  <datepicker id="taskCompleteDate" type="popup"/>
 							  	</row>
 							  </rows>
 							</grid>

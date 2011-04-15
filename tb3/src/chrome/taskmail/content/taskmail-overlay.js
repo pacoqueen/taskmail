@@ -93,14 +93,32 @@ TASKMAIL.UI = {
 		}
 	},
 
-	saveTask : function() {
+	/**
+	 * returns a Date (objcet) if Lighting is installed or not.
+	 * @param anId String an dom id
+	 * @return Date 
+	 */
+	getDate : function (anId) {
+	  var result = null;
+	  if (document.getElementById(anId + "Chk").checked) {
+      result = document.getElementById(anId).value;
+      if (typeof result != "object") {
+        // when lightning is not installed (value returns a string and 
+        // not an object)
+        result = document.getElementById(anId).dateValue;
+      }
+    }
+    return result;
+  },
+  
+  saveTask : function() {
 		var idInput = document.getElementById("addTask").value;
 		var titleInput = document.getElementById("taskTitle").value;
 		var stateInput = document.getElementById("taskState").selectedItem.value;
 		var desc = document.getElementById("taskDesc").value;
 		var prio = document.getElementById("taskPriority").selectedIndex;
-		var dueDate      = document.getElementById("taskDueDateChk").checked ? document.getElementById("taskDueDate").value : null;
-		var completeDate = document.getElementById("taskCompleteDateChk").checked ? document.getElementById("taskCompleteDate").value : null;
+		var dueDate      = this.getDate("taskDueDate");
+		var completeDate = this.getDate("taskCompleteDate");
 		var currentMsgFolder = GetSelectedMsgFolders()[0];
 
 		if (this.taskDetailPK == -1) {
@@ -375,7 +393,30 @@ TASKMAIL.UI = {
 		document.getElementById("taskTreeChild").appendChild(item);
 	},
 
-	fillTaskDetail : function(aTask) {
+	/**
+	 * Fill a date field even if lightning is installed or not.
+	 * @param anId String dom id
+	 * @param aDate Date
+	 */
+	fillDate : function(anId, aDate) {
+	  /*
+     * dateValue + sans lightning = OK
+     * dateValue + lightning = KO
+     * value + lightning = OK
+     * value + sans lightning = erreur                
+     * value + convertion + lightning = KO
+     * value + convertion + sans lightning = OK                
+     */
+    try {
+      // works when lightning is installed
+      document.getElementById(anId).value = aDate != null ? aDate : new Date();
+    } catch (ex) {
+      // works when lightning is NOT installed
+  		document.getElementById(anId).dateValue = aDate != null ? aDate : new Date();
+    }		 
+	},
+	
+  fillTaskDetail : function(aTask) {
 		document.getElementById("addTask").value = aTask.id;
 		document.getElementById("taskTitle").value = aTask.title;
 		document.getElementById("taskDesc").value = aTask.desc;
@@ -390,11 +431,11 @@ TASKMAIL.UI = {
 		document.getElementById("taskPriority").selectedIndex = aTask.priority;
 		document.getElementById("taskId").value = aTask.id;
 
-		document.getElementById("taskCreateDate").value = aTask.createDate != null ? aTask.createDate : new Date();
-		document.getElementById("taskDueDateChk").checked = aTask.dueDate != null;			
-		document.getElementById("taskDueDate").value = aTask.dueDate != null ? aTask.dueDate : new Date();
+		this.fillDate("taskCreateDate", aTask.createDate);
+    document.getElementById("taskDueDateChk").checked = aTask.dueDate != null;			
+		this.fillDate("taskDueDate", aTask.dueDate);
 		document.getElementById("taskCompleteDateChk").checked = aTask.completeDate != null;
-		document.getElementById("taskCompleteDate").value = aTask.completeDate != null ? aTask.completeDate : new Date();
+		this.fillDate("taskCompleteDate", aTask.completeDate);
 		this._disableDateField("taskDueDate");
 		this._disableDateField("taskCompleteDate");
 	},
