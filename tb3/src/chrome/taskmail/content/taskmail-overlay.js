@@ -1,5 +1,4 @@
 if (!TASKMAIL)
-if (!TASKMAIL)
 	var TASKMAIL = {};
 if (!TASKMAIL.UI)
 	TASKMAIL.UI = {};
@@ -482,7 +481,7 @@ TASKMAIL.UI = {
 	},
 	
 	refreshTaskList : function() {
-//		consoleService.logStringMessage("refreshTaskList");
+//		TASKMAIL.consoleService.logStringMessage("refreshTaskList");
 		// le refresh du folder est lancé avant l'handler de la colonne des
 		// emails.
 		var selectedTasks = TASKMAIL.UI.getSelectedTasksKeys();
@@ -496,9 +495,9 @@ TASKMAIL.UI = {
 
 		// la sauvegarde de l'élément courant n'est pas parfaite sur un changement de folder.
 		if (oldCurrentIndex != -1) {
-//			consoleService.logStringMessage("refreshTaskList,currentIndex="+oldCurrentIndex);
-//			consoleService.logStringMessage("refreshTaskList,currentTaskKey="+currentTaskKey);
-//			consoleService.logStringMessage("refreshTaskList,new currentIndex="+TASKMAIL.UI.getTaskIndexFromTaskID(currentTaskKey));
+//			TASKMAIL.consoleService.logStringMessage("refreshTaskList,currentIndex="+oldCurrentIndex);
+//			TASKMAIL.consoleService.logStringMessage("refreshTaskList,currentTaskKey="+currentTaskKey);
+//			TASKMAIL.consoleService.logStringMessage("refreshTaskList,new currentIndex="+TASKMAIL.UI.getTaskIndexFromTaskID(currentTaskKey));
 			document.getElementById("taskList").currentIndex = TASKMAIL.UI.getTaskIndexFromTaskID(currentTaskKey);
 		}
 	},
@@ -551,7 +550,7 @@ TASKMAIL.UI = {
 			try {
 				var mails = gFolderDisplay.selectedMessages;
 				var messageId = mails[0].messageId;
-				// consoleService.logStringMessage(selectedMailKey);
+				// TASKMAIL.consoleService.logStringMessage(selectedMailKey);
 				var stateFilter = this.getDBStateFilterString();
 				// il faut charger les liens avant les taches
 				TASKMAIL.DB.getLinkSQLite(currentMsgFolder);
@@ -702,7 +701,7 @@ TASKMAIL.UI = {
 				i++;
 			}
 		}
-//		consoleService.logStringMessage("getTaskIndexFromTaskID result="+result);
+//		TASKMAIL.consoleService.logStringMessage("getTaskIndexFromTaskID result="+result);
 		return result;
 	},
 
@@ -767,7 +766,7 @@ TASKMAIL.UI = {
   			result  = parseInt(listBox.view.getItemAtIndex(currentIndex).firstChild.getAttribute("pk"));
   		}
     } catch (ex) {
-      consoleService.logStringMessage("getCurrentTaskKey:currentIndex="+currentIndex);
+      TASKMAIL.consoleService.logStringMessage("getCurrentTaskKey:currentIndex="+currentIndex);
     }
 		return result;
 	},
@@ -794,7 +793,7 @@ TASKMAIL.UI = {
 				i++;
 			}
 		}
-		// consoleService.logStringMessage(result);
+		// TASKMAIL.consoleService.logStringMessage(result);
 		return result;
 	},
 
@@ -969,7 +968,7 @@ TASKMAIL.UI = {
 	 * Appelé après changement des préférences par observer ou au lancement de l'appli.
 	 */
 	getStatesFromPref : function () {
-		//consoleService.logStringMessage("getStatesFromPref");
+		//TASKMAIL.consoleService.logStringMessage("getStatesFromPref");
 		var result = new Array();
     var statesPref = this.prefs.getComplexValue("states",Components.interfaces.nsIPrefLocalizedString).data;
     var statePrefArray = statesPref.split(",");
@@ -1022,7 +1021,7 @@ TASKMAIL.UI = {
    * Appele après un cochage d'état.
    */
   changeStateFilter : function (event) {
-  	//consoleService.logStringMessage("changeStateFilter");
+  	//TASKMAIL.consoleService.logStringMessage("changeStateFilter");
   	var noStatesCheck = true;
   	var stateFilterMenu = document.getElementById("stateFilterPopup");
   	for(var i=0; i<stateFilterMenu.childNodes.length; i++) {
@@ -1046,7 +1045,7 @@ TASKMAIL.UI = {
    * pour la persistance du filtre.
    */
   refreshStateFilterLabel : function () {
-  	//consoleService.logStringMessage("refreshStateFilterLabel");
+  	//TASKMAIL.consoleService.logStringMessage("refreshStateFilterLabel");
     var stateButton = document.getElementById("stateFilter");
     var stateFilter = document.getElementById("stateFilterPopup");
     var filterLabel = "";
@@ -1165,7 +1164,7 @@ TASKMAIL.UI = {
    * only one column ordered. order walks trought "natural", "descending", "ascending".
    */
   onChangeOrder : function (event) {
-  	consoleService.logStringMessage("onChangeOrder");
+  	TASKMAIL.consoleService.logStringMessage("onChangeOrder");
   	// if asking to make an new column ordered and there is a previous order*
   	// then reset previous order
   	if(this.currentOrder.columnId != "" && event.target.getAttribute("id") != this.currentOrder.columnId) {
@@ -1491,7 +1490,7 @@ TASKMAIL.Link = {
 	},
 
 	resetLink : function() {
-//		consoleService.logStringMessage("resetLink");
+//		TASKMAIL.consoleService.logStringMessage("resetLink");
 		this.nbLinks = 0;
 	},
 
@@ -1534,7 +1533,7 @@ TASKMAIL.Link = {
 				nbResult += 1;
 			}
 		}
-		// consoleService.logStringMessage(result);
+		// TASKMAIL.consoleService.logStringMessage(result);
 		return result;
 	},
 
@@ -1554,7 +1553,7 @@ TASKMAIL.Link = {
 				result[j++] = this.taskIdLinks[i];
 			}
 		}
-		// consoleService.logStringMessage(result);
+		// TASKMAIL.consoleService.logStringMessage(result);
 		return result;
 	},
 
@@ -1617,7 +1616,7 @@ TASKMAIL.Link = {
 				break;
 			}
 		}
-//		consoleService.logStringMessage("isMessageLinked" + aFolderURI + "," + aMessageKey + "=" + result);
+//		TASKMAIL.consoleService.logStringMessage("isMessageLinked" + aFolderURI + "," + aMessageKey + "=" + result);
 		return result;
 	},
 
@@ -1687,7 +1686,7 @@ TASKMAIL.MailListener = {
 		// avant delete
 		// mailbox-message://nobody@Local%20Folders/toto/titi
 		// l'uri est modifié
-		// consoleService.logStringMessage(aFolder.baseMessageURI);
+		// TASKMAIL.consoleService.logStringMessage(aFolder.baseMessageURI);
 		TASKMAIL.DB.deleteFolderSQLite(aFolder);
 	},
 	folderMoveCopyCompleted : function(aMove, aSrcFolder, aDestFolder) {
@@ -1779,14 +1778,14 @@ if (!TASKMAIL.UIDrag)
 	TASKMAIL.UIDrag = {};
 TASKMAIL.UIDrag= {
 	onStartTask : function(event, aTask){
-//		consoleService.logStringMessage("onStartTask");
+//		TASKMAIL.consoleService.logStringMessage("onStartTask");
 		event.dataTransfer.setData('application/taskmail', "task");
 	},
 	
 	onOverTask : function (event) {
-		consoleService.logStringMessage("onOverTask");
+		TASKMAIL.consoleService.logStringMessage("onOverTask");
 		for(var i=0; i<event.dataTransfer.types.length; i++) {
-			consoleService.logStringMessage(event.dataTransfer.types[i]);
+			TASKMAIL.consoleService.logStringMessage(event.dataTransfer.types[i]);
 		}
 		var isMail = event.dataTransfer.types.contains("text/x-moz-message") ||
 								 // autorise le drag d'un paragraphe de corps de message.
@@ -1796,7 +1795,7 @@ TASKMAIL.UIDrag= {
 	},
 	
 	onDropTask : function(event,taskId) {		
-		consoleService.logStringMessage("onDropTask" + event.dataTransfer.types);
+		TASKMAIL.consoleService.logStringMessage("onDropTask" + event.dataTransfer.types);
 		var isMessage = event.dataTransfer.types.contains("text/x-moz-message") ||
 		                event.dataTransfer.types.contains("text/_moz_htmlcontext");
   	if (isMessage) {
@@ -1819,7 +1818,7 @@ TASKMAIL.UIDrag= {
 	onOverMail : function (event) {
 		var isTask = event.dataTransfer.types.contains("application/taskmail");
   	if (isTask) {
-//  		consoleService.logStringMessage("onOverMail , is a task");
+//  		TASKMAIL.consoleService.logStringMessage("onOverMail , is a task");
   		event.preventDefault();
   	}
 	},

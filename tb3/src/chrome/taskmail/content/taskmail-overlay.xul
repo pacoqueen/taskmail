@@ -346,8 +346,8 @@
                          oncommand="TASKMAIL.QFB.onCommandSubFilter();"/>
 	</hbox>	
 	
-	<script type='application/x-javascript'  src='chrome://taskmail/content/taskmail-test.js'/>
-	<!--menubar id="mail-menubar">
+	<!--script type='application/x-javascript'  src='chrome://taskmail/content/taskmail-test.js'/>
+	<menubar id="mail-menubar">
 		<menu id="TaskMailMenu" label="Tasks and mails">
 			<menupopup>
 				<menuitem label="getList" oncommand="TASKMAIL.UI.refreshTaskList();"/>
