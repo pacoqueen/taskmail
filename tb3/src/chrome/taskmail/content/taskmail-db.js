@@ -56,6 +56,13 @@ TASKMAIL = {
 		return (aTask.dueDate <= (new Date() - 1*24*60*60*1000));  
 	},
 	
+	Content : function() {
+		this.invisibleTasksCount  = 0;
+		this.tasks       = new Array();
+		this.subContents = new Array();
+		this.folderName  = "";
+	},
+
 	consoleService : Components.classes["@mozilla.org/consoleservice;1"]
 			.getService(Components.interfaces.nsIConsoleService)
 }
@@ -64,49 +71,75 @@ TASKMAIL.DB = {
 
 	consoleService : Components.classes["@mozilla.org/consoleservice;1"]
 			.getService(Components.interfaces.nsIConsoleService),
-
-	getTaskListSQLite : function(mailId, folder, stateFilter) {
+			
+	getTaskListSQLite : function(mailId, folder, stateFilter, recursive, needFolderTree) {
 //		TASKMAIL.consoleService.logStringMessage("getTaskListSQLite");
 		var sql = "";
-		var stat;
-		var folderURI = folder.URI;
-		var result = new Array();
+		var sqlInv = "";
+		var statStateExp = "";
+		var result = new TASKMAIL.Content();
 		try {
-			// recherche par mail (donc non recurssive)
-			if (mailId != null) {
-				sql = "select tasks.rowid, title, state, desc, priority, createDate, dueDate, completeDate from tasks, links where tasks.folderURI = links.folderURI and tasks.rowid = links.taskId and links.folderURI = :folderURI and links.messageId = :mailId ";
-				// quelque soit le type de recherche (email ou folder) on
-				// applique le filtre d'état
-				if (stateFilter != "") {
-					var stateExp = "";
-					for (var i = 0; i < stateFilter.length; i++) {
-						if (i > 0) {
-							stateExp += ",";
-						}
-						stateExp += stateFilter.charAt(i);
+			var stat;
+			var statInv;
+			// quelque soit le type de recherche (email ou folder) on
+			// applique le filtre d'état
+			if (stateFilter != "") {
+				var stateExp = "";
+				for (var i = 0; i < stateFilter.length; i++) {
+					if (i > 0) {
+						stateExp += ",";
 					}
-					sql += " and state in (" + stateExp + ")";
+					stateExp += stateFilter.charAt(i);
 				}
+				sqlStateExp = " and state in (" + stateExp + ")";
+			}
+			if (mailId != null) {
+				// recherche par mail (donc non recurssive)
+				sql    = "select tasks.rowid, title, state, desc, priority, createDate, dueDate, completeDate, tasks.folderURI from tasks, links where tasks.folderURI = links.folderURI and tasks.rowid = links.taskId and links.folderURI = :folderURI and links.messageId = :mailId ";
+				sqlInv = "select count(*) from tasks, links where tasks.folderURI = links.folderURI and tasks.rowid = links.taskId and links.folderURI = :folderURI and links.messageId = :mailId ";
+				if (stateFilter != "") {
+					sql += " and tasks.state in (" + stateExp + ")";
+					sqlInv += " and tasks.state not in (" + stateExp + ")";
+				}
+				var folderURI = folder.URI;
 				stat = this.dbConnection.createStatement(sql);
 				stat.bindStringParameter(0, folderURI);
 				stat.bindStringParameter(1, mailId);
+				statInv = this.dbConnection.createStatement(sqlInv);
+				statInv.bindStringParameter(0, folderURI);
+				statInv.bindStringParameter(1, mailId);
+			} else if (folder != null) {
 				// sinon recherche par folder
-			} else {
-				sql = "select tasks.rowid, title, state, desc, priority, createDate, dueDate, completeDate from tasks where folderURI = :folderURI ";
-				// quelque soit le type de recherche (email ou folder) on
-				// applique le filtre d'état
-				if (stateFilter != "") {
-					var stateExp = "";
-					for (var i = 0; i < stateFilter.length; i++) {
-						if (i > 0) {
-							stateExp += ",";
-						}
-						stateExp += stateFilter.charAt(i);
-					}
-					sql += " and state in (" + stateExp + ")";
+				sql = "select tasks.rowid, title, state, desc, priority, createDate, dueDate, completeDate, folderURI from tasks where ";
+				sqlInv = "select count(*) from tasks where ";
+				if (recursive) {
+					sql += "folderURI like :folderURI "; 
+					sqlInv += "folderURI like :folderURI "; 
+				} else {
+					sql += "folderURI = :folderURI "; 
+					sqlInv += "folderURI = :folderURI "; 
 				}
+				if (stateFilter != "") {
+					sql += " and state in (" + stateExp + ")";
+					sqlInv += " and state not in (" + stateExp + ")";
+				}
+				sql += " order by folderURI";
+				var folderURI = folder.URI;
 				stat = this.dbConnection.createStatement(sql);
-				stat.bindStringParameter(0, folderURI);
+				stat.bindStringParameter(0, recursive ? folderURI + "%" : folderURI);
+				statInv = this.dbConnection.createStatement(sqlInv);
+				statInv.bindStringParameter(0, recursive ? folderURI + "%" : folderURI);
+			} else {
+				// sinon recherche de tous les folders
+				sql = "select tasks.rowid, title, state, desc, priority, createDate, dueDate, completeDate, folderURI from tasks where 1=1 ";
+				sqlInv = "select count(*) from tasks where 1=1 ";
+				if (stateFilter != "") {
+					sql += " and state in (" + stateExp + ")";
+					sqlInv += " and state not in (" + stateExp + ")";
+				}
+				sql += " order by folderURI";
+				stat = this.dbConnection.createStatement(sql);
+				statInv = this.dbConnection.createStatement(sqlInv);
 			}
 			while (stat.executeStep()) {
 				var id = stat.getInt32(0);
@@ -117,85 +150,80 @@ TASKMAIL.DB = {
 				var createDate     = this.convertSQLiteToDate(stat.getString(5));
 				var dueDate        = this.convertSQLiteToDate(stat.getString(6));
 				var completeDate   = this.convertSQLiteToDate(stat.getString(7));
+				var taskFolder     = stat.getString(8);
 				
-				var task = new TASKMAIL.Task(id, folderURI, folder.prettyName, title, desc, state, prio,
+//				var folderName = taskFolder.substr(taskFolder.lastIndexOf('/') + 1);
+				
+//				var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
+//                .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+//        converter.charset = "UTF-8";
+//				var uni = converter.ConvertFromUnicode(folderName);
+//				TASKMAIL.consoleService.logStringMessage(uni);
+			
+			var prettyName = GetMsgFolderFromUri(taskFolder, false).prettyName;
+//			TASKMAIL.consoleService.logStringMessage(sentFolder.prettyName);
+				
+				var task = new TASKMAIL.Task(id, taskFolder, prettyName, title, desc, state, prio,
 				                             createDate, dueDate, completeDate);
-				result.push(task);
+				result.tasks.push(task);
+			}
+			while (statInv.executeStep()) {
+				result.invisibleTasksCount = statInv.getInt32(0);
 			}
 		} catch (err) {
 			Components.utils.reportError("getTaskListSQLite " + err);
 		}
-		return result;
-	},
-	
-	getInvisibleTaskCountSQLite : function(mailId, folder, stateFilterVisible) {
-//		TASKMAIL.consoleService.logStringMessage("getInvisibleTaskCountSQLite");
-		var sql = "";
-		var stat;
-		var folderURI = folder.URI;
-		var result = 0;
-		if (stateFilterVisible == "") {
-			return result;
-		}
-		var stateFilter = this.inverseStateFilter(stateFilterVisible);
-		try {
-			// recherche par mail (donc non recurssive)
-			if (mailId != null) {
-				sql = "select count(*) from tasks, links where tasks.folderURI = links.folderURI and tasks.rowid = links.taskId and links.folderURI = :folderURI and links.messageId = :mailId";
-				// quelque soit le type de recherche (email ou folder) on
-				// applique le
-				// filtre d'état
-				if (stateFilter != "") {
-					var stateExp = "";
-					for (var i = 0; i < stateFilter.length; i++) {
-						if (i > 0) {
-							stateExp += ",";
-						}
-						stateExp += stateFilter.charAt(i);
-					}
-					sql += " and state in (" + stateExp + ")";
-				}
-				stat = this.dbConnection.createStatement(sql);
-				stat.bindStringParameter(0, folderURI);
-				stat.bindStringParameter(1, mailId);
-				// sinon recherche par folder
-			} else {
-				sql = "select count(*) from tasks where folderURI = :folderURI";
-				// quelque soit le type de recherche (email ou folder) on
-				// applique le
-				// filtre d'état
-				if (stateFilter != "") {
-					var stateExp = "";
-					for (var i = 0; i < stateFilter.length; i++) {
-						if (i > 0) {
-							stateExp += ",";
-						}
-						stateExp += stateFilter.charAt(i);
-					}
-					sql += " and state in (" + stateExp + ")";
-				}
-				stat = this.dbConnection.createStatement(sql);
-				stat.bindStringParameter(0, folderURI);
-			}
-			stat.executeStep();
-			result = stat.getInt32(0);
-		} catch (err) {
-			Components.utils.reportError("getTaskListSQLite " + err);
+		if (needFolderTree) {
+			var root = new TASKMAIL.Content();
+			root.folderName = "root";
+			root.subContents.push(result);
+			this.createFolderTree(result, root);
+			result = root;
 		}
 		return result;
 	},
 	
-	inverseStateFilter : function (stateFilter) {
-		if (stateFilter == "") stateFilter = "01234";
-		var result = "";
-		for(var i=0; i<5; i++) {
-			if (stateFilter.indexOf(i) < 0) {
-				result += i;
+	/**
+	 * @param aCurrent.tasks doit être trié par folderURI
+	 */
+	createFolderTree : function (aCurrent, aParent) {
+		// découpe la liste en 3 : celle du folder,  celles des sous folder et celles restante (cibling)
+		var currentEnd = 0;
+		var subTasksEnd = 0;
+		for(var i=0; i<aCurrent.tasks.length-1; i++) {
+			var previousFolderURI = aCurrent.tasks[0].folderURI;
+			if (previousFolderURI == aCurrent.tasks[i+1].folderURI) {
+				currentEnd = i + 1;
 			}
 		}
-		return result;
+		for(var i=currentEnd + 1; i<aCurrent.tasks.length; i++) {
+			var currentFolderURI = aCurrent.tasks[0].folderURI;
+			if (aCurrent.tasks[i].folderURI.indexOf(currentFolderURI) > -1) {
+				subTasksEnd = i;
+			}
+		}
+		if (subTasksEnd != 0) {
+			var tmp = new TASKMAIL.Content();
+			tmp.tasks = aCurrent.tasks.slice(currentEnd + 1, subTasksEnd + 1);
+			aCurrent.subContents.push(tmp);
+			this.createFolderTree(tmp, aCurrent);
+		}
+		var ciblingStart = (subTasksEnd > currentEnd ? subTasksEnd : currentEnd) + 1;
+		if (ciblingStart < aCurrent.tasks.length) {
+			var tmp = new TASKMAIL.Content();
+			tmp.tasks = aCurrent.tasks.slice(ciblingStart, aCurrent.tasks.length + 1);
+			aParent.subContents.push(tmp);
+			this.createFolderTree(tmp, aParent);
+		}
+		if (currentEnd > 0 && aCurrent.tasks.length > currentEnd) {
+			aCurrent.tasks.splice(currentEnd + 1,aCurrent.tasks.length);
+		}
+		if (aCurrent.tasks.length > 0) {
+			var prettyName = GetMsgFolderFromUri(aCurrent.tasks[0].folderURI, false).prettyName;
+			aCurrent.folderName = prettyName;
+		}
 	},
-
+	
 	getTaskDetailSQLite : function(pk) {
 		TASKMAIL.consoleService.logStringMessage("getTaskDetailSQLite");
 		var result = null;

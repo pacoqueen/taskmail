@@ -53,9 +53,11 @@
 <!ENTITY mailViewFilter        "message">
 <!ENTITY subFolderViewFilter   "subfolders">
 <!ENTITY folderViewFilter      "folder">
+<!ENTITY hotListViewFilter     "hot list">
 <!ENTITY viewFilterTTP         "Filtre de visibilité">
 <!ENTITY allViewTTP            "Tâches de tous les folders">
 <!ENTITY mailViewTTP           "Les tâches liées aux messages courants">
+<!ENTITY hotListViewFilterTTP  "Les tâches les plus importantes">
 <!ENTITY addTask               "Ajouter une tâche">
 <!ENTITY header.subfolder      "La tâche est dans le folder courant">
 <!ENTITY msgColHeadLink        "Tâche Liée">

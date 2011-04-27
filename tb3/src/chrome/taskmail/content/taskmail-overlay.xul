@@ -312,6 +312,7 @@
 						<menuitem label="&folderViewFilter;"     value="0"/>
 						<menuitem label="&subFolderViewFilter;"  value="1" selected="true"/>
 						<menuitem label="&allViewFilter;"        value="3" tooltiptext="&allViewTTP;"/>
+						<menuitem label="&hotListViewFilter;"    value="4" tooltiptext="&hotListViewFilterTTP;"/>
 					</menupopup>
 				</menulist>
 			</hbox>

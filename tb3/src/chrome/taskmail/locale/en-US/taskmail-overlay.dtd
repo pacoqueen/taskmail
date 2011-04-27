@@ -53,9 +53,11 @@
 <!ENTITY mailViewFilter        "message">
 <!ENTITY subFolderViewFilter   "subfolders">
 <!ENTITY folderViewFilter      "folder">
+<!ENTITY hotListViewFilter     "hot list">
 <!ENTITY viewFilterTTP         "View filter">
 <!ENTITY allViewTTP            "Tasks of all folders">
 <!ENTITY mailViewTTP           "Only tasks linked to current message">
+<!ENTITY hotListViewFilterTTP  "The most important tasks">
 <!ENTITY addTask               "Add a task">
 <!ENTITY header.subfolder      "Does task is outside the current subfolder">
 <!ENTITY msgColHeadLink        "Task link">

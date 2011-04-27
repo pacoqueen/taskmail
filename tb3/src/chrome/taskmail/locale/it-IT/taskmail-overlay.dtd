@@ -53,9 +53,11 @@
 <!ENTITY mailViewFilter "messaggio">
 <!ENTITY subFolderViewFilter "sottocartelle">
 <!ENTITY folderViewFilter "cartella">
+<!ENTITY hotListViewFilter     "hot list">
 <!ENTITY viewFilterTTP "Filtro viste">
 <!ENTITY allViewTTP "Attività di tutte le cartelle">
 <!ENTITY mailViewTTP "Tutte le attività collegate al messaggio corrente">
+<!ENTITY hotListViewFilterTTP  "The most important tasks">
 <!ENTITY addTask "Aggiungi ad attività">
 <!ENTITY header.subfolder "L'attività è nella cartella corrente">
 <!ENTITY msgColHeadLink "Attività collega">

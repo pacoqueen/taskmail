@@ -53,9 +53,11 @@
 <!ENTITY mailViewFilter        "bericht">
 <!ENTITY subFolderViewFilter   "subfolders">
 <!ENTITY folderViewFilter      "folder">
+<!ENTITY hotListViewFilter     "hot list">
 <!ENTITY viewFilterTTP         "Beeld filter">
 <!ENTITY allViewTTP            "Taken van alle folders">
 <!ENTITY mailViewTTP           "Alleen taken gelinkt aan huidig bericht">
+<!ENTITY hotListViewFilterTTP  "The most important tasks">
 <!ENTITY addTask               "Voeg een taak toe">
 <!ENTITY header.subfolder      "Deze taak bevindt zich buiten de huidige subfolder">
 <!ENTITY msgColHeadLink        "Gelinkte taak">
