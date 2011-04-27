@@ -547,7 +547,7 @@ TASKMAIL.UI = {
 				var messageId = mails[0].messageId;
 				// TASKMAIL.consoleService.logStringMessage(selectedMailKey);
 				// il faut charger les liens avant les taches
-				TASKMAIL.DB.getLinkSQLite(currentMsgFolder);
+				TASKMAIL.DB.getLinkSQLite(currentMsgFolder, viewFilter);
 				result = TASKMAIL.DB.getTaskListSQLite(messageId,
 						currentMsgFolder, stateFilter, false, needFolderTree);
 			} catch (err) {
@@ -555,34 +555,18 @@ TASKMAIL.UI = {
 			}
 		} else if (viewFilter == 3) {
 			// all folders
-			var rootFolders = this._getAllRootFolders();
-			for(var i=0; i<rootFolders.length; i++) {
-				if (rootFolders[i].hasSubFolders) {
-					var subFolders = rootFolders[i].subFolders;
-					while (subFolders.hasMoreElements()) {
-						var subFolder = subFolders.getNext();
-						TASKMAIL.DB.getLinkSQLite(subFolder);
-					}
-				}
-			}
+			TASKMAIL.DB.getLinkSQLite(null, viewFilter);
 			result = TASKMAIL.DB.getTaskListSQLite(null,
 						null, stateFilter, false, needFolderTree);
 		} else if (viewFilter == 0) {
 			// folder
-			TASKMAIL.DB.getLinkSQLite(currentMsgFolder);
+			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, viewFilter);
 			result = TASKMAIL.DB.getTaskListSQLite(null,
 					currentMsgFolder, stateFilter, false, needFolderTree);
 		} else {
 			// subfolders (viewFilter == 1)
 			// il faut charger les liens avant les taches
-			TASKMAIL.DB.getLinkSQLite(currentMsgFolder);
-			if (currentMsgFolder.hasSubFolders) {
-				var subFolders = currentMsgFolder.subFolders;
-				while (subFolders.hasMoreElements()) {
-					var subFolder = subFolders.getNext();
-					TASKMAIL.DB.getLinkSQLite(subFolder);
-				}
-			}
+			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, viewFilter);
 			result = TASKMAIL.DB.getTaskListSQLite(null,
 					currentMsgFolder, stateFilter, true, needFolderTree);
 		}
@@ -1754,10 +1738,10 @@ TASKMAIL.UIDrag= {
 	},
 	
 	onOverTask : function (event) {
-		TASKMAIL.consoleService.logStringMessage("onOverTask");
-		for(var i=0; i<event.dataTransfer.types.length; i++) {
-			TASKMAIL.consoleService.logStringMessage(event.dataTransfer.types[i]);
-		}
+//		TASKMAIL.consoleService.logStringMessage("onOverTask");
+//		for(var i=0; i<event.dataTransfer.types.length; i++) {
+//			TASKMAIL.consoleService.logStringMessage(event.dataTransfer.types[i]);
+//		}
 		var isMail = event.dataTransfer.types.contains("text/x-moz-message") ||
 								 // autorise le drag d'un paragraphe de corps de message.
 		             event.dataTransfer.types.contains("text/_moz_htmlcontext");
@@ -1766,7 +1750,7 @@ TASKMAIL.UIDrag= {
 	},
 	
 	onDropTask : function(event,taskId) {		
-		TASKMAIL.consoleService.logStringMessage("onDropTask" + event.dataTransfer.types);
+//		TASKMAIL.consoleService.logStringMessage("onDropTask" + event.dataTransfer.types);
 		var isMessage = event.dataTransfer.types.contains("text/x-moz-message") ||
 		                event.dataTransfer.types.contains("text/_moz_htmlcontext");
   	if (isMessage) {

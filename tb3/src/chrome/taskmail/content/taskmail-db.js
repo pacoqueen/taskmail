@@ -152,16 +152,7 @@ TASKMAIL.DB = {
 				var completeDate   = this.convertSQLiteToDate(stat.getString(7));
 				var taskFolder     = stat.getString(8);
 				
-//				var folderName = taskFolder.substr(taskFolder.lastIndexOf('/') + 1);
-				
-//				var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
-//                .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
-//        converter.charset = "UTF-8";
-//				var uni = converter.ConvertFromUnicode(folderName);
-//				TASKMAIL.consoleService.logStringMessage(uni);
-			
-			var prettyName = GetMsgFolderFromUri(taskFolder, false).prettyName;
-//			TASKMAIL.consoleService.logStringMessage(sentFolder.prettyName);
+				var prettyName = GetMsgFolderFromUri(taskFolder, false).prettyName;
 				
 				var task = new TASKMAIL.Task(id, taskFolder, prettyName, title, desc, state, prio,
 				                             createDate, dueDate, completeDate);
@@ -418,18 +409,31 @@ TASKMAIL.DB = {
 	},
 
 	/**
-	 * remonte touts les liens de toutes les taches du folder fourni.
+	 * remonte touts les liens de toutes les taches du folder fourni
+	 * (folder, subfolders, all folders). 
 	 */
-	getLinkSQLite : function(folder) {
+	getLinkSQLite : function(folder, viewFilter) {
 //		TASKMAIL.consoleService.logStringMessage("getLinkSQLite,folderName="+folder.URI);
 		try {
-			var sql = "select links.folderURI, messageId, taskId from links, tasks where links.taskId = tasks.rowid and tasks.folderURI = :folderURI";
+			var sql = "select links.folderURI, messageId, taskId from links, tasks where links.taskId = tasks.rowid ";
+			if (viewFilter == 2 || viewFilter == 0) {
+				sql += " and tasks.folderURI = :folderURI";
+			} else if (viewFilter == 1) {
+				sql += " and tasks.folderURI like :folderURI";
+			}
 			var stat = this.dbConnection.createStatement(sql);
-			var folderURI = folder.URI;
-			stat.bindStringParameter(0, folderURI);
+			if (viewFilter == 2 || viewFilter == 0) {
+				var folderURI = folder.URI;
+				stat.bindStringParameter(0, folderURI);
+			} else if (viewFilter == 1) {
+				var folderURI = folder.URI;
+				stat.bindStringParameter(0, folderURI + "%");
+			}
 			while (stat.executeStep()) {
+  			var taskFolderURI =  stat.getString(0);
   			var messageId =  stat.getString(1);
-  			var message = folder.msgDatabase.getMsgHdrForMessageID(messageId);
+  			var folderDB = GetMsgFolderFromUri(taskFolderURI, false); 
+  			var message = folderDB.msgDatabase.getMsgHdrForMessageID(messageId);
   			var messageKey = message.messageKey;
   			var threadKey = message.threadId;
 				//TASKMAIL.consoleService.logStringMessage("messageId=" + messageId + "messageKey=" + messageKey);
