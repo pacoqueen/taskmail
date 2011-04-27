@@ -549,26 +549,26 @@ TASKMAIL.UI = {
 				// il faut charger les liens avant les taches
 				TASKMAIL.DB.getLinkSQLite(currentMsgFolder, viewFilter);
 				result = TASKMAIL.DB.getTaskListSQLite(messageId,
-						currentMsgFolder, stateFilter, false, needFolderTree);
+						currentMsgFolder, stateFilter, viewFilter, needFolderTree);
 			} catch (err) {
 				// Components.utils.reportError("dbUpgrade " + err);
 			}
-		} else if (viewFilter == 3) {
-			// all folders
+		} else if (viewFilter == 3 || viewFilter == 4) {
+			// all folders or hot list
 			TASKMAIL.DB.getLinkSQLite(null, viewFilter);
 			result = TASKMAIL.DB.getTaskListSQLite(null,
-						null, stateFilter, false, needFolderTree);
+						null, stateFilter, viewFilter, needFolderTree);
 		} else if (viewFilter == 0) {
 			// folder
 			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, viewFilter);
 			result = TASKMAIL.DB.getTaskListSQLite(null,
-					currentMsgFolder, stateFilter, false, needFolderTree);
+					currentMsgFolder, stateFilter, viewFilter, needFolderTree);
 		} else {
 			// subfolders (viewFilter == 1)
 			// il faut charger les liens avant les taches
 			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, viewFilter);
 			result = TASKMAIL.DB.getTaskListSQLite(null,
-					currentMsgFolder, stateFilter, true, needFolderTree);
+					currentMsgFolder, stateFilter, viewFilter, needFolderTree);
 		}
 		return result;
 	},

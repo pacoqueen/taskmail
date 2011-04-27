@@ -72,7 +72,7 @@ TASKMAIL.DB = {
 	consoleService : Components.classes["@mozilla.org/consoleservice;1"]
 			.getService(Components.interfaces.nsIConsoleService),
 			
-	getTaskListSQLite : function(mailId, folder, stateFilter, recursive, needFolderTree) {
+	getTaskListSQLite : function(mailId, folder, stateFilter, viewFilter, needFolderTree) {
 //		TASKMAIL.consoleService.logStringMessage("getTaskListSQLite");
 		var sql = "";
 		var sqlInv = "";
@@ -112,7 +112,7 @@ TASKMAIL.DB = {
 				// sinon recherche par folder
 				sql = "select tasks.rowid, title, state, desc, priority, createDate, dueDate, completeDate, folderURI from tasks where ";
 				sqlInv = "select count(*) from tasks where ";
-				if (recursive) {
+				if (viewFilter == 1) {
 					sql += "folderURI like :folderURI "; 
 					sqlInv += "folderURI like :folderURI "; 
 				} else {
@@ -126,9 +126,14 @@ TASKMAIL.DB = {
 				sql += " order by folderURI";
 				var folderURI = folder.URI;
 				stat = this.dbConnection.createStatement(sql);
-				stat.bindStringParameter(0, recursive ? folderURI + "%" : folderURI);
+				stat.bindStringParameter(0, viewFilter == 1 ? folderURI + "%" : folderURI);
 				statInv = this.dbConnection.createStatement(sqlInv);
-				statInv.bindStringParameter(0, recursive ? folderURI + "%" : folderURI);
+				statInv.bindStringParameter(0, viewFilter == 1 ? folderURI + "%" : folderURI);
+			} else if (viewFilter == 4) {
+				// hotList
+				sql = "select tasks.rowid, title, state, desc, priority, createDate, dueDate, completeDate, folderURI from tasks where tasks.priority >= 7 or tasks.dueDate <= current_date - 7";
+				sql += " order by folderURI";
+				stat = this.dbConnection.createStatement(sql);
 			} else {
 				// sinon recherche de tous les folders
 				sql = "select tasks.rowid, title, state, desc, priority, createDate, dueDate, completeDate, folderURI from tasks where 1=1 ";
@@ -158,7 +163,7 @@ TASKMAIL.DB = {
 				                             createDate, dueDate, completeDate);
 				result.tasks.push(task);
 			}
-			while (statInv.executeStep()) {
+			while (statInv != null && statInv.executeStep()) {
 				result.invisibleTasksCount = statInv.getInt32(0);
 			}
 		} catch (err) {
