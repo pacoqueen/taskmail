@@ -444,7 +444,7 @@ TASKMAIL.DB = {
     			var threadKey = message.threadId;
   				//TASKMAIL.consoleService.logStringMessage("messageId=" + messageId + "messageKey=" + messageKey);
         } catch (err) {
-    			Components.utils.reportError("getLinkSQLite, problème récup messageKey");
+    			Components.utils.reportError("getLinkSQLite, problème récup messageId=" + messageId);
     			continue;
         }
 				TASKMAIL.Link.addLink(folderURI,
