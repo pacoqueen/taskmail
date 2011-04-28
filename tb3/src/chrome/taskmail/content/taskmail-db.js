@@ -131,7 +131,7 @@ TASKMAIL.DB = {
 				statInv.bindStringParameter(0, viewFilter == 1 ? folderURI + "%" : folderURI);
 			} else if (viewFilter == 4) {
 				// hotList
-				sql = "select tasks.rowid, title, state, desc, priority, createDate, dueDate, completeDate, folderURI from tasks where tasks.priority >= 7 or tasks.dueDate <= current_date - 7";
+				sql = "select tasks.rowid, title, state, desc, priority, createDate, dueDate, completeDate, folderURI from tasks where (tasks.priority >= 7 or tasks.dueDate <= date('now','7 days')) and tasks.state in ('1','2') ";
 				sql += " order by folderURI";
 				stat = this.dbConnection.createStatement(sql);
 			} else {
