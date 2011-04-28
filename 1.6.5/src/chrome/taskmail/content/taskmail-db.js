@@ -398,10 +398,15 @@ TASKMAIL.DB = {
 			stat.bindStringParameter(0, folderURI);
 			while (stat.executeStep()) {
   			var messageId =  stat.getString(1);
-  			var message = folder.msgDatabase.getMsgHdrForMessageID(messageId);
-  			var messageKey = message.messageKey;
-  			var threadKey = message.threadId;
+  			try {
+	  			var message = folder.msgDatabase.getMsgHdrForMessageID(messageId);
+	  			var messageKey = message.messageKey;
+	  			var threadKey = message.threadId;
 				//consoleService.logStringMessage("messageId=" + messageId + "messageKey=" + messageKey);
+  			} catch (err) {
+    			Components.utils.reportError("getLinkSQLite, problème récup messageId=" + messageId);
+    			continue;
+  			}
 				TASKMAIL.Link.addLink(folderURI,
 				                      messageKey,
 				                      threadKey,
