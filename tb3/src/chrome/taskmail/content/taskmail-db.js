@@ -439,13 +439,18 @@ TASKMAIL.DB = {
   			var messageId =  stat.getString(1);
   			var folderDB = GetMsgFolderFromUri(taskFolderURI, false); 
   			var message = folderDB.msgDatabase.getMsgHdrForMessageID(messageId);
-  			var messageKey = message.messageKey;
-  			var threadKey = message.threadId;
-				//TASKMAIL.consoleService.logStringMessage("messageId=" + messageId + "messageKey=" + messageKey);
+        try {
+          var messageKey = message.messageKey;
+    			var threadKey = message.threadId;
+  				//TASKMAIL.consoleService.logStringMessage("messageId=" + messageId + "messageKey=" + messageKey);
+        } catch (err) {
+    			Components.utils.reportError("getLinkSQLite, message is null");
+    			continue;
+        }
 				TASKMAIL.Link.addLink(folderURI,
-				                      messageKey,
-				                      threadKey,
-				                      stat.getInt32(2));
+  			                      messageKey,
+  			                      threadKey,
+  			                      stat.getInt32(2));
 			}
 		} catch (err) {
 			Components.utils.reportError("getLinkSQLite " + err);
