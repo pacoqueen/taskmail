@@ -112,7 +112,7 @@ TASKMAIL.DB = {
 				// sinon recherche par folder
 				sql = "select tasks.rowid, title, state, desc, priority, createDate, dueDate, completeDate, folderURI from tasks where ";
 				sqlInv = "select count(*) from tasks where ";
-				if (viewFilter == 1) {
+				if (viewFilter == TASKMAIL.UI.VIEW_FIlTER_SUBFOLDERS) {
 					sql += "folderURI like :folderURI "; 
 					sqlInv += "folderURI like :folderURI "; 
 				} else {
@@ -126,10 +126,10 @@ TASKMAIL.DB = {
 				sql += " order by folderURI";
 				var folderURI = folder.URI;
 				stat = this.dbConnection.createStatement(sql);
-				stat.bindStringParameter(0, viewFilter == 1 ? folderURI + "%" : folderURI);
+				stat.bindStringParameter(0, viewFilter == TASKMAIL.UI.VIEW_FIlTER_SUBFOLDERS ? folderURI + "%" : folderURI);
 				statInv = this.dbConnection.createStatement(sqlInv);
-				statInv.bindStringParameter(0, viewFilter == 1 ? folderURI + "%" : folderURI);
-			} else if (viewFilter == 4) {
+				statInv.bindStringParameter(0, viewFilter == TASKMAIL.UI.VIEW_FIlTER_SUBFOLDERS ? folderURI + "%" : folderURI);
+			} else if (viewFilter == TASKMAIL.UI.VIEW_FIlTER_HOTLIST) {
 				// hotList
 				sql = "select tasks.rowid, title, state, desc, priority, createDate, dueDate, completeDate, folderURI from tasks where (tasks.priority >= 7 or tasks.dueDate <= date('now','7 days')) and tasks.state in ('1','2') ";
 				sql += " order by folderURI";
@@ -421,16 +421,16 @@ TASKMAIL.DB = {
 //		TASKMAIL.consoleService.logStringMessage("getLinkSQLite,folderName="+folder.URI);
 		try {
 			var sql = "select links.folderURI, messageId, taskId from links, tasks where links.taskId = tasks.rowid ";
-			if (viewFilter == 2 || viewFilter == 0) {
+			if (viewFilter == TASKMAIL.UI.VIEW_FIlTER_MESSAGE || viewFilter == TASKMAIL.UI.VIEW_FIlTER_FOLDER) {
 				sql += " and tasks.folderURI = :folderURI";
-			} else if (viewFilter == 1) {
+			} else if (viewFilter == TASKMAIL.UI.VIEW_FIlTER_SUBFOLDERS) {
 				sql += " and tasks.folderURI like :folderURI";
 			}
 			var stat = this.dbConnection.createStatement(sql);
-			if (viewFilter == 2 || viewFilter == 0) {
+			if (viewFilter == TASKMAIL.UI.VIEW_FIlTER_MESSAGE || viewFilter == TASKMAIL.UI.VIEW_FIlTER_FOLDER) {
 				var folderURI = folder.URI;
 				stat.bindStringParameter(0, folderURI);
-			} else if (viewFilter == 1) {
+			} else if (viewFilter == TASKMAIL.UI.VIEW_FIlTER_SUBFOLDERS) {
 				var folderURI = folder.URI;
 				stat.bindStringParameter(0, folderURI + "%");
 			}

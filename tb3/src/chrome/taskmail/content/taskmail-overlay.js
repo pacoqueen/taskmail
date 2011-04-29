@@ -540,7 +540,7 @@ TASKMAIL.UI = {
 		var viewFilter = document.getElementById("viewFilter").selectedItem.value;
 		var stateFilter = this.getDBStateFilterString();
 
-		if (viewFilter == 2) {
+		if (viewFilter == this.VIEW_FIlTER_MESSAGE) {
 			// recherche par mail
 			try {
 				var mails = gFolderDisplay.selectedMessages;
@@ -553,18 +553,18 @@ TASKMAIL.UI = {
 			} catch (err) {
 				// Components.utils.reportError("dbUpgrade " + err);
 			}
-		} else if (viewFilter == 3 || viewFilter == 4) {
+		} else if (viewFilter == this.VIEW_FIlTER_ALL_FOLDERS || viewFilter == this.VIEW_FIlTER_HOTLIST) {
 			// all folders or hot list
 			TASKMAIL.DB.getLinkSQLite(null, viewFilter);
 			result = TASKMAIL.DB.getTaskListSQLite(null,
 						null, stateFilter, viewFilter, needFolderTree);
-		} else if (viewFilter == 0) {
+		} else if (viewFilter == this.VIEW_FIlTER_FOLDER) {
 			// folder
 			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, viewFilter);
 			result = TASKMAIL.DB.getTaskListSQLite(null,
 					currentMsgFolder, stateFilter, viewFilter, needFolderTree);
 		} else {
-			// subfolders (viewFilter == 1)
+			// subfolders (viewFilter == this.VIEW_FIlTER_SUBFOLDERS)
 			// il faut charger les liens avant les taches
 			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, viewFilter);
 			result = TASKMAIL.DB.getTaskListSQLite(null,
@@ -633,6 +633,12 @@ TASKMAIL.UI = {
 	taskDetailPK : -1,
 	addWithLink : false,
 	stringsBundle : null,
+	
+	VIEW_FIlTER_FOLDER      : 0,
+	VIEW_FIlTER_SUBFOLDERS  : 1,
+	VIEW_FIlTER_MESSAGE     : 2,
+	VIEW_FIlTER_ALL_FOLDERS : 3,
+	VIEW_FIlTER_HOTLIST     : 4,
 
 	/**
 	 * recupére les index des taches dont les pk sont fournies
@@ -785,19 +791,19 @@ TASKMAIL.UI = {
 		this.refreshTaskList();
 	},
 	
-	viewFilterState : "1",
+	viewFilterState : this.VIEW_FIlTER_SUBFOLDERS,
 
 	viewFilterChange : function() {
 		var viewFilter = document.getElementById("viewFilter").selectedItem.value;
 		
-    if (this.viewFilterState == "3" && viewFilter != "3") {
+    if (this.viewFilterState == this.VIEW_FIlTER_ALL_FOLDERS && viewFilter != this.VIEW_FIlTER_ALL_FOLDERS) {
       document.getElementById("folderTree").addEventListener("select",
 				TASKMAIL.UI.refreshTaskList, false);
-    } else if (viewFilter == "3" && this.viewFilterState != "3") {
+    } else if (viewFilter == this.VIEW_FIlTER_ALL_FOLDERS && this.viewFilterState != this.VIEW_FIlTER_ALL_FOLDERS) {
       document.getElementById("folderTree").removeEventListener("select",
 				TASKMAIL.UI.refreshTaskList, false);
     }    
-		if (viewFilter == 2) {
+		if (viewFilter == this.VIEW_FIlTER_MESSAGE) {
 			// recherche par mail, il faut supprimer le refreshTaskLink et le 
 			// remettre pour qui soit en 2°
 			document.getElementById("threadTree").removeEventListener("select",
