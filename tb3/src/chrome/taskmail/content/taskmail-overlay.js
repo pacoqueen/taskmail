@@ -216,8 +216,10 @@ TASKMAIL.UI = {
 		if (sens == "task") {
 			menuitem = document.getElementById('row-menu-goNextMail');
 			var selectedTask = TASKMAIL.UI.getSelectedTasks();
-			linkedObject = TASKMAIL.Link
-					.getMailKeysFromTaskID(selectedTask[0].id);
+			if (selectedTask.length > 0) {
+				linkedObject = TASKMAIL.Link
+						.getMailKeysFromTaskID(selectedTask[0].id);
+			}
 			menuitem.disabled = selectedTask.length != 1 || linkedObject == null;
 		} else {
 			menuitem = document.getElementById('mailContext.goNextTask');
