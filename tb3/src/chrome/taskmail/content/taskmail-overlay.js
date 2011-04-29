@@ -540,7 +540,7 @@ TASKMAIL.UI = {
 		var viewFilter = document.getElementById("viewFilter").selectedItem.value;
 		var stateFilter = this.getDBStateFilterString();
 
-		if (viewFilter == this.VIEW_FIlTER_MESSAGE) {
+		if (viewFilter == this.VIEW_FILTER_MESSAGE) {
 			// recherche par mail
 			try {
 				var mails = gFolderDisplay.selectedMessages;
@@ -553,18 +553,18 @@ TASKMAIL.UI = {
 			} catch (err) {
 				// Components.utils.reportError("dbUpgrade " + err);
 			}
-		} else if (viewFilter == this.VIEW_FIlTER_ALL_FOLDERS || viewFilter == this.VIEW_FIlTER_HOTLIST) {
+		} else if (viewFilter == this.VIEW_FILTER_ALL_FOLDERS || viewFilter == this.VIEW_FILTER_HOTLIST) {
 			// all folders or hot list
 			TASKMAIL.DB.getLinkSQLite(null, viewFilter);
 			result = TASKMAIL.DB.getTaskListSQLite(null,
 						null, stateFilter, viewFilter, needFolderTree);
-		} else if (viewFilter == this.VIEW_FIlTER_FOLDER) {
+		} else if (viewFilter == this.VIEW_FILTER_FOLDER) {
 			// folder
 			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, viewFilter);
 			result = TASKMAIL.DB.getTaskListSQLite(null,
 					currentMsgFolder, stateFilter, viewFilter, needFolderTree);
 		} else {
-			// subfolders (viewFilter == this.VIEW_FIlTER_SUBFOLDERS)
+			// subfolders (viewFilter == this.VIEW_FILTER_SUBFOLDERS)
 			// il faut charger les liens avant les taches
 			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, viewFilter);
 			result = TASKMAIL.DB.getTaskListSQLite(null,
@@ -634,11 +634,11 @@ TASKMAIL.UI = {
 	addWithLink : false,
 	stringsBundle : null,
 	
-	VIEW_FIlTER_FOLDER      : 0,
-	VIEW_FIlTER_SUBFOLDERS  : 1,
-	VIEW_FIlTER_MESSAGE     : 2,
-	VIEW_FIlTER_ALL_FOLDERS : 3,
-	VIEW_FIlTER_HOTLIST     : 4,
+	VIEW_FILTER_FOLDER      : 0,
+	VIEW_FILTER_SUBFOLDERS  : 1,
+	VIEW_FILTER_MESSAGE     : 2,
+	VIEW_FILTER_ALL_FOLDERS : 3,
+	VIEW_FILTER_HOTLIST     : 4,
 
 	/**
 	 * recupére les index des taches dont les pk sont fournies
@@ -791,21 +791,28 @@ TASKMAIL.UI = {
 		this.refreshTaskList();
 	},
 	
-	viewFilterState : this.VIEW_FIlTER_SUBFOLDERS,
+	viewFilterState : this.VIEW_FILTER_SUBFOLDERS,
 
 	viewFilterChange : function() {
 		var viewFilter = document.getElementById("viewFilter").selectedItem.value;
 		
-    if (this.viewFilterState == this.VIEW_FIlTER_ALL_FOLDERS && viewFilter != this.VIEW_FIlTER_ALL_FOLDERS) {
+		var isPreviousFilterAllFolders = this.viewFilterState == this.VIEW_FILTER_ALL_FOLDERS ||
+		                                 this.viewFilterState == this.VIEW_FILTER_HOTLIST;
+		var isCurrentFilterAllFolders  = viewFilter == this.VIEW_FILTER_ALL_FOLDERS ||
+		                                 viewFilter == this.VIEW_FILTER_HOTLIST;
+		
+    // when filter is on all_folder or hot_list, no need to refresh tasklist
+    // on folder changing.
+    if (isPreviousFilterAllFolders && !isCurrentFilterAllFolders) {
       document.getElementById("folderTree").addEventListener("select",
 				TASKMAIL.UI.refreshTaskList, false);
-    } else if (viewFilter == this.VIEW_FIlTER_ALL_FOLDERS && this.viewFilterState != this.VIEW_FIlTER_ALL_FOLDERS) {
+    } else if (isCurrentFilterAllFolders && !isPreviousFilterAllFolders) {
       document.getElementById("folderTree").removeEventListener("select",
 				TASKMAIL.UI.refreshTaskList, false);
     }    
-		if (viewFilter == this.VIEW_FIlTER_MESSAGE) {
-			// recherche par mail, il faut supprimer le refreshTaskLink et le 
-			// remettre pour qui soit en 2°
+		if (viewFilter == this.VIEW_FILTER_MESSAGE) {
+			// recherche par mail
+			// il faut supprimer le refreshTaskLink et le remettre pour qui soit en 2°
 			document.getElementById("threadTree").removeEventListener("select",
 					TASKMAIL.UI.refreshTaskLink, false);
 			document.getElementById("threadTree").addEventListener("select",
