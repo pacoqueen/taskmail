@@ -156,9 +156,12 @@ TASKMAIL.DB = {
 				var dueDate        = this.convertSQLiteToDate(stat.getString(6));
 				var completeDate   = this.convertSQLiteToDate(stat.getString(7));
 				var taskFolder     = stat.getString(8);
-				
-				var prettyName = GetMsgFolderFromUri(taskFolder, false).prettyName;
-				
+				try {
+					var prettyName = GetMsgFolderFromUri(taskFolder, false).prettyName;
+				} catch (err) {
+					var prettyName = "";
+					Components.utils.reportError("getTaskListSQLite, taskFolder=" + taskFolder + "erreur=" + err);
+				}
 				var task = new TASKMAIL.Task(id, taskFolder, prettyName, title, desc, state, prio,
 				                             createDate, dueDate, completeDate);
 				result.tasks.push(task);
@@ -174,6 +177,7 @@ TASKMAIL.DB = {
 			root.folderName = "root";
 			root.subContents.push(result);
 			this.createFolderTree(result, root);
+			root.invisibleTasksCount = result.invisibleTasksCount;
 			result = root;
 		}
 		return result;
