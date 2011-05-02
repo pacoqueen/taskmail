@@ -439,25 +439,25 @@ TASKMAIL.DB = {
 				stat.bindStringParameter(0, folderURI + "%");
 			}
 			while (stat.executeStep()) {
-  			var taskFolderURI =  stat.getString(0);
-  			var messageId =  stat.getString(1);
-        try {
-    			var folderDB = GetMsgFolderFromUri(taskFolderURI, false); 
-    			var message = folderDB.msgDatabase.getMsgHdrForMessageID(messageId);
-          var messageKey = message.messageKey;
-    			var threadKey = message.threadId;
-  				//TASKMAIL.consoleService.logStringMessage("messageId=" + messageId + "messageKey=" + messageKey);
-        } catch (err) {
-    			Components.utils.reportError("getLinkSQLite, problème récup messageId=" + messageId);
-    			continue;
-        }
+				var taskFolderURI =  stat.getString(0);
+				var messageId =  stat.getString(1);
+				try {
+					var folderDB = GetMsgFolderFromUri(taskFolderURI, false); 
+					var message = folderDB.msgDatabase.getMsgHdrForMessageID(messageId);
+					var messageKey = message.messageKey;
+					var threadKey = message.threadId;
+					//TASKMAIL.consoleService.logStringMessage("messageId=" + messageId + "messageKey=" + messageKey);
+				} catch (err) {
+					Components.utils.reportError("getLinkSQLite, problème récup messageId=" + messageId);
+					continue;
+				}
 				TASKMAIL.Link.addLink(folderURI,
-  			                      messageKey,
-  			                      threadKey,
-  			                      stat.getInt32(2));
+				                      messageKey,
+				                      threadKey,
+				                      stat.getInt32(2));
 			}
 		} catch (err) {
-			Components.utils.reportError("getLinkSQLite " + err);
+			Components.utils.reportError("getLinkSQLite, folder=" + folder == null ? "null" : folder.URI + ", erreur=" + err);
 		}
 	},
 
