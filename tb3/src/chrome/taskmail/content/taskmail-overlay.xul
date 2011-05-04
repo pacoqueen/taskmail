@@ -315,6 +315,7 @@
 						<menuitem label="&hotListViewFilter;"    value="4" tooltiptext="&hotListViewFilterTTP;"/>
 					</menupopup>
 				</menulist>
+				<textbox id="tandm-search" type="search" flex="1" emptytext="Filtrer les tâches ..." timeout="500" oncommand="TASKMAIL.UI.refreshTaskList();"/>
 			</hbox>
 		</vbox>
 	</vbox>

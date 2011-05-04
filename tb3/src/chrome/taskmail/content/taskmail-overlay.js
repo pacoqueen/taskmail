@@ -483,7 +483,7 @@ TASKMAIL.UI = {
 	},
 	
 	refreshTaskList : function() {
-//		TASKMAIL.consoleService.logStringMessage("refreshTaskList");
+		TASKMAIL.consoleService.logStringMessage("refreshTaskList");
 		// le refresh du folder est lancé avant l'handler de la colonne des
 		// emails.
 		var selectedTasks = TASKMAIL.UI.getSelectedTasksKeys();
@@ -541,6 +541,7 @@ TASKMAIL.UI = {
 		var currentMsgFolder = GetSelectedMsgFolders()[0];
 		var viewFilter = document.getElementById("viewFilter").selectedItem.value;
 		var stateFilter = this.getDBStateFilterString();
+		var text = document.getElementById("tandm-search").value;
 
 		if (viewFilter == this.VIEW_FILTER_MESSAGE) {
 			// recherche par mail
@@ -551,7 +552,7 @@ TASKMAIL.UI = {
 				// il faut charger les liens avant les taches
 				TASKMAIL.DB.getLinkSQLite(currentMsgFolder, viewFilter);
 				result = TASKMAIL.DB.getTaskListSQLite(messageId,
-						currentMsgFolder, stateFilter, viewFilter, needFolderTree);
+						currentMsgFolder, stateFilter, viewFilter, needFolderTree, text);
 			} catch (err) {
 				// Components.utils.reportError("dbUpgrade " + err);
 			}
@@ -559,18 +560,18 @@ TASKMAIL.UI = {
 			// all folders or hot list
 			TASKMAIL.DB.getLinkSQLite(null, viewFilter);
 			result = TASKMAIL.DB.getTaskListSQLite(null,
-						null, stateFilter, viewFilter, needFolderTree);
+						null, stateFilter, viewFilter, needFolderTree, text);
 		} else if (viewFilter == this.VIEW_FILTER_FOLDER) {
 			// folder
 			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, viewFilter);
 			result = TASKMAIL.DB.getTaskListSQLite(null,
-					currentMsgFolder, stateFilter, viewFilter, needFolderTree);
+					currentMsgFolder, stateFilter, viewFilter, needFolderTree, text);
 		} else {
 			// subfolders (viewFilter == this.VIEW_FILTER_SUBFOLDERS)
 			// il faut charger les liens avant les taches
 			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, viewFilter);
 			result = TASKMAIL.DB.getTaskListSQLite(null,
-					currentMsgFolder, stateFilter, viewFilter, needFolderTree);
+					currentMsgFolder, stateFilter, viewFilter, needFolderTree, text);
 		}
 		return result;
 	},
