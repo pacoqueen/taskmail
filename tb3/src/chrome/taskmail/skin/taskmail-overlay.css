@@ -147,3 +147,18 @@ radio[pane=taskmail-reportPane] {list-style-image: url("chrome://taskmail/skin/r
 .checkbox-no-label > .checkbox-label-box {
    display:none;
 }
+
+#tandm-sticky,
+#tandm-sticky[checked] {
+  background: none;
+  border-width: 0;
+  -moz-border-image: none;
+}
+
+#tandm-sticky {
+  list-style-image: url("chrome://messenger/skin/icons/xp-pin-grey.png");
+}
+
+#tandm-sticky[checked] {
+  list-style-image: url("chrome://messenger/skin/icons/xp-pin-red.png");
+}

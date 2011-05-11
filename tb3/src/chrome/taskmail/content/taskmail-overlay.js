@@ -482,6 +482,18 @@ TASKMAIL.UI = {
 		}
 	},
 	
+	
+	onFolderSelect : function() {
+		TASKMAIL.consoleService.logStringMessage("onFolderSelect");
+
+		var sticky = document.getElementById("tandm-sticky").checked;
+		if (!sticky) {
+			document.getElementById("tandm-search").reset();
+		}
+		
+		TASKMAIL.UI.refreshTaskList();
+	},
+
 	refreshTaskList : function() {
 		TASKMAIL.consoleService.logStringMessage("refreshTaskList");
 		// le refresh du folder est lancé avant l'handler de la colonne des
@@ -808,10 +820,10 @@ TASKMAIL.UI = {
     // on folder changing.
     if (isPreviousFilterAllFolders && !isCurrentFilterAllFolders) {
       document.getElementById("folderTree").addEventListener("select",
-				TASKMAIL.UI.refreshTaskList, false);
+				TASKMAIL.UI.onFolderSelect, false);
     } else if (isCurrentFilterAllFolders && !isPreviousFilterAllFolders) {
       document.getElementById("folderTree").removeEventListener("select",
-				TASKMAIL.UI.refreshTaskList, false);
+				TASKMAIL.UI.onFolderSelect, false);
     }    
 		if (viewFilter == this.VIEW_FILTER_MESSAGE) {
 			// recherche par mail
@@ -853,7 +865,7 @@ TASKMAIL.UI = {
 
 	init : function() {
 		document.getElementById("folderTree").addEventListener("select",
-				TASKMAIL.UI.refreshTaskList, false);
+				TASKMAIL.UI.onFolderSelect, false);
 		document.getElementById("threadTree").addEventListener("select",
 				function(e) {
 					TASKMAIL.UI.refreshTaskLink();
