@@ -54,6 +54,8 @@
 <!ENTITY subFolderViewFilter   "subfolders">
 <!ENTITY folderViewFilter      "folder">
 <!ENTITY hotListViewFilter     "hot list">
+<!ENTITY textFilter            "Filter tasks ...">
+<!ENTITY textFilterTTP         "Keep the text filter when changing file?">
 <!ENTITY viewFilterTTP         "View filter">
 <!ENTITY allViewTTP            "Tasks of all folders">
 <!ENTITY mailViewTTP           "Only tasks linked to current message">

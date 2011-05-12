@@ -54,6 +54,8 @@
 <!ENTITY subFolderViewFilter   "subfolders">
 <!ENTITY folderViewFilter      "folder">
 <!ENTITY hotListViewFilter     "hot list">
+<!ENTITY textFilter            "Filter taken ...">
+<!ENTITY textFilterTTP         "Houd het tekstfilter bij het veranderen van bestand?">
 <!ENTITY viewFilterTTP         "Beeld filter">
 <!ENTITY allViewTTP            "Taken van alle folders">
 <!ENTITY mailViewTTP           "Alleen taken gelinkt aan huidig bericht">

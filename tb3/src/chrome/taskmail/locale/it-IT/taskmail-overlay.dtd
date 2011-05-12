@@ -54,6 +54,8 @@
 <!ENTITY subFolderViewFilter "sottocartelle">
 <!ENTITY folderViewFilter "cartella">
 <!ENTITY hotListViewFilter     "hot list">
+<!ENTITY textFilter            "Filtra attività ...">
+<!ENTITY textFilterTTP         "Mantenere il testo del filtro quando si cambia file?">
 <!ENTITY viewFilterTTP "Filtro viste">
 <!ENTITY allViewTTP "Attività di tutte le cartelle">
 <!ENTITY mailViewTTP "Tutte le attività collegate al messaggio corrente">

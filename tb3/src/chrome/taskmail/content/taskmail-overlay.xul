@@ -315,10 +315,10 @@
 						<menuitem label="&hotListViewFilter;"    value="4" tooltiptext="&hotListViewFilterTTP;"/>
 					</menupopup>
 				</menulist>
-				<textbox id="tandm-search" type="search" flex="1" emptytext="Filtrer les tâches ..." timeout="500" oncommand="TASKMAIL.UI.refreshTaskList();"/>
+				<textbox id="tandm-search" type="search" flex="1" emptytext="&textFilter;" timeout="500" oncommand="TASKMAIL.UI.refreshTaskList();"/>
 				<toolbarbutton id="tandm-sticky" type="checkbox"
                        crop="none"
-                       tooltiptext="quickFilterBar.sticky.tooltip"/>
+                       tooltiptext="&textFilterTTP;"/>
 			</hbox>
 		</vbox>
 	</vbox>
