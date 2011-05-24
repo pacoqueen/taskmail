@@ -65,6 +65,7 @@ treechildren::-moz-tree-cell-text(overdue-task)
 #taskList {
 	padding :  0px;
 	margin : 0px;
+	border-top: 1px solid rgb(0,0,0);
 }
 
 .minorLabel {
@@ -153,6 +154,7 @@ radio[pane=taskmail-reportPane] {list-style-image: url("chrome://taskmail/skin/r
   background: none;
   border-width: 0;
   -moz-border-image: none;
+  margin-right:2px;
 }
 
 #tandm-sticky {
@@ -161,4 +163,11 @@ radio[pane=taskmail-reportPane] {list-style-image: url("chrome://taskmail/skin/r
 
 #tandm-sticky[checked] {
   list-style-image: url("chrome://messenger/skin/icons/xp-pin-red.png");
+}
+
+#tandm-fb {
+	border-top: 1px solid rgb(255,255,255);
+	border-bottom: 1px solid rgb(255,255,255);
+	background-image: -moz-linear-gradient(center top , rgb(242, 247, 253) 0pt, rgb(233, 242, 252) 12px, rgb(227, 238, 251) 12px, rgb(227, 238, 251) 100%);
+	align:center;
 }

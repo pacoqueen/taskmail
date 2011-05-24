@@ -174,7 +174,29 @@
 				<menuitem label="&composeReport;" accesskey="C" oncommand="TASKMAIL.Report.composeReport()"/>
 			</menupopup>
 	
-			<tree id="taskList" ondblclick="TASKMAIL.UI.doubleClikTask(event)" context="row-menu" seltype="multiple"  flex="1" minheight="75"
+			<hbox id="tandm-fb">
+				<spacer flex="1"/>
+				<label value="&filter.label;" class="filterLabel"/>
+				<button type="menu"  id="stateFilter"  taskSelectedIdExp="1,2" persist="taskSelectedIdExp" oncommand="TASKMAIL.UI.changeStateFilter(event)" tooltiptext="&stateFilterTTP;">
+						<menupopup id="stateFilterPopup">
+						</menupopup>
+				</button>
+				<menulist  id="viewFilter" oncommand="TASKMAIL.UI.viewFilterChange()" tooltiptext="&viewFilterTTP;">
+					<menupopup style="padding-top:10px">
+						<menuitem label="&mailViewFilter;"       value="2" tooltiptext="&mailViewTTP;"/>
+						<menuitem label="&folderViewFilter;"     value="0"/>
+						<menuitem label="&subFolderViewFilter;"  value="1" selected="true"/>
+						<menuitem label="&allViewFilter;"        value="3" tooltiptext="&allViewTTP;"/>
+						<menuitem label="&hotListViewFilter;"    value="4" tooltiptext="&hotListViewFilterTTP;"/>
+					</menupopup>
+				</menulist>
+				<textbox id="tandm-search" type="search" flex="1" emptytext="&textFilter;" timeout="500" oncommand="TASKMAIL.UI.refreshTaskList();"/>
+				<toolbarbutton id="tandm-sticky" type="checkbox"
+                       crop="none"
+                       tooltiptext="&textFilterTTP;"/>
+			</hbox>
+
+			<tree id="taskList" class="plain" ondblclick="TASKMAIL.UI.doubleClikTask(event)" context="row-menu" seltype="multiple"  flex="1" minheight="75"
 						enableColumnDrag="true">
 				<treecols>
 					<treecol id="taskSubfolderCol" tooltiptext="&header.subfolder;" class="treecol-image subfolderColumnHeader"
@@ -298,28 +320,6 @@
 					<button label="&cancel;" oncommand="TASKMAIL.UI.cancelSaveTask()"/>
 				</hbox>
 			</vbox>
-  		
-			<hbox>
-				<spacer flex="1"/>
-				<label value="&filter.label;" class="filterLabel"/>
-				<button type="menu"  id="stateFilter"  taskSelectedIdExp="1,2" persist="taskSelectedIdExp" oncommand="TASKMAIL.UI.changeStateFilter(event)" tooltiptext="&stateFilterTTP;">
-						<menupopup id="stateFilterPopup">
-						</menupopup>
-				</button>
-				<menulist  id="viewFilter" oncommand="TASKMAIL.UI.viewFilterChange()" tooltiptext="&viewFilterTTP;">
-					<menupopup style="padding-top:10px">
-						<menuitem label="&mailViewFilter;"       value="2" tooltiptext="&mailViewTTP;"/>
-						<menuitem label="&folderViewFilter;"     value="0"/>
-						<menuitem label="&subFolderViewFilter;"  value="1" selected="true"/>
-						<menuitem label="&allViewFilter;"        value="3" tooltiptext="&allViewTTP;"/>
-						<menuitem label="&hotListViewFilter;"    value="4" tooltiptext="&hotListViewFilterTTP;"/>
-					</menupopup>
-				</menulist>
-				<textbox id="tandm-search" type="search" flex="1" emptytext="&textFilter;" timeout="500" oncommand="TASKMAIL.UI.refreshTaskList();"/>
-				<toolbarbutton id="tandm-sticky" type="checkbox"
-                       crop="none"
-                       tooltiptext="&textFilterTTP;"/>
-			</hbox>
 		</vbox>
 	</vbox>
 	
