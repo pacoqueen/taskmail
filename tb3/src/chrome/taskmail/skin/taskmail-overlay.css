@@ -169,5 +169,4 @@ radio[pane=taskmail-reportPane] {list-style-image: url("chrome://taskmail/skin/r
 	border-top: 1px solid rgb(255,255,255);
 	border-bottom: 1px solid rgb(255,255,255);
 	background-image: -moz-linear-gradient(center top , rgb(242, 247, 253) 0pt, rgb(233, 242, 252) 12px, rgb(227, 238, 251) 12px, rgb(227, 238, 251) 100%);
-	align:center;
 }

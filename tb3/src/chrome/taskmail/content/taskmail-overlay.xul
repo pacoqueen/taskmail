@@ -124,7 +124,7 @@
 	</menupopup>
 	
 	<vbox id="threadPaneBox">
-		<splitter collapse="after">
+		<splitter id="tandm-splitter" collapse="after" >
 			<grippy/>
 		</splitter>
 		<vbox flex="0.5" persist="width collapsed" id="taskPane">
@@ -174,7 +174,7 @@
 				<menuitem label="&composeReport;" accesskey="C" oncommand="TASKMAIL.Report.composeReport()"/>
 			</menupopup>
 	
-			<hbox id="tandm-fb">
+			<hbox id="tandm-fb" align="center">
 				<spacer flex="1"/>
 				<label value="&filter.label;" class="filterLabel"/>
 				<button type="menu"  id="stateFilter"  taskSelectedIdExp="1,2" persist="taskSelectedIdExp" oncommand="TASKMAIL.UI.changeStateFilter(event)" tooltiptext="&stateFilterTTP;">
