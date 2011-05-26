@@ -486,7 +486,7 @@ TASKMAIL.UI = {
 	onFolderSelect : function() {
 		TASKMAIL.consoleService.logStringMessage("onFolderSelect");
 
-		var sticky = document.getElementById("tandm-sticky").checked;
+		var sticky = document.getElementById("tandm-sticky-text").checked;
 		if (!sticky) {
 			document.getElementById("tandm-search").reset();
 		}

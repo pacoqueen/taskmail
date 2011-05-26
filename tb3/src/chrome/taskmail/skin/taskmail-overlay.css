@@ -149,19 +149,23 @@ radio[pane=taskmail-reportPane] {list-style-image: url("chrome://taskmail/skin/r
    display:none;
 }
 
-#tandm-sticky,
-#tandm-sticky[checked] {
+#tandm-sticky-view,
+#tandm-sticky-text {
   background: none;
   border-width: 0;
   -moz-border-image: none;
   margin-right:2px;
 }
 
-#tandm-sticky {
+#tandm-sticky-text, #tandm-sticky-view {
   list-style-image: url("chrome://messenger/skin/icons/xp-pin-grey.png");
 }
 
-#tandm-sticky[checked] {
+#tandm-sticky-text[checked], #tandm-sticky-view[checked] {
+  list-style-image: url("chrome://messenger/skin/icons/xp-pin-red.png");
+}
+
+ {
   list-style-image: url("chrome://messenger/skin/icons/xp-pin-red.png");
 }
 

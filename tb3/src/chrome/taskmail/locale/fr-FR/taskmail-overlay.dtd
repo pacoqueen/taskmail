@@ -59,6 +59,7 @@
 <!ENTITY mailViewTTP           "Les tâches liées aux messages courants">
 <!ENTITY hotListViewFilterTTP  "Les tâches les plus importantes">
 <!ENTITY textFilter            "Filtrer les tâches ...">
+<!ENTITY stickyViewFilterTTP   "Conserver le filtre lors des changements de dossier ?">
 <!ENTITY textFilterTTP         "Conserver le filtre textuel lors des changements de dossier ?">
 <!ENTITY addTask               "Ajouter une tâche">
 <!ENTITY header.subfolder      "La tâche est dans le folder courant">
