@@ -177,10 +177,6 @@
 			<hbox id="tandm-fb" align="center">
 				<spacer flex="1"/>
 				<label value="&filter.label;" class="filterLabel"/>
-				<button type="menu"  id="stateFilter"  taskSelectedIdExp="1,2" persist="taskSelectedIdExp" oncommand="TASKMAIL.UI.changeStateFilter(event)" tooltiptext="&stateFilterTTP;">
-						<menupopup id="stateFilterPopup">
-						</menupopup>
-				</button>
 				<toolbarbutton id="tandm-sticky-view" type="checkbox"
                        crop="none"
                        tooltiptext="&stickyViewFilterTTP;" persist="checked"/>
@@ -196,6 +192,10 @@
 				<toolbarbutton id="tandm-sticky-text" type="checkbox"
                        crop="none"
                        tooltiptext="&textFilterTTP;"/>
+				<button type="menu"  id="stateFilter"  taskSelectedIdExp="1,2" persist="taskSelectedIdExp" oncommand="TASKMAIL.UI.changeStateFilter(event)" tooltiptext="&stateFilterTTP;">
+						<menupopup id="stateFilterPopup">
+						</menupopup>
+				</button>
 				<textbox id="tandm-search" type="search" flex="1" emptytext="&textFilter;" timeout="500" oncommand="TASKMAIL.UI.refreshTaskList();"/>
 			</hbox>
 
