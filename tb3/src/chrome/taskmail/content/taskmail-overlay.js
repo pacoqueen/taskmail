@@ -5,15 +5,6 @@ if (!TASKMAIL.UI)
 
 TASKMAIL.UI = {
 	
-	goFolder : function() {
-		// TODO rendre entrée menu disabled if more than one task selected.
-		var selectedTask = TASKMAIL.UI.getSelectedTasks();
-		var folderURI = selectedTask[0].folderURI;
-		if (GetSelectedMsgFolders()[0].URI != folderURI) {
-			SelectFolder(folderURI);
-		}
-	},
-
 	/**
 	 * Open detail or show next linked email. 
 	 */
@@ -245,6 +236,13 @@ TASKMAIL.UI = {
 				menuitem.disabled = true;
 			}
 		}
+		// empeche 'aller au folder' si la vue est gelée. 
+		var currentView = document.getElementById("viewFilter").selectedItem.value;
+		if ((currentView == TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS || currentView == TASKMAIL.UI.VIEW_FILTER_HOTLIST)
+		    && document.getElementById("tandm-sticky-view").checked)
+		{
+			menuitem.disabled = true;
+		} 
 	},
 	
 	/**
@@ -806,13 +804,18 @@ TASKMAIL.UI = {
 		this.refreshTaskList();
 	},
 	
-	viewFilterState : this.VIEW_FILTER_SUBFOLDERS,
+	// the previous view state just before calling event, to detect going from !ALL to ALL.
+	viewBeforeEvent : 1,
+	
+	// the previous view state, to restore it on 'go folder'
+	previousView : 1,
 
 	viewFilterChange : function() {
+		TASKMAIL.consoleService.logStringMessage("viewFilterChange");
 		var viewFilter = document.getElementById("viewFilter").selectedItem.value;
 		
-		var isPreviousFilterAllFolders = this.viewFilterState == this.VIEW_FILTER_ALL_FOLDERS ||
-		                                 this.viewFilterState == this.VIEW_FILTER_HOTLIST;
+		var isPreviousFilterAllFolders = this.viewBeforeEvent == this.VIEW_FILTER_ALL_FOLDERS ||
+		                                 this.viewBeforeEvent == this.VIEW_FILTER_HOTLIST;
 		var isCurrentFilterAllFolders  = viewFilter == this.VIEW_FILTER_ALL_FOLDERS ||
 		                                 viewFilter == this.VIEW_FILTER_HOTLIST;
 		
@@ -840,7 +843,11 @@ TASKMAIL.UI = {
 					TASKMAIL.UI.refreshTaskList, false);
 		}
 		this.refreshTaskList();
-		this.viewFilterState = viewFilter;
+		// si on passe en vue ALL, o nsauvegarde la vue précédente pour pouvoir la restaurer.
+		if (isCurrentFilterAllFolders && !isPreviousFilterAllFolders) {
+			this.previousView = this.viewBeforeEvent;
+		}
+		this.viewBeforeEvent = viewFilter;
 	},
 	 
   /**
@@ -1455,8 +1462,25 @@ TASKMAIL.UILink = {
 			temp2 = temp2.concat(TASKMAIL.Link.getTaskIDFromMailID(gDBView.msgFolder.URI, temp[i]));
 		}
 		TASKMAIL.UI.selectTasksByKeys(temp2);
+	},
+	
+	goFolder : function() {
+		// TODO rendre entrée menu disabled if more than one task selected.
+		// si la visibilité n'est pas bloquée, on change de folder et au 
+		// besoin on change la visibilité 
+		var selectedTask = TASKMAIL.UI.getSelectedTasks();
+		var currentView = document.getElementById("viewFilter").selectedItem.value;
+		if (currentView == TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS || currentView == TASKMAIL.UI.VIEW_FILTER_HOTLIST) {
+			alert("previousView="+TASKMAIL.UI.previousView);
+			document.getElementById("viewFilter").value =  TASKMAIL.UI.previousView;
+			// add folder selection listener 
+			TASKMAIL.UI.viewFilterChange();
+		} 
+		var folderURI = selectedTask[0].folderURI;
+		if (GetSelectedMsgFolders()[0].URI != folderURI) {
+			SelectFolder(folderURI);
+		}
 	}
-
 }
 
 if (!TASKMAIL.Link)
