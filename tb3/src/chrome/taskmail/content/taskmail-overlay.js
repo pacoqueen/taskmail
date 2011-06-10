@@ -236,13 +236,6 @@ TASKMAIL.UI = {
 				menuitem.disabled = true;
 			}
 		}
-		// empeche 'aller au folder' si la vue est gelée. 
-		var currentView = document.getElementById("viewFilter").selectedItem.value;
-		if ((currentView == TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS || currentView == TASKMAIL.UI.VIEW_FILTER_HOTLIST)
-		    && document.getElementById("tandm-sticky-view").checked)
-		{
-			menuitem.disabled = true;
-		} 
 	},
 	
 	/**
@@ -484,12 +477,33 @@ TASKMAIL.UI = {
 	onFolderSelect : function() {
 		TASKMAIL.consoleService.logStringMessage("onFolderSelect");
 
+		// si la vue n'est pas figée et en 'vue multi folder', on repasse en vue 'folder'.
+		var currentView = document.getElementById("viewFilter").selectedItem.value;
+		if ((currentView == TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
+		     || currentView == TASKMAIL.UI.VIEW_FILTER_HOTLIST)
+				&& !document.getElementById("tandm-sticky-view").checked) {
+			document.getElementById("viewFilter").value =  TASKMAIL.UI.previousFolderDepView;
+		} 
+		
 		var sticky = document.getElementById("tandm-sticky-text").checked;
 		if (!sticky) {
 			document.getElementById("tandm-search").reset();
 		}
 		
-		TASKMAIL.UI.refreshTaskList();
+		// refresh task list when view is not 'all folder' but view can be changed at 
+		// the begin of this method.
+		currentView = document.getElementById("viewFilter").selectedItem.value;
+		if (currentView != TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
+		    && currentView != TASKMAIL.UI.VIEW_FILTER_HOTLIST) {
+			TASKMAIL.UI.refreshTaskList();
+		}
+	},
+	
+	onMessageSelect : function () {
+		var currentView = document.getElementById("viewFilter").selectedItem.value;
+		if (currentView == TASKMAIL.UI.VIEW_FILTER_MESSAGE) {
+			TASKMAIL.UI.refreshTaskList();
+		} 
 	},
 
 	refreshTaskList : function() {
@@ -804,48 +818,30 @@ TASKMAIL.UI = {
 		this.refreshTaskList();
 	},
 	
-	// the previous view state just before calling event, to detect going from !ALL to ALL.
+	// view can be : 
+	// * 'all folder' = do not depend on current folder = all_folders or hot_list,
+	// * 'folder'     = depend on current folder = folder, subfolder or message.
+	
+	// the previous view just before changing view, to detect changing between 'all folder' and 'folder'
 	viewBeforeEvent : 1,
 	
-	// the previous view state, to restore it on 'go folder'
-	previousView : 1,
+	// the previous view before changing to 'all folder' view.
+	previousFolderDepView : 1,
 
-	viewFilterChange : function() {
-		TASKMAIL.consoleService.logStringMessage("viewFilterChange");
+	onViewChange : function() {
+		TASKMAIL.consoleService.logStringMessage("onViewChange");
 		var viewFilter = document.getElementById("viewFilter").selectedItem.value;
 		
 		var isPreviousFilterAllFolders = this.viewBeforeEvent == this.VIEW_FILTER_ALL_FOLDERS ||
 		                                 this.viewBeforeEvent == this.VIEW_FILTER_HOTLIST;
 		var isCurrentFilterAllFolders  = viewFilter == this.VIEW_FILTER_ALL_FOLDERS ||
 		                                 viewFilter == this.VIEW_FILTER_HOTLIST;
-		
-    // when filter is on all_folder or hot_list, no need to refresh tasklist
-    // on folder changing.
-    if (isPreviousFilterAllFolders && !isCurrentFilterAllFolders) {
-      document.getElementById("folderTree").addEventListener("select",
-				TASKMAIL.UI.onFolderSelect, false);
-    } else if (isCurrentFilterAllFolders && !isPreviousFilterAllFolders) {
-      document.getElementById("folderTree").removeEventListener("select",
-				TASKMAIL.UI.onFolderSelect, false);
-    }    
-		if (viewFilter == this.VIEW_FILTER_MESSAGE) {
-			// recherche par mail
-			// il faut supprimer le refreshTaskLink et le remettre pour qui soit en 2°
-			document.getElementById("threadTree").removeEventListener("select",
-					TASKMAIL.UI.refreshTaskLink, false);
-			document.getElementById("threadTree").addEventListener("select",
-					TASKMAIL.UI.refreshTaskList, false);
-			document.getElementById("threadTree").addEventListener("select",
-					TASKMAIL.UI.refreshTaskLink, false);
-		} else {
-		  // folder (0) / subfolders (1)
-			document.getElementById("threadTree").removeEventListener("select",
-					TASKMAIL.UI.refreshTaskList, false);
-		}
 		this.refreshTaskList();
-		// si on passe en vue ALL, o nsauvegarde la vue précédente pour pouvoir la restaurer.
+		
+		// si on passe en vue 'all folder', on sauvegarde la vue précédente pour pouvoir la restaurer.
+		// ne sauvegarde pas la vue précédente en passant de 'all folders' à 'hot list'.
 		if (isCurrentFilterAllFolders && !isPreviousFilterAllFolders) {
-			this.previousView = this.viewBeforeEvent;
+			this.previousFolderDepView = this.viewBeforeEvent;
 		}
 		this.viewBeforeEvent = viewFilter;
 	},
@@ -874,9 +870,7 @@ TASKMAIL.UI = {
 		document.getElementById("folderTree").addEventListener("select",
 				TASKMAIL.UI.onFolderSelect, false);
 		document.getElementById("threadTree").addEventListener("select",
-				function(e) {
-					TASKMAIL.UI.refreshTaskLink();
-				}, false);
+				TASKMAIL.UI.onMessageSelect, false);
 		document.getElementById("taskList").addEventListener("select",
 				function(e) {
 					TASKMAIL.UI.refreshMailLink();
@@ -1466,16 +1460,8 @@ TASKMAIL.UILink = {
 	
 	goFolder : function() {
 		// TODO rendre entrée menu disabled if more than one task selected.
-		// si la visibilité n'est pas bloquée, on change de folder et au 
-		// besoin on change la visibilité 
+		// récup les tâches sélectionnées avant changement de vue.
 		var selectedTask = TASKMAIL.UI.getSelectedTasks();
-		var currentView = document.getElementById("viewFilter").selectedItem.value;
-		if (currentView == TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS || currentView == TASKMAIL.UI.VIEW_FILTER_HOTLIST) {
-			alert("previousView="+TASKMAIL.UI.previousView);
-			document.getElementById("viewFilter").value =  TASKMAIL.UI.previousView;
-			// add folder selection listener 
-			TASKMAIL.UI.viewFilterChange();
-		} 
 		var folderURI = selectedTask[0].folderURI;
 		if (GetSelectedMsgFolders()[0].URI != folderURI) {
 			SelectFolder(folderURI);
