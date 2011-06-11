@@ -179,8 +179,9 @@
 				<label value="&filter.label;" class="filterLabel"/>
 				<toolbarbutton id="tandm-sticky-view" type="checkbox"
                        crop="none"
-                       tooltiptext="&stickyViewFilterTTP;" persist="checked"/>
-				<menulist  id="viewFilter" oncommand="TASKMAIL.UI.viewFilterChange()" tooltiptext="&viewFilterTTP;">
+                       tooltiptext="&stickyViewFilterTTP;"/>
+				<menulist  id="viewFilter" oncommand="TASKMAIL.UI.onViewChange()"
+				           tooltiptext="&viewFilterTTP;">
 					<menupopup style="padding-top:10px">
 						<menuitem label="&mailViewFilter;"       value="2" tooltiptext="&mailViewTTP;"/>
 						<menuitem label="&folderViewFilter;"     value="0"/>
