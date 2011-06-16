@@ -176,7 +176,7 @@ QuickFilterManager.defineFilter({
     if (aOld != null && aSticky) {
 //    	TASKMAIL.consoleService.logStringMessage("propagateState, get links");
     	TASKMAIL.Link.resetLink();
-    	var currentMsgFolder = GetSelectedMsgFolders()[0];
+    	var currentMsgFolder = TASKMAIL.UI.viewedFolder;
     	TASKMAIL.DB.getLinkSQLite(currentMsgFolder, 2);
     	return aOld;
     } else 

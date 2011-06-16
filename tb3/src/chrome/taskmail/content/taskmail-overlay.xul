@@ -169,7 +169,7 @@
 				<menuitem label="&unlinkMail;"   accesskey="U" oncommand="TASKMAIL.UILink.unlinkTask()"/>
 				<menuitem label="&goNextMail;"   accesskey="X" oncommand="TASKMAIL.UILink.showLinkedMail()" id="row-menu-goNextMail" key="show-linked"/>
 				<menuitem label="&goFolder;"     accesskey="F" oncommand="TASKMAIL.UILink.goFolder()"       id="row-menu.goFolder"/>
-				<menuitem label="&selectMail;"   accesskey="S" oncommand="TASKMAIL.UILink.selectLinkedMails()"/>
+				<menuitem label="&selectMail;"   accesskey="S" oncommand="TASKMAIL.UILink.selectLinkedMails()" id="row-menu.selectMail"/>
 				<menuseparator/>
 				<menuitem label="&composeReport;" accesskey="C" oncommand="TASKMAIL.Report.composeReport()"/>
 			</menupopup>

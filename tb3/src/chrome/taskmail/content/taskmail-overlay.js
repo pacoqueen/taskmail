@@ -109,7 +109,7 @@ TASKMAIL.UI = {
 		var prio = document.getElementById("taskPriority").selectedIndex;
 		var dueDate      = this.getDate("taskDueDate");
 		var completeDate = this.getDate("taskCompleteDate");
-		var currentMsgFolder = GetSelectedMsgFolders()[0];
+		var currentMsgFolder = TASKMAIL.UI.viewedFolder;
 
 		if (this.taskDetailPK == -1) {
 			TASKMAIL.DB.addTaskSQLite(new TASKMAIL.Task(idInput,
@@ -235,6 +235,10 @@ TASKMAIL.UI = {
 			} else {
 				menuitem.disabled = true;
 			}
+			// si toutes les tâches sélectionnées dans le folder courant, on permet de lancer 'selectionner les messages'.
+			menuitem = document.getElementById('row-menu.selectMail');
+			menuitem.disabled = selectedTask[0].folderURI != currentFolder.URI 
+			                    || !TASKMAIL.Link.allTasksInFolder(selectedTask, currentFolder.URI);
 		}
 	},
 	
@@ -255,7 +259,9 @@ TASKMAIL.UI = {
 		var dynaDisbled = false;
 		if (document.getElementById("taskList") == focused) {
 			dynaLabel = this.stringsBundle.getString('menuSelectLinkedMail');
-			dynaDisbled = false;
+			var currentFolder = GetSelectedMsgFolders()[0];
+			dynaDisbled = selectedTask[0].folderURI != currentFolder.URI 
+			              || !TASKMAIL.Link.allTasksInFolder(selectedTask, currentFolder.URI);
 		} else if (document.getElementById("threadTree") == focused) {
 			dynaLabel = this.stringsBundle.getString('menuSelectLinkedTask');
 			dynaDisbled = false;
@@ -286,7 +292,8 @@ TASKMAIL.UI = {
 		var dynaDisbled = false;
 		if (document.getElementById("taskList") == focused) {
 			dynaLabel = this.stringsBundle.getString('menuGoNextMail');
-			dynaDisbled = false;
+			var selectedTask = this.getSelectedTasks();
+			dynaDisbled = selectedTask.length != 1;
 		} else if (document.getElementById("threadTree") == focused) {
 			dynaLabel = this.stringsBundle.getString('menuGoNextTask');
 			dynaDisbled = false;
@@ -473,6 +480,8 @@ TASKMAIL.UI = {
 		}
 	},
 	
+	// folder visulisé (courant ou celui au moment du sticky).
+	viewedFolder : null,
 	
 	onFolderSelect : function() {
 		TASKMAIL.consoleService.logStringMessage("onFolderSelect");
@@ -485,16 +494,25 @@ TASKMAIL.UI = {
 			document.getElementById("viewFilter").value =  TASKMAIL.UI.previousFolderDepView;
 		} 
 		
-		var sticky = document.getElementById("tandm-sticky-text").checked;
-		if (!sticky) {
+		var stickyText = document.getElementById("tandm-sticky-text").checked;
+		if (!stickyText) {
 			document.getElementById("tandm-search").reset();
 		}
 		
-		// refresh task list when view is not 'all folder' but view can be changed at 
-		// the begin of this method.
+		// refresh task list when view is not 'all folder' and view is not sticky.		
+		// View can be changed at the begin of this method.
+		var sticky = document.getElementById("tandm-sticky-view").checked;
 		currentView = document.getElementById("viewFilter").selectedItem.value;
 		if (currentView != TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
-		    && currentView != TASKMAIL.UI.VIEW_FILTER_HOTLIST) {
+		    && currentView != TASKMAIL.UI.VIEW_FILTER_HOTLIST
+		    && !sticky)
+		{
+			// save current folder to manage task action when view is sticky.
+			// before refrehsing view.
+			var currentMsgFolder = GetSelectedMsgFolders()[0];
+			TASKMAIL.consoleService.logStringMessage("folder saving" + currentMsgFolder.URI);
+			TASKMAIL.UI.viewedFolder = currentMsgFolder;
+			
 			TASKMAIL.UI.refreshTaskList();
 		}
 	},
@@ -562,7 +580,7 @@ TASKMAIL.UI = {
 	retrieveTasks : function(needFolderTree) {
 		var result = new TASKMAIL.Content();
 		
-		var currentMsgFolder = GetSelectedMsgFolders()[0];
+		var currentMsgFolder = TASKMAIL.UI.viewedFolder;
 		var viewFilter = document.getElementById("viewFilter").selectedItem.value;
 		var stateFilter = this.getDBStateFilterString();
 		var text = document.getElementById("tandm-search").value;
@@ -582,7 +600,7 @@ TASKMAIL.UI = {
 			}
 		} else if (viewFilter == this.VIEW_FILTER_ALL_FOLDERS || viewFilter == this.VIEW_FILTER_HOTLIST) {
 			// all folders or hot list
-			TASKMAIL.DB.getLinkSQLite(null, viewFilter);
+			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, viewFilter);
 			result = TASKMAIL.DB.getTaskListSQLite(null,
 						null, stateFilter, viewFilter, needFolderTree, text);
 		} else if (viewFilter == this.VIEW_FILTER_FOLDER) {
@@ -1237,7 +1255,7 @@ TASKMAIL.UILink = {
 	 * @param draganddropTargetElement [task] or [message], drop's targetdropTarget else undefined 
 	 */
 	linkTask : function(draganddropTarget, draganddropTargetElement) {
-		var folder = GetSelectedMsgFolders()[0];
+		var folder = TASKMAIL.UI.viewedFolder;
 		var tasks = TASKMAIL.UI.getSelectedTasks();
 		var mails = gFolderDisplay.selectedMessages;
 		if (draganddropTarget == "task") {
@@ -1245,6 +1263,7 @@ TASKMAIL.UILink = {
 		} else if (draganddropTarget == "mail") {
 			mails = draganddropTargetElement;
 		}
+		// TODO il devient possible de linker avec d'autre folder que le courant.
 		if (!TASKMAIL.Link.allTasksInFolder(tasks, folder.URI)) {
 			// un des taches dans un sous folder.
 			alert(TASKMAIL.UI.stringsBundle.getString("LinkAlertSubfolder"));
@@ -1253,8 +1272,7 @@ TASKMAIL.UILink = {
 		var taskIds = TASKMAIL.UI.getTasksKeys(tasks);
 		if (mails.length > 1 && taskIds.length > 1) {
 			// on autorise les liaisons si un des deux côtés a 1 seul
-			// éléments
-			// sélectionné.
+			// éléments sélectionné.
 			alert(TASKMAIL.UI.stringsBundle
 					.getString("LinkAlertTooManyObjects"));
 			return;
@@ -1326,8 +1344,7 @@ TASKMAIL.UILink = {
 			var taskIndex = TASKMAIL.UI.getTaskIndexFromTaskID(TaskIDs);
 			if (TaskIDs.length > 0 && taskIndex.length == 0) {
 				// on a des taches liées mais elles sont toutes visibles =>
-				// change
-				// le filtrage sr 'tout'
+				// change le filtrage sr 'tout'
 				var stateFilter = document.getElementById("stateFilterPopup");
 				for(var i=0; i<stateFilter.childNodes.length; i++) {
 		  		stateFilter.childNodes[i].setAttribute("checked", true); 
@@ -1362,8 +1379,11 @@ TASKMAIL.UILink = {
 	/**
 	 * selection le prochain email liée. basé sur la tache qui a reçue le click
 	 * droit ou item passé suite à un ctrl-double clic.
+	 * La commande n'est utilisable que si une seule tâche est sélectionnée.
+	 * La commande est utilisable même si la tâche n'est pas dans le folder courant.
 	 */
 	showLinkedMail : function() {
+		// TODO le folder associé à une âche n'est pas forcement un et un seul folder.
 		var selectedTask = TASKMAIL.UI.getSelectedTasks();
 		var taskID = selectedTask[0].id;
 		var folderURI = selectedTask[0].folderURI;
@@ -1395,7 +1415,7 @@ TASKMAIL.UILink = {
 			}
 			// keysMail pourrait être modifié par le changement de folder
 			var keyMailToSelect = keysMails[i + 1];
-			// if task from subfolder select folder.
+			// if task from an other folder select folder.
 			if (GetSelectedMsgFolders()[0].URI != folderURI) {
 				SelectFolder(folderURI);
 			}
@@ -1417,11 +1437,13 @@ TASKMAIL.UILink = {
 	},	
 
 	/**
-	 * Sélectionne les emails liés aux tâches sélectionnées. Toutes les taches
-	 * doivent être dans le folder courant.
+	 * Sélectionne les emails liés aux tâches sélectionnées. 
+	 * La commandes n'est utilisables que si toutes les tâches 
+	 * sont dans le folder courant.
+	 * La commande peut être invoquée sur une tâche hors du folder courant.
 	 */
 	selectLinkedMails : function() {
-		var folder = GetSelectedMsgFolders()[0];
+		var folder = TASKMAIL.UI.viewedFolder;
 		var tasks = TASKMAIL.UI.getSelectedTasks();
 		if (!TASKMAIL.Link.allTasksInFolder(tasks, folder.URI)) {
 			// un des taches dans un sous folder.
