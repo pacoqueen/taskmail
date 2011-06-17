@@ -120,7 +120,8 @@
 	
 	<menupopup id="folderPaneContext">
 		<menuseparator/>
-		<menuitem label="&addTask;"  accesskey="A" oncommand="TASKMAIL.UI.beginAddTask('empty');"/>
+		<menuitem label="&addTask;"        accesskey="A" oncommand="TASKMAIL.UI.beginAddTask('empty');"/>
+		<menuitem label="&viewFolderTask;"  accesskey="F" oncommand="TASKMAIL.UI.onViewFolder();"/>
 	</menupopup>
 	
 	<vbox id="threadPaneBox">

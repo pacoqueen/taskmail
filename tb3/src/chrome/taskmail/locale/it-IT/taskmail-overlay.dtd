@@ -17,6 +17,7 @@
 <!ENTITY selectMail "Seleziona messaggi">
 <!ENTITY selectTask "Seleziona attività">
 <!ENTITY goFolder "Vai alla Cartella">
+<!ENTITY viewFolderTask  "View folder's tasks">
 <!ENTITY add "Aggiungi">
 <!ENTITY addWithLink "Aggiungi con collegamento">
 <!ENTITY update "Aggiorna attività">

@@ -17,6 +17,7 @@
 <!ENTITY selectMail   "Selecteer berichten">
 <!ENTITY selectTask   "Selecteer taken">
 <!ENTITY goFolder     "Ga naar folder">
+<!ENTITY viewFolderTask  "View folder's tasks">
 <!ENTITY add          "Voeg toe">
 <!ENTITY addWithLink  "Voeg toe en link">
 <!ENTITY update       "Bijwerken">

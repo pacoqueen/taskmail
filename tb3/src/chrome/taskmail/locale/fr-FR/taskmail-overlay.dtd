@@ -7,21 +7,22 @@
 <!ENTITY menuGoNextTaskMail    "Aller à la tâche ou message suivant">
 <!ENTITY menuLinkTaskMail      "Lier tâches et messages">
 <!ENTITY menuUnlinkTaskMail    "Délier tâches et messages">
-<!ENTITY linkTask     "Lier aux tâches">
-<!ENTITY linkNewTask  "Lier à une nouvelle tâche">
-<!ENTITY linkMail     "Lier aux messages">
-<!ENTITY unlinkTasks  "Délier les tâches">
-<!ENTITY unlinkMail   "Délier des messages">
-<!ENTITY goNextTask   "Aller à la tâche suivante {0}">
-<!ENTITY goNextMail   "Aller à l'email suivant {0}">
-<!ENTITY selectMail   "Sélectionner les messages">
-<!ENTITY selectTask   "Sélectionner les tâches">
-<!ENTITY goFolder     "Aller au Folder">
-<!ENTITY add          "Ajouter">
-<!ENTITY addWithLink  "Ajouter Liée">
-<!ENTITY update       "Modifier">
-<!ENTITY delete       "Supprimer">
-<!ENTITY markDone     "Marquer comme {s}">
+<!ENTITY linkTask        "Lier aux tâches">
+<!ENTITY linkNewTask     "Lier à une nouvelle tâche">
+<!ENTITY linkMail        "Lier aux messages">
+<!ENTITY unlinkTasks     "Délier les tâches">
+<!ENTITY unlinkMail      "Délier des messages">
+<!ENTITY goNextTask      "Aller à la tâche suivante {0}">
+<!ENTITY goNextMail      "Aller à l'email suivant {0}">
+<!ENTITY selectMail      "Sélectionner les messages">
+<!ENTITY selectTask      "Sélectionner les tâches">
+<!ENTITY goFolder        "Aller au Folder">
+<!ENTITY viewFolderTask  "Voir les tâches de ce Folder">
+<!ENTITY add             "Ajouter">
+<!ENTITY addWithLink     "Ajouter Liée">
+<!ENTITY update          "Modifier">
+<!ENTITY delete          "Supprimer">
+<!ENTITY markDone        "Marquer comme {s}">
 <!ENTITY changePriority      "Changer la Priorité">
 <!ENTITY incrementPriority   "Incrémenter">
 <!ENTITY decrementPriority   "Décrémenter">

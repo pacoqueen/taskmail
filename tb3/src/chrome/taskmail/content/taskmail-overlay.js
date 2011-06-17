@@ -485,7 +485,17 @@ TASKMAIL.UI = {
 	
 	onFolderSelect : function() {
 		TASKMAIL.consoleService.logStringMessage("onFolderSelect");
-
+		var folder = GetSelectedMsgFolders()[0];
+		TASKMAIL.UI.refreshTaskPane(folder);
+	},
+	
+	onViewFolder : function () {
+		var folder = GetSelectedMsgFolders()[0];
+		TASKMAIL.UI.refreshTaskPane(folder);
+	},
+	
+	refreshTaskPane : function (folder) {
+		TASKMAIL.consoleService.logStringMessage("refreshTaskPane");
 		// si la vue n'est pas figée et en 'vue multi folder', on repasse en vue 'folder'.
 		var currentView = document.getElementById("viewFilter").selectedItem.value;
 		if ((currentView == TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
@@ -509,9 +519,8 @@ TASKMAIL.UI = {
 		{
 			// save current folder to manage task action when view is sticky.
 			// before refrehsing view.
-			var currentMsgFolder = GetSelectedMsgFolders()[0];
-			TASKMAIL.consoleService.logStringMessage("folder saving" + currentMsgFolder.URI);
-			TASKMAIL.UI.viewedFolder = currentMsgFolder;
+			TASKMAIL.consoleService.logStringMessage("folder saving" + folder.URI);
+			TASKMAIL.UI.viewedFolder = folder;
 			
 			TASKMAIL.UI.refreshTaskList();
 		}

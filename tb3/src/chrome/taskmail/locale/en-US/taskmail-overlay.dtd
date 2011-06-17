@@ -17,6 +17,7 @@
 <!ENTITY selectMail   "Select messages">
 <!ENTITY selectTask   "Select tasks">
 <!ENTITY goFolder     "Go to Folder">
+<!ENTITY viewFolderTask  "View folder's tasks">
 <!ENTITY add          "Add">
 <!ENTITY addWithLink  "Add with Link">
 <!ENTITY update       "Update">
