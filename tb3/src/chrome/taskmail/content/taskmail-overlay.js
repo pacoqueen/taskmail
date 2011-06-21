@@ -1395,9 +1395,8 @@ TASKMAIL.UILink = {
 		// TODO le folder associé à une âche n'est pas forcement un et un seul folder.
 		var selectedTask = TASKMAIL.UI.getSelectedTasks();
 		var taskID = selectedTask[0].id;
-		var folderURI = selectedTask[0].folderURI;
 		// recupére les keys de mail liés à la tache
-		var keysMails = TASKMAIL.Link.getMailKeysFromTaskID(taskID);
+		var keysMails = TASKMAIL.Link.getMailsFromTaskID(taskID);
 		if (keysMails != null && keysMails.length > 0) {
 			// si la tache selectionnée a au moins un mail lié
 			var i = -1;
@@ -1407,7 +1406,7 @@ TASKMAIL.UILink = {
 				// identifie le mail suivant
 				for (var i = 0; i < keysMails.length; i++) {
 					// on prend le 1° mail sélectionné
-					if (selectedMailKey == keysMails[i]) {
+					if (selectedMailKey == keysMails[i].key) {
 						founded = true;
 						break;
 					}
@@ -1423,10 +1422,15 @@ TASKMAIL.UILink = {
 				// Components.utils.reportError("dbUpgrade " + err);
 			}
 			// keysMail pourrait être modifié par le changement de folder
-			var keyMailToSelect = keysMails[i + 1];
-			// if task from an other folder select folder.
-			if (GetSelectedMsgFolders()[0].URI != folderURI) {
-				SelectFolder(folderURI);
+			var keyMailToSelect   = keysMails[i + 1].key;
+			var folderURIToSelect = keysMails[i + 1].folderURI;
+			// if task from an other folder then select folder.
+			if (GetSelectedMsgFolders()[0].URI != folderURIToSelect) {
+				// bloque la vue pour empêcher le refresh de la liste de tâche.
+				// lors du changement de folder ce qui pourrait faire disparaitre la tâche.
+				var sticky = document.getElementById("tandm-sticky-view");
+				sticky.checked = true;
+				SelectFolder(folderURIToSelect);
 			}
 			gDBView.selectMsgByKey(keyMailToSelect);
 		}
@@ -1504,12 +1508,22 @@ if (!TASKMAIL.Link)
 	TASKMAIL.Link = {};
 TASKMAIL.Link = {
 
+	Link : function(aFolderURI, aMailKey, aThreadKey, aTaskId) {
+		this.folderURI = aFolderURI;
+		this.key       = aMailKey;
+		this.threadKey = aThreadKey;
+		this.taskId    = aTaskId;
+	},
+	
 	addLink : function(aFolderURI, aMailKey, aThreadKey, aTaskId) {
 		var l = this.nbLinks;
 		this.folderURILinks[l] = aFolderURI;
 		this.mailKeysLinks[l] = aMailKey;
 		this.threadKeysLinks[l] = aThreadKey;
 		this.taskIdLinks[l] = aTaskId;
+		
+		var aLink = new TASKMAIL.Link.Link(aFolderURI, aMailKey, aThreadKey, aTaskId);
+		this.links[l] = aLink;
 		this.nbLinks++;
 	},
 
@@ -1545,11 +1559,45 @@ TASKMAIL.Link = {
 	 * Détermine les clé de mail correspondant à la tache spécifiée.
 	 * @return [int]
 	 */
-	getMailKeysFromTaskID : function(taskID) {
+	getMailsFromTaskID : function(taskID) {
 		var result = null;
 		var nbResult = 0;
 		for (var i = 0; i < this.nbLinks; i++) {
-			if (this.taskIdLinks[i] == taskID) {
+			if (this.taskIdLinks[i] == taskID)
+			{
+				if (result == null) {
+					result = new Array();
+				}
+				result[nbResult] = this.links[i];
+				nbResult += 1;
+			}
+		}
+		// TASKMAIL.consoleService.logStringMessage(result);
+		return result;
+	},
+
+	/**
+	 * Détermine les clé de mail correspondant à la tache spécifiée.
+	 * @return [int]
+	 */
+	getMailKeysFromTaskID : function(taskID) {
+		return this.getMailKeysFromTaskIDInFolder(taskID, null);
+	},
+
+	/**
+	 * Détermine les clé de mail correspondant à la tache spécifiée
+	 * dans le folder spécifié.
+	 * @return [int]
+	 */
+	getMailKeysFromTaskIDInFolder : function(taskID, folderURI) {
+		var result = null;
+		var nbResult = 0;
+		for (var i = 0; i < this.nbLinks; i++) {
+			if ((folderURI != null
+			     && this.folderURILinks[i] == folderURI
+			     && this.taskIdLinks[i] == taskID)
+			    || (folderURI == null && this.taskIdLinks[i] == taskID))
+			{
 				if (result == null) {
 					result = new Array();
 				}
@@ -1687,6 +1735,7 @@ TASKMAIL.Link = {
 	mailKeysLinks : new Array(),
 	threadKeysLinks : new Array(),
 	taskIdLinks : new Array(),
+	links : new Array(),
 	nbLinks : 0
 
 }

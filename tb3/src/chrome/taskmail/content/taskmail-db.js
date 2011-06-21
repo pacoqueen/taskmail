@@ -432,7 +432,7 @@ TASKMAIL.DB = {
 			sql += "union select links.folderURI, messageId, taskId from links where links.taskId in ( select rowid ";
 //			sql += "select links.folderURI, messageId, taskId from links where links.taskId in ( select rowid ";
 			sql += this.getTaskListWhereClause(null, viewFilter, null, folder, null);
-			sql += " )";
+			sql += " ) order by links.folderURI";
 			var stat = this.dbConnection.createStatement(sql);
 			var folderURI = folder.URI;
 			stat.bindStringParameter(0, folderURI);
