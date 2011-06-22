@@ -546,6 +546,9 @@ TASKMAIL.UI = {
 		TASKMAIL.UI.getTaskList();
 		TASKMAIL.UI.selectTasksByKeys(selectedTasks);
 
+		var statusbarLabel = TASKMAIL.UI.stringsBundle.getString("statusbar.text.empty");
+		document.getElementById('statusbar.tasks').setAttribute("label", statusbarLabel);
+
 		// la sauvegarde de l'élément courant n'est pas parfaite sur un changement de folder.
 		if (oldCurrentIndex != -1) {
 //			TASKMAIL.consoleService.logStringMessage("refreshTaskList,currentIndex="+oldCurrentIndex);
@@ -584,6 +587,8 @@ TASKMAIL.UI = {
 		// parcours tout les taches et regarde s'il existe une tache liée
 		var column = tree.columns.getNamedColumn("colTask");
 		tree.treeBoxObject.invalidateColumn(column);
+		var statusbarLabel = TASKMAIL.UI.stringsBundle.getString("statusbar.text.empty");
+		document.getElementById('statusbar.tasks').setAttribute("label", statusbarLabel);
 	},
 
 	retrieveTasks : function(needFolderTree) {
