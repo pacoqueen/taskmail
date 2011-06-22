@@ -677,11 +677,6 @@ TASKMAIL.UI = {
 		// refresh link
 		this.refreshTaskLink();
 		this.refreshMailLink();
-
-		var statusbar = document.getElementById('statusbar.tasks');
-		var invisibleTasksLabel = TASKMAIL.UI.stringsBundle.getFormattedString(
-				"statusbar.text", [temp.invisibleTasksCount]);
-		statusbar.setAttribute("label", invisibleTasksLabel);
 	},
 
 	taskDetailPK : -1,
@@ -1404,7 +1399,7 @@ TASKMAIL.UILink = {
 				var selectedMailKey = gDBView.keyForFirstSelectedMessage;
 				var founded = false;
 				// identifie le mail suivant
-				for (var i = 0; i < keysMails.length; i++) {
+				for (i = 0; i < keysMails.length; i++) {
 					// on prend le 1° mail sélectionné
 					if (selectedMailKey == keysMails[i].key) {
 						founded = true;
@@ -1434,6 +1429,36 @@ TASKMAIL.UILink = {
 			}
 			gDBView.selectMsgByKey(keyMailToSelect);
 		}
+		this.refreshStatusBar();
+	},
+	
+	refreshStatusBar : function () {
+		var selectedTask = TASKMAIL.UI.getSelectedTasks();
+		var taskID = selectedTask[0].id;
+		var mailKey = -1;
+		try {
+			mailKey = gDBView.keyForFirstSelectedMessage;
+		} catch (err) {}
+		var keysMails = TASKMAIL.Link.getMailsFromTaskID(taskID);
+		var statusbarLabel = "";
+		if (keysMails != null && keysMails.length > 0 && mailKey != -1) {
+			var keysInFolder = TASKMAIL.Link.getMailKeysFromTaskIDInFolder(taskID, GetSelectedMsgFolders()[0].URI); 
+			var nbLinksIn    = keysInFolder.length; 
+			var indice       = keysInFolder.indexOf(mailKey) + 1;
+			var nbLinksOut   = keysMails.length - nbLinksIn;
+			if (indice >= 1) {
+				statusbarLabel = TASKMAIL.UI.stringsBundle.
+					getFormattedString("statusbar.text.indice", [indice, nbLinksIn, nbLinksOut]);
+			} else {
+				statusbarLabel = TASKMAIL.UI.stringsBundle.
+					getFormattedString("statusbar.text.noindice", [nbLinksIn, nbLinksOut]);
+			}
+		} else {
+			statusbarLabel = TASKMAIL.UI.stringsBundle.
+				getString("statusbar.text.nolink");
+		}
+		var statusbar = document.getElementById('statusbar.tasks');
+		statusbar.setAttribute("label", statusbarLabel);
 	},
 	
 	/**
@@ -1551,14 +1576,20 @@ TASKMAIL.Link = {
 	},
 
 	/**
-	 * Détermine les clé de mail correspondant à la tache spécifiée.
-	 * @return [int]
+	 * Détermine les clé de mail correspondant à la tache spécifiée
+	 * dans le folder spécifié.
+	 * @param taskId    String
+	 * @param folderURI String
+	 * @return [link]
 	 */
-	getMailsFromTaskID : function(taskID) {
+	getMailsFromTaskIDInFolder : function(taskID, folderURI) {
 		var result = null;
 		var nbResult = 0;
 		for (var i = 0; i < this.nbLinks; i++) {
-			if (this.links[i].taskId == taskID)
+			if ((folderURI != null
+			     && this.links[i].folderURI == folderURI
+			     && this.links[i].taskId == taskID)
+			    || (folderURI == null && this.links[i].taskId == taskID))
 			{
 				if (result == null) {
 					result = new Array();
@@ -1572,36 +1603,28 @@ TASKMAIL.Link = {
 	},
 
 	/**
-	 * Détermine les clé de mail correspondant à la tache spécifiée.
-	 * @return [int]
-	 */
-	getMailKeysFromTaskID : function(taskID) {
-		return this.getMailKeysFromTaskIDInFolder(taskID, null);
-	},
-
-	/**
 	 * Détermine les clé de mail correspondant à la tache spécifiée
 	 * dans le folder spécifié.
 	 * @return [int]
 	 */
 	getMailKeysFromTaskIDInFolder : function(taskID, folderURI) {
-		var result = null;
-		var nbResult = 0;
-		for (var i = 0; i < this.nbLinks; i++) {
-			if ((folderURI != null
-			     && this.links[i].folderURI == folderURI
-			     && this.links[i].taskId == taskID)
-			    || (folderURI == null && this.links[i].taskId == taskID))
-			{
-				if (result == null) {
-					result = new Array();
-				}
-				result[nbResult] = this.links[i].key;
-				nbResult += 1;
-			}
-		}
-		// TASKMAIL.consoleService.logStringMessage(result);
-		return result;
+		return this.getMailsFromTaskIDInFolder(taskID, folderURI).map(function(value, indice, array){return value.key;});
+	},
+
+	/**
+	 * Détermine les clé de mail correspondant à la tache spécifiée.
+	 * @return [link]
+	 */
+	getMailsFromTaskID : function(taskID) {
+		return this.getMailsFromTaskIDInFolder(taskID, null);
+	},
+
+	/**
+	 * Détermine les clé de mail correspondant à la tache spécifiée.
+	 * @return [int]
+	 */
+	getMailKeysFromTaskID : function(taskID) {
+		return this.getMailKeysFromTaskIDInFolder(taskID, null);
 	},
 
 	/**

@@ -427,16 +427,15 @@ TASKMAIL.DB = {
 		try {
 			// remonte tous les liens avec les messages en cours (ceux du folder)
 			// et remonte tous les liens avec les tâche visualisées.
+			// les liens doivent être remonté dans l'ordre : d'abord ceux du folder
+			// courant puis les autres par ordre de folder.
 			var sql = "select links.folderURI, messageId, taskId from links where links.folderURI = :folder_URI ";
-//			var sql = "";
 			sql += "union select links.folderURI, messageId, taskId from links where links.taskId in ( select rowid ";
-//			sql += "select links.folderURI, messageId, taskId from links where links.taskId in ( select rowid ";
 			sql += this.getTaskListWhereClause(null, viewFilter, null, folder, null);
 			sql += " ) order by links.folderURI";
 			var stat = this.dbConnection.createStatement(sql);
 			var folderURI = folder.URI;
 			stat.bindStringParameter(0, folderURI);
-//			this.bindTaskListParameters(stat, 1, viewFilter, null, folder, null);
 			this.bindTaskListParameters(stat, 1, viewFilter, null, folder, null);
 			while (stat.executeStep()) {
 				var taskFolderURI =  stat.getString(0);
