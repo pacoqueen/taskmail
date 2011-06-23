@@ -150,7 +150,7 @@ TASKMAIL.UI = {
 					this.cancelSaveTask();
 			}
 			this.refreshTaskList();
-			this.refreshMailLink();
+			this.onTaskSelect();
 		}
 	},
 
@@ -494,6 +494,31 @@ TASKMAIL.UI = {
 		TASKMAIL.UI.refreshTaskPane(folder);
 	},
 	
+	/**
+	 * called on mail selection.
+	 */
+	onMessageSelect : function () {
+		TASKMAIL.consoleService.logStringMessage("onMessageSelect");
+		var currentView = document.getElementById("viewFilter").selectedItem.value;
+		if (currentView == TASKMAIL.UI.VIEW_FILTER_MESSAGE) {
+			TASKMAIL.UI.refreshTaskList();
+		}
+		TASKMAIL.UI.refreshTaskLink();
+	},
+
+	/**
+	 * called on task selection.
+	 */
+	onTaskSelect : function() {
+		var tree = document.getElementById("threadTree");
+		// parcours tout les taches et regarde s'il existe une tache liée
+		var column = tree.columns.getNamedColumn("colTask");
+		tree.treeBoxObject.invalidateColumn(column);
+		
+		var statusbarLabel = TASKMAIL.UI.stringsBundle.getString("statusbar.text.empty");
+		document.getElementById('statusbar.tasks').setAttribute("label", statusbarLabel);
+	},
+
 	refreshTaskPane : function (folder) {
 		TASKMAIL.consoleService.logStringMessage("refreshTaskPane");
 		// si la vue n'est pas figée et en 'vue multi folder', on repasse en vue 'folder'.
@@ -526,13 +551,6 @@ TASKMAIL.UI = {
 		}
 	},
 	
-	onMessageSelect : function () {
-		var currentView = document.getElementById("viewFilter").selectedItem.value;
-		if (currentView == TASKMAIL.UI.VIEW_FILTER_MESSAGE) {
-			TASKMAIL.UI.refreshTaskList();
-		} 
-	},
-
 	refreshTaskList : function() {
 		TASKMAIL.consoleService.logStringMessage("refreshTaskList");
 		// le refresh du folder est lancé avant l'handler de la colonne des
@@ -558,9 +576,6 @@ TASKMAIL.UI = {
 		}
 	},
 
-	/**
-	 * called on mail selection.
-	 */
 	refreshTaskLink : function() {
 		var selectedMailKey = null;
 		try {
@@ -585,19 +600,6 @@ TASKMAIL.UI = {
 			}
 			row.childNodes[0].childNodes[1].setAttribute("properties", linkURL);
 		}
-	},
-
-	/**
-	 * called on task selection.
-	 */
-	refreshMailLink : function() {
-		var tree = document.getElementById("threadTree");
-		// parcours tout les taches et regarde s'il existe une tache liée
-		var column = tree.columns.getNamedColumn("colTask");
-		tree.treeBoxObject.invalidateColumn(column);
-		
-		var statusbarLabel = TASKMAIL.UI.stringsBundle.getString("statusbar.text.empty");
-		document.getElementById('statusbar.tasks').setAttribute("label", statusbarLabel);
 	},
 
 	retrieveTasks : function(needFolderTree) {
@@ -690,7 +692,7 @@ TASKMAIL.UI = {
 		
 		// refresh link
 		this.refreshTaskLink();
-		this.refreshMailLink();
+		this.onTaskSelect();
 	},
 
 	taskDetailPK : -1,
@@ -909,7 +911,7 @@ TASKMAIL.UI = {
 				TASKMAIL.UI.onMessageSelect, false);
 		document.getElementById("taskList").addEventListener("select",
 				function(e) {
-					TASKMAIL.UI.refreshMailLink();
+					TASKMAIL.UI.onTaskSelect();
 				}, false);
 		// bug, pas possible d'utiliser onpopupshowing dans le .xul
 		document.getElementById("mailContext").addEventListener("popupshowing",
@@ -1306,7 +1308,7 @@ TASKMAIL.UILink = {
 			}
 		}
 		TASKMAIL.UI.refreshTaskList();
-		TASKMAIL.UI.refreshMailLink();
+		TASKMAIL.UI.onTaskSelect();
 	},
 
 	/**
@@ -1332,7 +1334,7 @@ TASKMAIL.UILink = {
 				}
 			}
 			TASKMAIL.UI.refreshTaskList();
-			TASKMAIL.UI.refreshMailLink();
+			TASKMAIL.UI.onTaskSelect();
 		}
 	},
 
@@ -1791,7 +1793,7 @@ TASKMAIL.MailListener = {
 	folderRenamed : function(aOrigFolder, aNewFolder) {
 		TASKMAIL.DB.renameFolderSQLite(aOrigFolder, aNewFolder);
 		TASKMAIL.UI.refreshTaskLink();
-		TASKMAIL.UI.refreshMailLink();
+		TASKMAIL.UI.onTaskSelect();
 	},
 	folderDeleted : function(aFolder) {
 		// Rien lors de la suppression réelle puisque ça passe par la
