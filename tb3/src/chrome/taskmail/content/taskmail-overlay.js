@@ -558,6 +558,9 @@ TASKMAIL.UI = {
 		}
 	},
 
+	/**
+	 * called on mail selection.
+	 */
 	refreshTaskLink : function() {
 		var selectedMailKey = null;
 		try {
@@ -573,7 +576,9 @@ TASKMAIL.UI = {
 			var linkType = TASKMAIL.Link.getTaskLinkType(
 					pk, gDBView.msgFolder.URI, selectedMailKey);
 			var linkURL = null;
-			if (linkType == 2) {
+			if (linkType == 3) {
+				linkURL = "linked_outside";
+			} else  if (linkType == 2) {
 				linkURL = "linked_hilight";
 			} else if (linkType == 1) {
 				linkURL = "linked";
@@ -582,11 +587,15 @@ TASKMAIL.UI = {
 		}
 	},
 
+	/**
+	 * called on task selection.
+	 */
 	refreshMailLink : function() {
 		var tree = document.getElementById("threadTree");
 		// parcours tout les taches et regarde s'il existe une tache liée
 		var column = tree.columns.getNamedColumn("colTask");
 		tree.treeBoxObject.invalidateColumn(column);
+		
 		var statusbarLabel = TASKMAIL.UI.stringsBundle.getString("statusbar.text.empty");
 		document.getElementById('statusbar.tasks').setAttribute("label", statusbarLabel);
 	},
@@ -1556,22 +1565,44 @@ TASKMAIL.Link = {
 	 * 
 	 * @param taskID
 	 * @param selectedMailKey
-	 * @return 2 = lien surligné, 1 = lien, 0 = pas de lien
+	 * @return 3 = lien outside, 2 = lien surligné, 1 = lien, 0 = pas de lien
 	 */
 	getTaskLinkType : function(taskID, aFolderURI, selectedMailKey) {
 		// taskID à -1 si pas de tache sélectionnée
-		var direct = false;
-		var undirect = false;
+		
+		var linkWithThisMail  = false;
+		var linkWithAMail     = false;
+		var linkOutsideFolder = false;
+		
+		var folder = "";
+		
 		for (var j = 0; j < this.nbLinks; j++) {
 			if (taskID == this.links[j].taskId) {
 				if (aFolderURI == this.links[j].folderURI && selectedMailKey == this.links[j].key) {
-					direct = true;
+					linkWithThisMail = true;
 				} else {
-					undirect = true;
+					linkWithAMail = true;
+				}
+				// on memorise le 1° folder en liaison
+				if (folder == "") {
+					folder = this.links[j].folderURI;
+				}
+				// on regarde si au moins un folder en liaison 
+				// est différent du 1° => liaisons dans plusieurs folders
+				if (folder != this.links[j].folderURI) { 
+					linkOutsideFolder = true;
 				}
 			}
 		}
-		var result = direct ? 2 : undirect ? 1 : 0;
+		if (linkWithThisMail) {
+			result = 2;
+		} else if (linkOutsideFolder) {
+			result = 3;
+		} else if (linkWithAMail) {
+			result = 1;
+		} else {
+			result = 0;
+		}
 		return result;
 	},
 

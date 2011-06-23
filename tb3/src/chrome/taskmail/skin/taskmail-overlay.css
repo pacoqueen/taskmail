@@ -50,6 +50,11 @@ treechildren::-moz-tree-image(linked_hilight)
   list-style-image: url('chrome://taskmail/skin/link_mail_hilight.jpg');
 }
 
+treechildren::-moz-tree-image(linked_outside)
+{
+  list-style-image: url('chrome://taskmail/skin/link_mail_outside.jpg');
+}
+
 treechildren::-moz-tree-cell-text(next-task)
 {
   color : rgb(255,165,0);
