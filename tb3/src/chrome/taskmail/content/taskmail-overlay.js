@@ -1451,13 +1451,8 @@ TASKMAIL.UILink = {
 			var nbLinksIn    = keysInFolder.length; 
 			var indice       = keysInFolder.indexOf(mailKey) + 1;
 			var nbLinksOut   = keysMails.length - nbLinksIn;
-			if (indice >= 1) {
-				statusbarLabel = TASKMAIL.UI.stringsBundle.
-					getFormattedString("statusbar.text.indice", [indice, nbLinksIn, nbLinksOut]);
-			} else {
-				statusbarLabel = TASKMAIL.UI.stringsBundle.
-					getFormattedString("statusbar.text.noindice", [nbLinksIn, nbLinksOut]);
-			}
+			statusbarLabel = TASKMAIL.UI.stringsBundle.
+				getFormattedString("statusbar.text.indice", [indice, nbLinksIn, nbLinksOut]);
 		} else {
 			statusbarLabel = TASKMAIL.UI.stringsBundle.
 				getString("statusbar.text.nolink");
