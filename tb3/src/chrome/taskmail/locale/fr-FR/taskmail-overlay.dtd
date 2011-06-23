@@ -12,8 +12,8 @@
 <!ENTITY linkMail        "Lier aux messages">
 <!ENTITY unlinkTasks     "Délier les tâches">
 <!ENTITY unlinkMail      "Délier des messages">
-<!ENTITY goNextTask      "Aller à la tâche suivante {0}">
-<!ENTITY goNextMail      "Aller à l'email suivant {0}">
+<!ENTITY goNextTask      "Aller à la tâche suivante">
+<!ENTITY goNextMail      "Aller à l'email suivant">
 <!ENTITY selectMail      "Sélectionner les messages">
 <!ENTITY selectTask      "Sélectionner les tâches">
 <!ENTITY goFolder        "Aller au Folder">

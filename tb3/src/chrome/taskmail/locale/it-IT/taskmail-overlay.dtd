@@ -12,8 +12,8 @@
 <!ENTITY linkMail "Collega a messaggi">
 <!ENTITY unlinkTasks "Scollega attività">
 <!ENTITY unlinkMail "Scollega messaggi">
-<!ENTITY goNextTask "Vai alla prossima attività {0}">
-<!ENTITY goNextMail "Vai al prossimo messaggio {0}">
+<!ENTITY goNextTask "Vai alla prossima attività">
+<!ENTITY goNextMail "Vai al prossimo messaggio">
 <!ENTITY selectMail "Seleziona messaggi">
 <!ENTITY selectTask "Seleziona attività">
 <!ENTITY goFolder "Vai alla Cartella">

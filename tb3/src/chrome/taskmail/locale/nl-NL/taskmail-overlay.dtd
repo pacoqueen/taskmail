@@ -12,8 +12,8 @@
 <!ENTITY linkMail     "Link aan berichten">
 <!ENTITY unlinkTasks  "Link van taken verbreken">
 <!ENTITY unlinkMail   "Link van berichten verbreken">
-<!ENTITY goNextTask   "Ga naar volgende taak {0}">
-<!ENTITY goNextMail   "Ga naar volgend bericht {0}">
+<!ENTITY goNextTask   "Ga naar volgende taak">
+<!ENTITY goNextMail   "Ga naar volgend bericht">
 <!ENTITY selectMail   "Selecteer berichten">
 <!ENTITY selectTask   "Selecteer taken">
 <!ENTITY goFolder     "Ga naar folder">

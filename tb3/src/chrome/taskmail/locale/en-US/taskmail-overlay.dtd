@@ -12,8 +12,8 @@
 <!ENTITY linkMail     "Link to messages">
 <!ENTITY unlinkTasks  "Unlink tasks">
 <!ENTITY unlinkMail   "Unlink messages">
-<!ENTITY goNextTask   "Go to next task {0}">
-<!ENTITY goNextMail   "Go to next message {0}">
+<!ENTITY goNextTask   "Go to next task">
+<!ENTITY goNextMail   "Go to next message">
 <!ENTITY selectMail   "Select messages">
 <!ENTITY selectTask   "Select tasks">
 <!ENTITY goFolder     "Go to Folder">

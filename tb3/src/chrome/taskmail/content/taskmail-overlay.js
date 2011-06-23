@@ -219,9 +219,6 @@ TASKMAIL.UI = {
 			linkedObject = TASKMAIL.Link
 					.getTaskIDFromMailID(mails[0].folder.URI, mails[0].messageKey);
 		}
-		var regExp = new RegExp("[0-9]+");
-		var count = linkedObject != null ? linkedObject.length : 0;
-		menuitem.label = menuitem.label.replace(regExp, count);
 
 		if (sens == "task") {
 			// on désactive 'go to folder' si la tache courante est dans le
@@ -1638,10 +1635,15 @@ TASKMAIL.Link = {
 	/**
 	 * Détermine les clé de mail correspondant à la tache spécifiée
 	 * dans le folder spécifié.
-	 * @return [int]
+	 * @return [int] null if empty
 	 */
 	getMailKeysFromTaskIDInFolder : function(taskID, folderURI) {
-		return this.getMailsFromTaskIDInFolder(taskID, folderURI).map(function(value, indice, array){return value.key;});
+		var temp = this.getMailsFromTaskIDInFolder(taskID, folderURI);
+		if (temp != null) {
+			return temp.map(function(value, indice, array){return value.key;}); 
+		} else {
+			return null;
+		}
 	},
 
 	/**
