@@ -205,13 +205,17 @@ TASKMAIL.UI = {
 		var menuitem = null;
 		var linkedObject = null;
 		if (sens == "task") {
-			menuitem = document.getElementById('row-menu-goNextMail');
 			var selectedTask = TASKMAIL.UI.getSelectedTasks();
 			if (selectedTask.length > 0) {
 				linkedObject = TASKMAIL.Link
 						.getMailKeysFromTaskID(selectedTask[0].id);
 			}
+			menuitem = document.getElementById('row-menu-goNextMail');
 			menuitem.disabled = selectedTask.length != 1 || linkedObject == null;
+
+			// on regarde juste s'il y a un lien et pas si c'est un lien avec le folder courant.
+			menuitem = document.getElementById('row-menu.selectMail');
+			menuitem.disabled = linkedObject == null;
 		} else {
 			menuitem = document.getElementById('mailContext.goNextTask');
 			// TODO obtenir email ayant reçu click droit.
@@ -232,10 +236,6 @@ TASKMAIL.UI = {
 			} else {
 				menuitem.disabled = true;
 			}
-			// si toutes les tâches sélectionnées dans le folder courant, on permet de lancer 'selectionner les messages'.
-			menuitem = document.getElementById('row-menu.selectMail');
-			menuitem.disabled = selectedTask[0].folderURI != currentFolder.URI 
-			                    || !TASKMAIL.Link.allTasksInFolder(selectedTask, currentFolder.URI);
 		}
 	},
 	
@@ -1484,27 +1484,15 @@ TASKMAIL.UILink = {
 
 	/**
 	 * Sélectionne les emails liés aux tâches sélectionnées. 
-	 * La commandes n'est utilisables que si toutes les tâches 
-	 * sont dans le folder courant.
 	 * La commande peut être invoquée sur une tâche hors du folder courant.
 	 */
 	selectLinkedMails : function() {
-		var folder = TASKMAIL.UI.viewedFolder;
+		var folder = gDBView.msgFolder;
 		var tasks = TASKMAIL.UI.getSelectedTasks();
-		if (!TASKMAIL.Link.allTasksInFolder(tasks, folder.URI)) {
-			// un des taches dans un sous folder.
-			alert(TASKMAIL.UI.stringsBundle
-					.getString("SelectMailLinkAlertSubfolder"));
-			return;
-		}
 		var tasks = TASKMAIL.UI.getSelectedTasksKeys();
-		var allMails = new Array();
-		for (var i = 0; i < tasks.length; i++) {
-			var mails = TASKMAIL.Link.getMailKeysFromTaskID(tasks[i]);
-			if (mails != null)
-				allMails = allMails.concat(mails);
-		}
+		var allMails = TASKMAIL.Link.getMailsFromTaskIDsInFolder(tasks, folder.URI);
 		if (allMails.length > 0) {
+			TASKMAIL.consoleService.logStringMessage("selectLinkedMails, nb mails linked : " + allMails.length);
 			gDBView.selection.clearSelection();
 			for (var i = 0; i < allMails.length; i++) {
 				var j = gDBView.findIndexFromKey(allMails[i], false);
@@ -1633,8 +1621,29 @@ TASKMAIL.Link = {
 	},
 
 	/**
+	 * Détermine les clé de mail correspondants aux tâches spécifiées
+	 * dans le folder spécifié.
+	 * @param taskId    [String]
+	 * @param folderURI String
+	 * @return [link]
+	 */
+	getMailsFromTaskIDsInFolder : function(taskIDs, folderURI) {
+		// récupére la liste de tous les emails liés avec les tâches sélectionnées
+		// en ne prenant que les emails du folder en cours de visu.
+		var allMails = new Array();
+		for (var i = 0; i < taskIDs.length; i++) {
+			var mails = TASKMAIL.Link.getMailKeysFromTaskIDInFolder(taskIDs[i], folderURI);
+			if (mails != null)
+				allMails = allMails.concat(mails);
+		}
+		return allMails;
+	},
+
+	/**
 	 * Détermine les clé de mail correspondant à la tache spécifiée
 	 * dans le folder spécifié.
+	 * @param taskID string
+	 * @param folderURI string
 	 * @return [int] null if empty
 	 */
 	getMailKeysFromTaskIDInFolder : function(taskID, folderURI) {
