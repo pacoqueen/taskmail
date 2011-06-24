@@ -546,6 +546,7 @@ TASKMAIL.UI = {
 			
 			TASKMAIL.UI.refreshTaskList();
 		}
+		TASKMAIL.UI.refreshTaskFolderIcon();
 	},
 	
 	refreshTaskList : function() {
@@ -597,6 +598,18 @@ TASKMAIL.UI = {
 				linkURL = "linked";
 			}
 			row.childNodes[0].childNodes[1].setAttribute("properties", linkURL);
+		}
+	},
+
+	refreshTaskFolderIcon : function() {
+		// parcours tout les taches
+		var listBox = document.getElementById("taskList");
+		for (var i = 0; i < listBox.view.rowCount; i++) {
+			var row           = listBox.contentView.getItemAtIndex(i);
+			var pk            = row.firstChild.getAttribute("pk"); 
+			var taskFolderURI = row.firstChild.getAttribute("folderURI");
+			var value = taskFolderURI != GetSelectedMsgFolders()[0].URI ? "subfolder" : null;
+			row.childNodes[0].childNodes[0].setAttribute("properties", value);
 		}
 	},
 
