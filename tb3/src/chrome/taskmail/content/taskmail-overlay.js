@@ -1281,12 +1281,12 @@ TASKMAIL.UILink = {
 		} else if (draganddropTarget == "mail") {
 			mails = draganddropTargetElement;
 		}
-		// TODO il devient possible de linker avec d'autre folder que le courant.
-		if (!TASKMAIL.Link.allTasksInFolder(tasks, folder.URI)) {
-			// un des taches dans un sous folder.
-			alert(TASKMAIL.UI.stringsBundle.getString("LinkAlertSubfolder"));
-			return;
-		}
+//		// TODO il devient possible de linker avec d'autre folder que le courant.
+//		if (!TASKMAIL.Link.allTasksInFolder(tasks, folder.URI)) {
+//			// un des taches dans un sous folder.
+//			alert(TASKMAIL.UI.stringsBundle.getString("LinkAlertSubfolder"));
+//			return;
+//		}
 		var taskIds = TASKMAIL.UI.getTasksKeys(tasks);
 		if (mails.length > 1 && taskIds.length > 1) {
 			// on autorise les liaisons si un des deux côtés a 1 seul
