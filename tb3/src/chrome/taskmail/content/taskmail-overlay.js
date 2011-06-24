@@ -211,17 +211,18 @@ TASKMAIL.UI = {
 						.getMailKeysFromTaskID(selectedTask[0].id);
 			}
 			menuitem = document.getElementById('row-menu-goNextMail');
-			menuitem.disabled = selectedTask.length != 1 || linkedObject == null;
+			menuitem.disabled = selectedTask.length != 1;
 
 			// on regarde juste s'il y a un lien et pas si c'est un lien avec le folder courant.
 			menuitem = document.getElementById('row-menu.selectMail');
-			menuitem.disabled = linkedObject == null;
+			menuitem.disabled = selectedTask.length < 1;
 		} else {
 			menuitem = document.getElementById('mailContext.goNextTask');
 			// TODO obtenir email ayant reçu click droit.
 			var mails = gFolderDisplay.selectedMessages;
 			linkedObject = TASKMAIL.Link
 					.getTaskIDFromMailID(mails[0].folder.URI, mails[0].messageKey);
+			menuitem.disabled = mails.length != 1;
 		}
 
 		if (sens == "task") {
@@ -257,8 +258,7 @@ TASKMAIL.UI = {
 		if (document.getElementById("taskList") == focused) {
 			dynaLabel = this.stringsBundle.getString('menuSelectLinkedMail');
 			var currentFolder = GetSelectedMsgFolders()[0];
-			dynaDisbled = selectedTask[0].folderURI != currentFolder.URI 
-			              || !TASKMAIL.Link.allTasksInFolder(selectedTask, currentFolder.URI);
+			dynaDisbled = selectedTask.length < 1;
 		} else if (document.getElementById("threadTree") == focused) {
 			dynaLabel = this.stringsBundle.getString('menuSelectLinkedTask');
 			dynaDisbled = false;
@@ -1281,12 +1281,6 @@ TASKMAIL.UILink = {
 		} else if (draganddropTarget == "mail") {
 			mails = draganddropTargetElement;
 		}
-//		// TODO il devient possible de linker avec d'autre folder que le courant.
-//		if (!TASKMAIL.Link.allTasksInFolder(tasks, folder.URI)) {
-//			// un des taches dans un sous folder.
-//			alert(TASKMAIL.UI.stringsBundle.getString("LinkAlertSubfolder"));
-//			return;
-//		}
 		var taskIds = TASKMAIL.UI.getTasksKeys(tasks);
 		if (mails.length > 1 && taskIds.length > 1) {
 			// on autorise les liaisons si un des deux côtés a 1 seul
