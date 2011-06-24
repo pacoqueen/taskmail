@@ -584,9 +584,10 @@ TASKMAIL.UI = {
 		var listBox = document.getElementById("taskList");
 		for (var i = 0; i < listBox.view.rowCount; i++) {
 			var row = listBox.contentView.getItemAtIndex(i);
-			var pk = row.firstChild.getAttribute("pk"); 
+			var pk        = row.firstChild.getAttribute("pk"); 
+			var taskFolderURI = row.firstChild.getAttribute("folderURI");
 			var linkType = TASKMAIL.Link.getTaskLinkType(
-					pk, gDBView.msgFolder.URI, selectedMailKey);
+					pk, taskFolderURI, gDBView.msgFolder.URI, selectedMailKey);
 			var linkURL = null;
 			if (linkType == 3) {
 				linkURL = "linked_outside";
@@ -1551,17 +1552,19 @@ TASKMAIL.Link = {
 	/**
 	 * 
 	 * @param taskID
+	 * @param taskFolderURI string folder de la tâche
 	 * @param selectedMailKey
-	 * @return 3 = lien outside, 2 = lien surligné, 1 = lien, 0 = pas de lien
+	 * @return 3 = lien outside (au moins une liaison hors du folder de la tâche
+	 *         2 = lien surligné,
+	 *         1 = lien,
+	 *         0 = pas de lien.
 	 */
-	getTaskLinkType : function(taskID, aFolderURI, selectedMailKey) {
+	getTaskLinkType : function(taskID, taskFolderURI, aFolderURI, selectedMailKey) {
 		// taskID à -1 si pas de tache sélectionnée
 		
 		var linkWithThisMail  = false;
 		var linkWithAMail     = false;
 		var linkOutsideFolder = false;
-		
-		var folder = "";
 		
 		for (var j = 0; j < this.nbLinks; j++) {
 			if (taskID == this.links[j].taskId) {
@@ -1570,13 +1573,9 @@ TASKMAIL.Link = {
 				} else {
 					linkWithAMail = true;
 				}
-				// on memorise le 1° folder en liaison
-				if (folder == "") {
-					folder = this.links[j].folderURI;
-				}
 				// on regarde si au moins un folder en liaison 
-				// est différent du 1° => liaisons dans plusieurs folders
-				if (folder != this.links[j].folderURI) { 
+				// est différent du folder de la tâche
+				if (taskFolderURI != this.links[j].folderURI) { 
 					linkOutsideFolder = true;
 				}
 			}
