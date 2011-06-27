@@ -230,7 +230,7 @@ TASKMAIL.DB = {
 		var result = null;
 		try {
 			var stat = this.dbConnection
-					.createStatement("select rowid, title, state, desc, priority, createDate, dueDate, completeDate from tasks where rowid = :pk");
+					.createStatement("select rowid, title, state, desc, priority, createDate, dueDate, completeDate, folderURI from tasks where rowid = :pk");
 			stat.bindInt32Parameter(0, pk);
 			while (stat.executeStep()) {
 				var id = stat.getInt32(0);
@@ -241,7 +241,8 @@ TASKMAIL.DB = {
 				var createDate     = this.convertSQLiteToDate(stat.getString(5));
 				var dueDate        = this.convertSQLiteToDate(stat.getString(6));
 				var completeDate   = this.convertSQLiteToDate(stat.getString(7));
-				result = new TASKMAIL.Task(id, null, null, title, desc, state, prio, 
+				var folderURI      = stat.getString(8);
+				result = new TASKMAIL.Task(id, folderURI, null, title, desc, state, prio, 
 				                           createDate, dueDate, completeDate);
 			}
 		} catch (err) {
@@ -422,8 +423,8 @@ TASKMAIL.DB = {
 	 * remonte touts les liens de toutes les taches du folder fourni
 	 * (folder, subfolders, all folders). 
 	 */
-	getLinkSQLite : function(folder, viewFilter) {
-//		TASKMAIL.consoleService.logStringMessage("getLinkSQLite,folderName="+folder.URI);
+	getLinkSQLite : function(msgFolder, taskFolder, viewFilter) {
+		TASKMAIL.consoleService.logStringMessage("getLinkSQLite,msgFolderName="+msgFolder.URI+"taskFolderName="+taskFolder.URI);
 		try {
 			// remonte tous les liens avec les messages en cours (ceux du folder)
 			// et remonte tous les liens avec les tâche visualisées.
@@ -431,17 +432,17 @@ TASKMAIL.DB = {
 			// courant puis les autres par ordre de folder.
 			var sql = "select links.folderURI, messageId, taskId from links where links.folderURI = :folder_URI ";
 			sql += "union select links.folderURI, messageId, taskId from links where links.taskId in ( select rowid ";
-			sql += this.getTaskListWhereClause(null, viewFilter, null, folder, null);
+			sql += this.getTaskListWhereClause(null, viewFilter, null, taskFolder, null);
 			sql += " ) order by links.folderURI";
 			var stat = this.dbConnection.createStatement(sql);
-			var folderURI = folder.URI;
-			stat.bindStringParameter(0, folderURI);
-			this.bindTaskListParameters(stat, 1, viewFilter, null, folder, null);
+			var msgFolderURI = msgFolder.URI;
+			stat.bindStringParameter(0, msgFolderURI);
+			this.bindTaskListParameters(stat, 1, viewFilter, null, taskFolder, null);
 			while (stat.executeStep()) {
-				var taskFolderURI =  stat.getString(0);
+				var messageFolderURI =  stat.getString(0);
 				var messageId =  stat.getString(1);
 				try {
-					var folderDB = GetMsgFolderFromUri(taskFolderURI, false); 
+					var folderDB = GetMsgFolderFromUri(messageFolderURI, false); 
 					var message = folderDB.msgDatabase.getMsgHdrForMessageID(messageId);
 					var messageKey = message.messageKey;
 					var threadKey = message.threadId;
@@ -450,8 +451,9 @@ TASKMAIL.DB = {
 					Components.utils.reportError("getLinkSQLite, problème récup messageId=" + messageId);
 					continue;
 				}
-				TASKMAIL.consoleService.logStringMessage("getLinkSQLite:"+taskFolderURI+","+messageId+","+stat.getInt32(2));				
-				TASKMAIL.Link.addLink(taskFolderURI,
+				TASKMAIL.consoleService.logStringMessage("getLinkSQLite:" + messageFolderURI + "," + messageId + "," + stat.getInt32(2)
+					+ "," + stat.getInt32(2));				
+				TASKMAIL.Link.addLink(messageFolderURI,
 				                      messageKey,
 				                      threadKey,
 				                      stat.getInt32(2));

@@ -616,7 +616,8 @@ TASKMAIL.UI = {
 	retrieveTasks : function(needFolderTree) {
 		var result = new TASKMAIL.Content();
 		
-		var currentMsgFolder = TASKMAIL.UI.viewedFolder;
+		var currentMsgFolder  = GetSelectedMsgFolders()[0];;
+		var currentTaskFolder = TASKMAIL.UI.viewedFolder;
 		var viewFilter = document.getElementById("viewFilter").selectedItem.value;
 		var stateFilter = this.getDBStateFilterString();
 		var text = document.getElementById("tandm-search").value;
@@ -628,28 +629,28 @@ TASKMAIL.UI = {
 				var messageId = mails[0].messageId;
 				// TASKMAIL.consoleService.logStringMessage(selectedMailKey);
 				// il faut charger les liens avant les taches
-				TASKMAIL.DB.getLinkSQLite(currentMsgFolder, viewFilter);
+				TASKMAIL.DB.getLinkSQLite(currentMsgFolder, currentTaskFolder, viewFilter);
 				result = TASKMAIL.DB.getTaskListSQLite(messageId,
-						currentMsgFolder, stateFilter, viewFilter, needFolderTree, text);
+						currentTaskFolder, stateFilter, viewFilter, needFolderTree, text);
 			} catch (err) {
 				// Components.utils.reportError("dbUpgrade " + err);
 			}
 		} else if (viewFilter == this.VIEW_FILTER_ALL_FOLDERS || viewFilter == this.VIEW_FILTER_HOTLIST) {
 			// all folders or hot list
-			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, viewFilter);
+			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, currentTaskFolder, viewFilter);
 			result = TASKMAIL.DB.getTaskListSQLite(null,
 						null, stateFilter, viewFilter, needFolderTree, text);
 		} else if (viewFilter == this.VIEW_FILTER_FOLDER) {
 			// folder
-			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, viewFilter);
+			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, currentTaskFolder, viewFilter);
 			result = TASKMAIL.DB.getTaskListSQLite(null,
-					currentMsgFolder, stateFilter, viewFilter, needFolderTree, text);
+					currentTaskFolder, stateFilter, viewFilter, needFolderTree, text);
 		} else {
 			// subfolders (viewFilter == this.VIEW_FILTER_SUBFOLDERS)
 			// il faut charger les liens avant les taches
-			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, viewFilter);
+			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, currentTaskFolder, viewFilter);
 			result = TASKMAIL.DB.getTaskListSQLite(null,
-					currentMsgFolder, stateFilter, viewFilter, needFolderTree, text);
+					currentTaskFolder, stateFilter, viewFilter, needFolderTree, text);
 		}
 		return result;
 	},
@@ -750,19 +751,20 @@ TASKMAIL.UI = {
 		var listBox = document.getElementById("taskList");
 		var result = [];
 		var rangeCount = listBox.view.selection.getRangeCount();
-		for (var i = 0; i < rangeCount; i++)
-		{
-		   var start = {};
-		   var end = {};
-		   listBox.view.selection.getRangeAt(i, start, end);
-		   for(var c = start.value; c <= end.value; c++)
-		   {
-		   		var taskId = parseInt(listBox.view.getItemAtIndex(c).firstChild.getAttribute("pk"));
-					var folderURI = listBox.view.getItemAtIndex(c).firstChild.getAttribute("folderURI");
-		   		var newTask = new TASKMAIL.Task(taskId, folderURI, null, null, null, null, null, null, null);
-		      result.push(newTask);
-		   }
-		}		
+		try {
+			for (var i = 0; i < rangeCount; i++) {
+			   var start = {};
+			   var end = {};
+			   listBox.view.selection.getRangeAt(i, start, end);
+			   for(var c = start.value; c <= end.value; c++)
+			   {
+			   		var taskId = parseInt(listBox.view.getItemAtIndex(c).firstChild.getAttribute("pk"));
+						var folderURI = listBox.view.getItemAtIndex(c).firstChild.getAttribute("folderURI");
+			   		var newTask = new TASKMAIL.Task(taskId, folderURI, null, null, null, null, null, null, null);
+			      result.push(newTask);
+			   }
+			}		
+		} catch (err) {}
 		return result;
 	},
 	
@@ -1364,37 +1366,68 @@ TASKMAIL.UILink = {
 			// récupére la key du 1° email selectionné
 			var mailKey = gDBView.keyForFirstSelectedMessage;
 			// recupére les ID de taches liées au mail
-			var TaskIDs = TASKMAIL.Link.getTaskIDFromMailID(gDBView.msgFolder.URI, mailKey);
-			// recupére les index des taches associées
-			var taskIndex = TASKMAIL.UI.getTaskIndexFromTaskID(TaskIDs);
-			if (TaskIDs.length > 0 && taskIndex.length == 0) {
-				// on a des taches liées mais elles sont toutes visibles =>
-				// change le filtrage sr 'tout'
-				var stateFilter = document.getElementById("stateFilterPopup");
-				for(var i=0; i<stateFilter.childNodes.length; i++) {
-		  		stateFilter.childNodes[i].setAttribute("checked", true); 
-		  	}
-				TASKMAIL.UI.stateFilterChange();
-				taskIndex = TASKMAIL.UI.getTaskIndexFromTaskID(TaskIDs);
-			}
-			// identifie l'index de la tache suivante
-			if (taskIndex.length > 0) {
+			var tasks = TASKMAIL.Link.getTasksFromMailID(gDBView.msgFolder.URI, mailKey);
+			// identifie l'id de la tache suivante
+			if (tasks.length > 0) {
+				var currentTaskIDs = TASKMAIL.UI.getSelectedTasksKeys(); 
+				var currentTaskID  = currentTaskIDs[0];
+				var i = -1;
 				var founded = false;
-				for (var i = 0; i < taskIndex.length; i++) {
-					if (document.getElementById("taskList").currentIndex == taskIndex[i]) {
+				for (i = 0; i < tasks.length; i++) {
+					if (currentTaskID == tasks[i].taskId) {
 						founded = true;
 						break;
 					}
 				}
 				if (founded) {
-					if (i == taskIndex.length - 1) {
+					if (i == tasks.length - 1) {
 						i = -1;
 					}
 				} else {
 					i = -1;
 				}
-				document.getElementById("taskList").view.selection.select(taskIndex[i + 1]);
-				document.getElementById("taskList").treeBoxObject.ensureRowIsVisible(taskIndex[i + 1]);
+				// sélectionne la tâche avec l'id suivant
+				var taskIds = new Array();
+				taskIds.push(tasks[i + 1].taskId);
+				var taskIndex = TASKMAIL.UI.getTaskIndexFromTaskID(taskIds);
+				if (taskIndex.length == 0) {
+					// la tâche trouvée n'est pas visible
+					// Change la vue sur le folder de la tâche si nécessaire
+					var task = TASKMAIL.DB.getTaskDetailSQLite(tasks[i + 1].taskId);
+					var taskFolderURI = task.folderURI;
+					var currentFolderURI = TASKMAIL.UI.viewedFolder.URI; 
+					if (taskFolderURI != currentFolderURI) {
+						var folderDB = GetMsgFolderFromUri(taskFolderURI, false);
+						TASKMAIL.UI.refreshTaskPane(folderDB);
+					}
+					// passe en folder si on est en vue message.
+					var currentView = document.getElementById("viewFilter").selectedItem.value;
+					if (currentView == TASKMAIL.UI.VIEW_FILTER_MESSAGE) {
+						document.getElementById("viewFilter").value =  TASKMAIL.UI.VIEW_FILTER_FOLDER;
+						TASKMAIL.UI.refreshTaskList();
+					}
+					// change le filtrage pour rajouter l'état de la tâche s'il n'est pas coché
+					var stateFilter = document.getElementById("stateFilterPopup");
+					for(var i=0; i<stateFilter.childNodes.length; i++) {
+				  	var state = stateFilter.childNodes[i].getAttribute("id");
+				  	var checked = stateFilter.childNodes[i].getAttribute("checked");
+				  	if (state == task.state && checked) {
+					  	stateFilter.childNodes[i].setAttribute("checked", true);
+							TASKMAIL.UI.stateFilterChange();
+							break;
+				  	} 
+				  }
+				  // annule le filtre text
+					var stickyText = document.getElementById("tandm-search").value;
+					if (stickyText != "") {
+						document.getElementById("tandm-search").reset();
+						TASKMAIL.UI.refreshTaskList();
+					}
+					// réactualise l'index après avoir rendu la tâche visible.
+					taskIndex = TASKMAIL.UI.getTaskIndexFromTaskID(taskIds);
+				}
+				document.getElementById("taskList").view.selection.select(taskIndex[0]);
+				document.getElementById("taskList").treeBoxObject.ensureRowIsVisible(taskIndex[0]);
 			}
 		} catch (err) {
 			Components.utils.reportError("showLinkedTask " + err);
@@ -1678,23 +1711,33 @@ TASKMAIL.Link = {
 	},
 
 	/**
-	 * détermine les clés de taches à partir de la clé de mail spécifiée
+	 * détermine les tâches liées à l'email spécifié.
 	 * 
-	 * @param String
-	 *            mailKey
-	 * @return Array
+	 * @param String folderURI
+	 * @param String mailKey
+	 * @return [link]
 	 */
-	// @todo
-	getTaskIDFromMailID : function(aFolderURI, mailKey) {
+	getTasksFromMailID : function(aFolderURI, mailKey) {
 		var result = new Array();
 		var j = 0;
 		for (var i = 0; i < this.nbLinks; i++) {
 			if (this.links[i].folderURI == aFolderURI && this.links[i].key == mailKey) {
-				result[j++] = this.links[i].taskId;
+				result[j++] = this.links[i];
 			}
 		}
-		// TASKMAIL.consoleService.logStringMessage(result);
 		return result;
+	},
+
+	/**
+	 * détermine les clés de taches à partir de la clé de mail spécifiée
+	 * 
+	 * @param String folderURI
+	 * @param String mailKey
+	 * @return [int]
+	 */
+	getTaskIDFromMailID : function(aFolderURI, mailKey) {
+		var tasks = TASKMAIL.Link.getTasksFromMailID(aFolderURI, mailKey);
+		return tasks.map(function (value){return value.taskId;});
 	},
 
 	/**
