@@ -72,7 +72,7 @@ TASKMAIL.DB = {
 	consoleService : Components.classes["@mozilla.org/consoleservice;1"]
 			.getService(Components.interfaces.nsIConsoleService),
 			
-	getTaskListWhereClause : function (stateFilter, viewFilter, mailId, folder, text) {
+	getTaskListWhereClause : function (stateFilter, viewFilter, folderMsg, mailId, folder, text) {
 		var sql = "";
     if (viewFilter == TASKMAIL.UI.VIEW_FILTER_HOTLIST) {
 			sql += " from tasks where 1=1 ";
@@ -80,7 +80,7 @@ TASKMAIL.DB = {
     } else {
 	    if (viewFilter == TASKMAIL.UI.VIEW_FILTER_MESSAGE && mailId != null) {
 				// recherche par mail (donc non recurssive)
-				sql += " from tasks, links where tasks.folderURI = links.folderURI and tasks.rowid = links.taskId ";
+				sql += " from tasks, links where tasks.rowid = links.taskId ";
 				sql += " and links.folderURI = :folderURI and links.messageId = :mailId "; 
 	    } else if ((viewFilter == TASKMAIL.UI.VIEW_FILTER_FOLDER || viewFilter == TASKMAIL.UI.VIEW_FILTER_SUBFOLDERS) 
 	               && folder != null) {
@@ -114,11 +114,11 @@ TASKMAIL.DB = {
 		return sql;
 	},
 	
-	bindTaskListParameters: function (stat, i, viewFilter, mailId, folder, text) {
+	bindTaskListParameters: function (stat, i, viewFilter, folderMsg, mailId, folder, text) {
 		if (viewFilter != TASKMAIL.UI.VIEW_FILTER_HOTLIST) {
 			if (viewFilter == TASKMAIL.UI.VIEW_FILTER_MESSAGE && mailId != null) {
-				var folderURI = folder.URI;
-				stat.bindStringParameter(i, folderURI); i++;
+				var msgFolderURI = folderMsg.URI;
+				stat.bindStringParameter(i, msgFolderURI); i++;
 				stat.bindStringParameter(i, mailId); i++;
 			} else if ((viewFilter == TASKMAIL.UI.VIEW_FILTER_FOLDER || viewFilter == TASKMAIL.UI.VIEW_FILTER_SUBFOLDERS) 
 	               && folder != null) {
@@ -136,12 +136,12 @@ TASKMAIL.DB = {
 		}
 	},
 			
-	getTaskListSQLite : function(mailId, folder, stateFilter, viewFilter, needFolderTree, text) {
+	getTaskListSQLite : function(folderMsg, mailId, folder, stateFilter, viewFilter, needFolderTree, text) {
 //		TASKMAIL.consoleService.logStringMessage("getTaskListSQLite");
 		var result = new TASKMAIL.Content();
 		try {
 			var sql = "select tasks.rowid, title, state, desc, priority, createDate, dueDate, completeDate, tasks.folderURI ";
-			sql += this.getTaskListWhereClause(stateFilter, viewFilter, mailId, folder, text);
+			sql += this.getTaskListWhereClause(stateFilter, viewFilter, folderMsg, mailId, folder, text);
       if (   viewFilter == TASKMAIL.UI.VIEW_FILTER_FOLDER
 			    || viewFilter == TASKMAIL.UI.VIEW_FILTER_SUBFOLDERS
 			    || viewFilter == TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
@@ -149,7 +149,7 @@ TASKMAIL.DB = {
 				sql += " order by folderURI";
 			}
 			var stat = this.dbConnection.createStatement(sql);
-			this.bindTaskListParameters(stat, 0, viewFilter, mailId, folder, text);
+			this.bindTaskListParameters(stat, 0, viewFilter, folderMsg, mailId, folder, text);
 			while (stat.executeStep()) {
 				var id = stat.getInt32(0);
 				var title = stat.getString(1);
@@ -430,14 +430,14 @@ TASKMAIL.DB = {
 			// et remonte tous les liens avec les tâche visualisées.
 			// les liens doivent être remonté dans l'ordre : d'abord ceux du folder
 			// courant puis les autres par ordre de folder.
-			var sql = "select links.folderURI, messageId, taskId from links where links.folderURI = :folder_URI ";
-			sql += "union select links.folderURI, messageId, taskId from links where links.taskId in ( select rowid ";
-			sql += this.getTaskListWhereClause(null, viewFilter, null, taskFolder, null);
-			sql += " ) order by links.folderURI";
+			var sql = "select links.folderURI, messageId, taskId, links.rowid from links where links.folderURI = :folder_URI ";
+			sql += "union select links.folderURI, messageId, taskId, links.rowid from links where links.taskId in ( select rowid ";
+			sql += this.getTaskListWhereClause(null, viewFilter, null, null, taskFolder, null);
+			sql += " ) order by links.rowid";
 			var stat = this.dbConnection.createStatement(sql);
 			var msgFolderURI = msgFolder.URI;
 			stat.bindStringParameter(0, msgFolderURI);
-			this.bindTaskListParameters(stat, 1, viewFilter, null, taskFolder, null);
+			this.bindTaskListParameters(stat, 1, viewFilter, null, null, taskFolder, null);
 			while (stat.executeStep()) {
 				var messageFolderURI =  stat.getString(0);
 				var messageId =  stat.getString(1);
