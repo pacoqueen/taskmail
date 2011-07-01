@@ -1400,6 +1400,10 @@ TASKMAIL.UILink = {
 		}
 	},	
 	
+	/**
+	 * taskId of the last showed linked task.
+	 * updated by showLinkedTask 
+	 */
 	lastLinkedTaskShowed : -1,
 
 	/**
@@ -1462,9 +1466,9 @@ TASKMAIL.UILink = {
 				// sélectionne la tâche avec l'id suivant
 				document.getElementById("taskList").view.selection.select(taskIndex);
 				document.getElementById("taskList").treeBoxObject.ensureRowIsVisible(taskIndex);
-	//				TASKMAIL.UILink.refreshStatusBar("task", i + 2, taskIDs);
 				TASKMAIL.UILink.lastLinkedTaskShowed = nextTaskId;
 			}
+			TASKMAIL.UILink.refreshStatusBar("task");
 		} catch (err) {
 			Components.utils.reportError("showLinkedTask " + err);
 		}
@@ -1522,34 +1526,55 @@ TASKMAIL.UILink = {
 		TASKMAIL.UILink.refreshStatusBar("mail");
 	},
 	
-	refreshStatusBar : function (sens, indice, linkedObject) {
-		var selectedTask = TASKMAIL.UI.getSelectedTasks();
-		var taskID = selectedTask[0].id;
-		var mailKey = -1;
-		try {
-			mailKey = gDBView.keyForFirstSelectedMessage;
-		} catch (err) {}
-		if (sens == "mail") {
-			var linkedObject = TASKMAIL.Link.getMailKeysFromTaskID(taskID);
-			var visibleLinkedObject = TASKMAIL.Link.getMailKeysFromTaskIDInFolder(taskID, GetSelectedMsgFolders()[0].URI); 
-			if (visibleLinkedObject != null) {
-				var indice       = visibleLinkedObject.indexOf(mailKey) + 1;
-			}
-		} else {
-			var visibleLinkedObject = TASKMAIL.UI.getTaskIndexesFromTaskID(linkedObject);
-		}
+	refreshStatusBar : function (sens) {
 		var statusbarLabel = "";
-		if (linkedObject != null && linkedObject.length > 0) {
-			var nbLinksIn    = visibleLinkedObject.length; 
-			var nbLinksOut   = linkedObject.length - nbLinksIn;
-			statusbarLabel = TASKMAIL.UI.stringsBundle.
-				getFormattedString("statusbar.text.indice", [indice, nbLinksIn, nbLinksOut]);
-		} else {
-			statusbarLabel = TASKMAIL.UI.stringsBundle.
-				getString("statusbar.text.nolink");
+		if (sens == "task") {
+			var mailKey = gDBView.keyForFirstSelectedMessage;
+			// recupére les ID de taches liées au mail
+			var taskIDs = TASKMAIL.Link.getTaskIDFromMailID(gDBView.msgFolder.URI, mailKey);
+			if (taskIDs.length > 0) {
+				// on a des tâches liées
+				var visibleTasks = TASKMAIL.UI.splitVisibleTasks(taskIDs);
+				var indice = visibleTasks.visible.indexOf(TASKMAIL.UILink.lastLinkedTaskShowed); 
+
+				var nbLinksIn    = visibleTasks.visible.length; 
+				var nbLinksOut   = visibleTasks.unvisible.length;
+				statusbarLabel = TASKMAIL.UI.stringsBundle.
+					getFormattedString("statusbar.text.indice", [indice + 1, nbLinksIn, nbLinksOut]);
+			} else {
+					statusbarLabel = TASKMAIL.UI.stringsBundle.
+						getString("statusbar.text.nolink");
+			}
 		}
 		var statusbar = document.getElementById('statusbar.tasks');
 		statusbar.setAttribute("label", statusbarLabel);
+//		var selectedTask = TASKMAIL.UI.getSelectedTasks();
+//		var taskID = selectedTask[0].id;
+//		var mailKey = -1;
+//		try {
+//			mailKey = gDBView.keyForFirstSelectedMessage;
+//		} catch (err) {}
+//		if (sens == "mail") {
+//			var linkedObject = TASKMAIL.Link.getMailKeysFromTaskID(taskID);
+//			var visibleLinkedObject = TASKMAIL.Link.getMailKeysFromTaskIDInFolder(taskID, GetSelectedMsgFolders()[0].URI); 
+//			if (visibleLinkedObject != null) {
+//				var indice       = visibleLinkedObject.indexOf(mailKey) + 1;
+//			}
+//		} else {
+//			var visibleLinkedObject = TASKMAIL.UI.getTaskIndexesFromTaskID(linkedObject);
+//		}
+//		var statusbarLabel = "";
+//		if (linkedObject != null && linkedObject.length > 0) {
+//			var nbLinksIn    = visibleLinkedObject.length; 
+//			var nbLinksOut   = linkedObject.length - nbLinksIn;
+//			statusbarLabel = TASKMAIL.UI.stringsBundle.
+//				getFormattedString("statusbar.text.indice", [indice, nbLinksIn, nbLinksOut]);
+//		} else {
+//			statusbarLabel = TASKMAIL.UI.stringsBundle.
+//				getString("statusbar.text.nolink");
+//		}
+//		var statusbar = document.getElementById('statusbar.tasks');
+//		statusbar.setAttribute("label", statusbarLabel);
 	},
 	
 	/**
