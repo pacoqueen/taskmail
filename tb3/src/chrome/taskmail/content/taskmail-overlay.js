@@ -501,6 +501,7 @@ TASKMAIL.UI = {
 			TASKMAIL.UI.refreshTaskList();
 		}
 		TASKMAIL.UI.refreshTaskLink();
+		TASKMAIL.UILink.refreshStatusBar("task");
 	},
 
 	/**
@@ -511,9 +512,6 @@ TASKMAIL.UI = {
 		// parcours tout les taches et regarde s'il existe une tache liée
 		var column = tree.columns.getNamedColumn("colTask");
 		tree.treeBoxObject.invalidateColumn(column);
-		
-		var statusbarLabel = TASKMAIL.UI.stringsBundle.getString("statusbar.text.empty");
-		document.getElementById('statusbar.tasks').setAttribute("label", statusbarLabel);
 	},
 
 	refreshTaskPane : function (folder) {
@@ -1402,7 +1400,11 @@ TASKMAIL.UILink = {
 	
 	/**
 	 * taskId of the last showed linked task.
-	 * updated by showLinkedTask 
+	 * updated by showLinkedTask.
+	 * nécessiter de stocker p et non pas l'indice car lors d'un changement 
+	 * de folder, l'ordre des tâches liées peut varier.
+	 * Pas réellement nécessaire de reseter puisque l'algo est stable en cas 
+	 * de changement de folder.
 	 */
 	lastLinkedTaskShowed : -1,
 
@@ -1429,6 +1431,8 @@ TASKMAIL.UILink = {
 				if (TASKMAIL.UILink.lastLinkedTaskShowed == -1) {
 					nextTaskId = tasksLoop[0];
 				} else if (tasksLoop.indexOf(TASKMAIL.UILink.lastLinkedTaskShowed) + 1 < tasksLoop.length) {
+					// si jamais on a changé de folder, la recherche de la précédente tache
+					// va probalement échoué donc indexOf = -1 et donc on prendra la 1° des tâches liées 
 					nextTaskId = tasksLoop[tasksLoop.indexOf(TASKMAIL.UILink.lastLinkedTaskShowed) + 1];
 				} else {
 					nextTaskId = tasksLoop[0];
