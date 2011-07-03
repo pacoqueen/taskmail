@@ -1432,6 +1432,13 @@ TASKMAIL.UILink = {
 	 * de changement de folder.
 	 */
 	lastLinkedShowed : null,
+	
+	/**
+	 * Permet d'éviter le double rafraichissement de la status bar 
+	 * sur une showLinkedTask : 1 fois sur la sélection de la tache et 1
+	 * depuis  showLinkedTask.
+	 */
+	noStatusBarRefresh : false,
 
 	/**
 	 * Sélectionne les tâches liées aux emails sélectionnés.
@@ -1493,8 +1500,10 @@ TASKMAIL.UILink = {
 				}
 				var taskIndex = TASKMAIL.UI.getTaskIndexFromTaskID(nextTaskId);
 				// sélectionne la tâche avec l'id suivant
+				this.noStatusBarRefresh = true;
 				document.getElementById("taskList").view.selection.select(taskIndex);
 				document.getElementById("taskList").treeBoxObject.ensureRowIsVisible(taskIndex);
+				this.noStatusBarRefresh = false;
 				TASKMAIL.UILink.lastLinkedShowed = nextTaskId;
 			}
 			TASKMAIL.UILink.refreshStatusBar("task");
@@ -1542,7 +1551,9 @@ TASKMAIL.UILink = {
 						SelectFolder(folderURIToSelect);
 					}
 				}
+				this.noStatusBarRefresh = true;
 				gDBView.selectMsgByKey(keyMailToSelect);
+				this.noStatusBarRefresh = false;
 				TASKMAIL.UILink.lastLinkedShowed = nextTaskId;
 			}
 			TASKMAIL.UILink.refreshStatusBar("mail");
@@ -1551,7 +1562,10 @@ TASKMAIL.UILink = {
 	
 	refreshStatusBar : function (sens) {
 		// cette méthode sera appelé plusieurs fois. La dernière sera à partir de showLinkedxxx.
-		// 
+		if (this.noStatusBarRefresh) {
+			return;
+		}
+		TASKMAIL.consoleService.logStringMessage("refreshStatusBar");
 		var statusbarLabel = "";
 		if (sens == "task") {
 			var mails = gFolderDisplay.selectedMessages;
@@ -1605,33 +1619,6 @@ TASKMAIL.UILink = {
 		}
 		var statusbar = document.getElementById('statusbar.tasks');
 		statusbar.setAttribute("label", statusbarLabel);
-//		var selectedTask = TASKMAIL.UI.getSelectedTasks();
-//		var taskID = selectedTask[0].id;
-//		var mailKey = -1;
-//		try {
-//			mailKey = gDBView.keyForFirstSelectedMessage;
-//		} catch (err) {}
-//		if (sens == "mail") {
-//			var linkedObject = TASKMAIL.Link.getMailKeysFromTaskID(taskID);
-//			var visibleLinkedObject = TASKMAIL.Link.getMailKeysFromTaskIDInFolder(taskID, GetSelectedMsgFolders()[0].URI); 
-//			if (visibleLinkedObject != null) {
-//				var indice       = visibleLinkedObject.indexOf(mailKey) + 1;
-//			}
-//		} else {
-//			var visibleLinkedObject = TASKMAIL.UI.getTaskIndexesFromTaskID(linkedObject);
-//		}
-//		var statusbarLabel = "";
-//		if (linkedObject != null && linkedObject.length > 0) {
-//			var nbLinksIn    = visibleLinkedObject.length; 
-//			var nbLinksOut   = linkedObject.length - nbLinksIn;
-//			statusbarLabel = TASKMAIL.UI.stringsBundle.
-//				getFormattedString("statusbar.text.indice", [indice, nbLinksIn, nbLinksOut]);
-//		} else {
-//			statusbarLabel = TASKMAIL.UI.stringsBundle.
-//				getString("statusbar.text.nolink");
-//		}
-//		var statusbar = document.getElementById('statusbar.tasks');
-//		statusbar.setAttribute("label", statusbarLabel);
 	},
 	
 	/**
