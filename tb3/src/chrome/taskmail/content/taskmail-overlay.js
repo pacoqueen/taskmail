@@ -501,6 +501,7 @@ TASKMAIL.UI = {
 			TASKMAIL.UI.refreshTaskList();
 		}
 		TASKMAIL.UI.refreshTaskLink();
+		TASKMAIL.UILink.lastLinkedShowed = null;
 		TASKMAIL.UILink.refreshStatusBar("task");
 	},
 
@@ -512,6 +513,7 @@ TASKMAIL.UI = {
 		// parcours tout les taches et regarde s'il existe une tache liée
 		var column = tree.columns.getNamedColumn("colTask");
 		tree.treeBoxObject.invalidateColumn(column);
+		TASKMAIL.UILink.lastLinkedShowed = null;
 		TASKMAIL.UILink.refreshStatusBar("mail");
 	},
 
@@ -1707,8 +1709,9 @@ TASKMAIL.Link = {
 	},
 
 	resetLink : function() {
-//		TASKMAIL.consoleService.logStringMessage("resetLink");
+		TASKMAIL.consoleService.logStringMessage("resetLink");
 		this.nbLinks = 0;
+		TASKMAIL.UILink.lastLinkedShowed = null;
 	},
 
 	/**
