@@ -580,6 +580,8 @@ TASKMAIL.UI = {
 		} catch (err) {
 			// Components.utils.reportError("dbUpgrade " + err);
 		}
+		var selectedMails = gFolderDisplay.selectedMessages;
+		var selectedMailKeys = selectedMails.map(function(value){return value.messageKey;});
 		// parcours tout les taches et regarde s'il existe une tache liée
 		var listBox = document.getElementById("taskList");
 		for (var i = 0; i < listBox.view.rowCount; i++) {
@@ -587,7 +589,7 @@ TASKMAIL.UI = {
 			var pk        = row.firstChild.getAttribute("pk"); 
 			var taskFolderURI = row.firstChild.getAttribute("folderURI");
 			var linkType = TASKMAIL.Link.getTaskLinkType(
-					pk, taskFolderURI, gDBView.msgFolder.URI, selectedMailKey);
+					pk, taskFolderURI, gDBView.msgFolder.URI, selectedMailKeys);
 			var linkURL = null;
 			if (linkType == 3) {
 				linkURL = "linked_outside";
@@ -1546,24 +1548,32 @@ TASKMAIL.UILink = {
 	},
 	
 	refreshStatusBar : function (sens) {
+		// cette méthode sera appelé plusieurs fois. La dernière sera à partir de showLinkedxxx.
+		// 
 		var statusbarLabel = "";
 		if (sens == "task") {
-			var mailKey = gDBView.keyForFirstSelectedMessage;
-			// recupére les ID de taches liées au mail
-			var taskIDs = TASKMAIL.Link.getTaskIDFromMailID(gDBView.msgFolder.URI, mailKey);
-			if (taskIDs.length > 0) {
-				// on a des tâches liées
-				var visibleTasks = TASKMAIL.UI.splitVisibleTasks(taskIDs);
-
-				var indice       = visibleTasks.visible.indexOf(TASKMAIL.UILink.lastLinkedShowed); 
-				var nbLinksIn    = visibleTasks.visible.length; 
-				var nbLinksOut   = visibleTasks.unvisible.length;
-				statusbarLabel = TASKMAIL.UI.stringsBundle.
-					getFormattedString("statusbar.text.indice", [indice + 1, nbLinksIn, nbLinksOut]);
-			} else {
+			var mails = gFolderDisplay.selectedMessages;
+			if (mails != null && mails.length == 1) {
+				// recupére les ID de taches liées au mail
+				var taskIDs = TASKMAIL.Link.getTaskIDFromMailID(gDBView.msgFolder.URI, mails[0].messageKey);
+				if (taskIDs.length > 0) {
+					// on a des tâches liées
+					var visibleTasks = TASKMAIL.UI.splitVisibleTasks(taskIDs);
+	
+					var indice       = visibleTasks.visible.indexOf(TASKMAIL.UILink.lastLinkedShowed); 
+					var nbLinksIn    = visibleTasks.visible.length; 
+					var nbLinksOut   = visibleTasks.unvisible.length;
 					statusbarLabel = TASKMAIL.UI.stringsBundle.
-						getString("statusbar.text.nolink");
+						getFormattedString("statusbar.text.indice", [indice + 1, nbLinksIn, nbLinksOut]);
+				} else {
+						statusbarLabel = TASKMAIL.UI.stringsBundle.
+							getString("statusbar.text.nolink");
+				}
+			} else {
+						statusbarLabel = TASKMAIL.UI.stringsBundle.
+							getString("statusbar.text.empty");				
 			}
+			statusbarLabel += " T";
 		} else {
 			var selectedTasks = TASKMAIL.UI.getSelectedTasksKeys();
 			if (selectedTasks.length == 1) {
@@ -1585,6 +1595,10 @@ TASKMAIL.UILink = {
 					statusbarLabel = TASKMAIL.UI.stringsBundle.
 						getString("statusbar.text.nolink");
 				}
+				statusbarLabel += " M";
+			} else {
+				statusbarLabel = TASKMAIL.UI.stringsBundle.
+						getString("statusbar.text.empty");
 			}
 		}
 		var statusbar = document.getElementById('statusbar.tasks');
@@ -1700,14 +1714,14 @@ TASKMAIL.Link = {
 	/**
 	 * 
 	 * @param taskID
-	 * @param taskFolderURI string folder de la tâche
-	 * @param selectedMailKey
+	 * @param taskFolderURI, string, folder de la tâche
+	 * @param messageKeys, [messageKey], current selected message keys
 	 * @return 3 = lien outside (au moins une liaison hors du folder de la tâche
 	 *         2 = lien surligné,
 	 *         1 = lien,
 	 *         0 = pas de lien.
 	 */
-	getTaskLinkType : function(taskID, taskFolderURI, aFolderURI, selectedMailKey) {
+	getTaskLinkType : function(taskID, taskFolderURI, aFolderURI, messageKeys) {
 		// taskID à -1 si pas de tache sélectionnée
 		
 		var linkWithThisMail  = false;
@@ -1716,7 +1730,7 @@ TASKMAIL.Link = {
 		
 		for (var j = 0; j < this.nbLinks; j++) {
 			if (taskID == this.links[j].taskId) {
-				if (aFolderURI == this.links[j].folderURI && selectedMailKey == this.links[j].key) {
+				if (this.links[j].folderURI == aFolderURI && messageKeys.indexOf(this.links[j].key) > -1) {
 					linkWithThisMail = true;
 				} else {
 					linkWithAMail = true;
@@ -1881,8 +1895,7 @@ TASKMAIL.Link = {
 	},
 	
 	/**
-	 * @param taskID
-	 *            [int]-1 si pas de tache sélectionnée
+	 * @param taskID [int] -1 si pas de tache sélectionnée
 	 * @param selectedMailKey
 	 * @return 3 = lien grisé, 2 = lien surligné, 1 = lien, 0 = pas de lien
 	 */
