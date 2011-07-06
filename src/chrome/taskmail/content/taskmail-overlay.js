@@ -36,7 +36,7 @@ TASKMAIL.UI = {
 		this.beginAddTask("message");
 		// addWithLink après pour overrider
 		this.addWithLink = true;
-		var box = document.getElementById("taskPane").collapsed = false;
+		var box = document.getElementById("tandm-detail-splitter").setAttribute("state","open");
 	},
 
 	/**
@@ -66,12 +66,12 @@ TASKMAIL.UI = {
 			newTask = new TASKMAIL.Task(0, null, null, null, null, 1, 5, null, null, null);
 		}
 		this.fillTaskDetail(newTask);
-		var box = document.getElementById("addTask");
-		box.collapsed = false;
+		var box = document.getElementById("tandm-detail-splitter");
+		box.setAttribute("state","open");
 		document.getElementById("taskTitle").focus();
 		this.taskDetailPK = -1;
 		this.addWithLink = false;
-		document.getElementById("taskPane").collapsed = false;
+		document.getElementById("tandm-splitter").setAttribute("state","open");
 	},
 
 	/*
@@ -85,8 +85,8 @@ TASKMAIL.UI = {
 			var task = TASKMAIL.DB.getTaskDetailSQLite(taskKeys[0]);
 			this.fillTaskDetail(task);
 			// show details
-			var box = document.getElementById("addTask");
-			box.collapsed = false;
+			var box = document.getElementById("tandm-detail-splitter");
+			box.setAttribute("state","open");
 			document.getElementById("taskTitle").focus();
 			this.taskDetailPK = taskKeys[0];
 		}
@@ -140,8 +140,8 @@ TASKMAIL.UI = {
 	},
 
 	cancelSaveTask : function() {
-		var box = document.getElementById("addTask");
-		box.collapsed = true;
+		var box = document.getElementById("tandm-detail-splitter");
+		box.setAttribute("state","collapsed");
 	},
 
 	/**
@@ -279,8 +279,9 @@ TASKMAIL.UI = {
 	 */
 	adjustViewMenu : function (){
 		var menuitem = document.getElementById('menu.viewTaskPane');
-		var pane = document.getElementById("taskPane");
-		menuitem.setAttribute("checked", !pane.collapsed);
+		var pane = document.getElementById("tandm-splitter");
+		var state = pane.getAttribute("state") == "open";
+		menuitem.setAttribute("checked", state);
 	},
 	
 	/**
@@ -1110,8 +1111,12 @@ TASKMAIL.UI = {
   },
   
   toggleTaskPane : function () {
-  	var pane = document.getElementById("taskPane");
-  	pane.collapsed = !pane.collapsed; 
+  	var pane = document.getElementById("tandm-splitter");
+  	if (pane.getAttribute("state") == "open") {
+  		pane.setAttribute("state","collapsed");
+  	} else {
+  		pane.setAttribute("state","open");
+  	} 
   },
   
   /**
