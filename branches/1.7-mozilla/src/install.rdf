@@ -4,7 +4,7 @@
   
     <em:id>{c7adabc0-01aa-11df-8a39-0800200c9a66}</em:id>
     <em:name>tasks and mails</em:name>
-    <em:version>1.6.4</em:version>
+    <em:version>1.6.3</em:version>
     <em:description>Tasks management based on linking tasks to emails.</em:description>
     <em:creator>gilles orsini</em:creator>
     <em:type>2</em:type>
