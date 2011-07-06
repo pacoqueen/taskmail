@@ -128,7 +128,7 @@
 		<splitter id="tandm-splitter" collapse="after" >
 			<grippy/>
 		</splitter>
-		<vbox flex="0.5" persist="width collapsed" id="taskPane">
+		<vbox flex="0.5" persist="width collapsed" id="tandm-taskPane">
 			<menupopup id="row-menu" onpopupshowing="TASKMAIL.UI.adjustContextMenu('task');">
 				<menuitem label="&add;"          accesskey="A" oncommand="TASKMAIL.UI.beginAddTask('empty')"/>
 				<menuitem label="&addWithLink;"  accesskey="L" oncommand="TASKMAIL.UI.beginAddTaskWithLink()" key="add-linked"/>
