@@ -128,7 +128,7 @@
 			<grippy/>
 		</splitter>
 		<hbox>
-			<vbox flex="1" persist="width" id="taskPane">
+			<vbox flex="1" persist="width" id="tandm-taskPane">
 				<hbox>
 					<spacer flex="1"/>
 					<label value="&filter.label;" class="filterLabel"/>
