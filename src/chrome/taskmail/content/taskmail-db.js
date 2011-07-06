@@ -401,14 +401,18 @@ TASKMAIL.DB = {
 			stat.bindStringParameter(0, folderURI);
 			while (stat.executeStep()) {
   			var messageId =  stat.getString(1);
-  			var message = folder.msgDatabase.getMsgHdrForMessageID(messageId);
-  			var messageKey = message.messageKey;
-  			var threadKey = message.threadId;
-				//TASKMAIL.consoleService.logStringMessage("messageId=" + messageId + "messageKey=" + messageKey);
-				TASKMAIL.Link.addLink(folderURI,
-				                      messageKey,
-				                      threadKey,
-				                      stat.getInt32(2));
+  			try {
+					var message = folder.msgDatabase.getMsgHdrForMessageID(messageId);
+	  			var messageKey = message.messageKey;
+	  			var threadKey = message.threadId;
+					//TASKMAIL.consoleService.logStringMessage("messageId=" + messageId + "messageKey=" + messageKey);
+					TASKMAIL.Link.addLink(folderURI,
+					                      messageKey,
+					                      threadKey,
+					                      stat.getInt32(2));
+				} catch (err) {
+					Components.utils.reportError("getLinkSQLite getMsgHdrMessageID messageID=" + messageId + ", error=" + err);
+				}
 			}
 		} catch (err) {
 			Components.utils.reportError("getLinkSQLite " + err);
