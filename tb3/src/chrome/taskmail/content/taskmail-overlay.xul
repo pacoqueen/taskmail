@@ -125,131 +125,137 @@
 	</menupopup>
 	
 	<vbox id="threadPaneBox">
-		<splitter id="tandm-splitter" collapse="after" >
+		<splitter id="tandm-splitter" collapse="after" state="open" persist="state">
 			<grippy/>
 		</splitter>
-		<vbox flex="0.5" persist="width collapsed" id="tandm-taskPane">
-			<menupopup id="row-menu" onpopupshowing="TASKMAIL.UI.adjustContextMenu('task');">
-				<menuitem label="&add;"          accesskey="A" oncommand="TASKMAIL.UI.beginAddTask('empty')"/>
-				<menuitem label="&addWithLink;"  accesskey="L" oncommand="TASKMAIL.UI.beginAddTaskWithLink()" key="add-linked"/>
-				<menuitem label="&update;"       accesskey="T" oncommand="TASKMAIL.UI.beginUpdateTask()"/>
-				<menuitem label="&delete;"       accesskey="D" oncommand="TASKMAIL.UI.removeTask()" id="row-menu.delete" key="taskmail-suppr"/>
-				<menuseparator/>
-				<menuitem label="&markDone;"     accesskey="M" oncommand="TASKMAIL.UI.updateTaskStateDone(event, 4);" key="mark-done" id="row-menu.markDone"/>
-				<menu label="&changePriority;"   accesskey="P">
-					<menupopup>
-						<menuitem label="&incrementPriority;" accesskey="I" oncommand="TASKMAIL.UI.incrementPriority(event);" key="increment-task"/>
-						<menuitem label="&decrementPriority;" accesskey="M" oncommand="TASKMAIL.UI.decrementPriority(event);" key="decrement-task"/>
-						<menuseparator/>
-						<menuitem label="0" value="0" accesskey="0" class="taskPriority-0" oncommand="TASKMAIL.UI.updatePriority(event, 0);"/>
-						<menuitem label="1" value="1" accesskey="1" class="taskPriority-1" oncommand="TASKMAIL.UI.updatePriority(event, 1);"/>
-						<menuitem label="2" value="2" accesskey="2" class="taskPriority-2" oncommand="TASKMAIL.UI.updatePriority(event, 2);"/>
-						<menuitem label="3" value="3" accesskey="3" class="taskPriority-3" oncommand="TASKMAIL.UI.updatePriority(event, 3);"/>
-						<menuitem label="4" value="4" accesskey="4" class="taskPriority-4" oncommand="TASKMAIL.UI.updatePriority(event, 4);"/>
-						<menuitem label="5" value="5" accesskey="5" class="taskPriority-5" oncommand="TASKMAIL.UI.updatePriority(event, 5);"/>
-						<menuitem label="6" value="6" accesskey="6" class="taskPriority-6" oncommand="TASKMAIL.UI.updatePriority(event, 6);"/>
-						<menuitem label="7" value="7" accesskey="7" class="taskPriority-7" oncommand="TASKMAIL.UI.updatePriority(event, 7);"/>
-						<menuitem label="8" value="8" accesskey="8" class="taskPriority-8" oncommand="TASKMAIL.UI.updatePriority(event, 8);"/>
-						<menuitem label="9" value="9" accesskey="9" class="taskPriority-9" oncommand="TASKMAIL.UI.updatePriority(event, 9);"/>  						
-					</menupopup>
-				</menu>
-				<menu id="taskContext-moveMenu"
-					label="&moveTask;"
-					accesskey="O"
-					oncommand="TASKMAIL.UI.moveTask(event.target._folder)">
-					<menupopup id="taskContext-fileHereMenu"
-						type="folder"
-						mode="filing"
-						showFileHereLabel="true"
-						showRecent="false"
-						fileHereLabel="&moveHere;"
-						fileHereAccessKey="I"/>
-				</menu>
-				<menuseparator/>
-				<menuitem label="&linkMail;"     accesskey="I" oncommand="TASKMAIL.UILink.linkTask()"/>
-				<menuitem label="&unlinkMail;"   accesskey="U" oncommand="TASKMAIL.UILink.unlinkTask()"/>
-				<menuitem label="&goNextMail;"   accesskey="X" oncommand="TASKMAIL.UILink.showLinkedMail()" id="row-menu-goNextMail" key="show-linked"/>
-				<menuitem label="&goFolder;"     accesskey="F" oncommand="TASKMAIL.UILink.goFolder()"       id="row-menu.goFolder"/>
-				<menuitem label="&selectMail;"   accesskey="S" oncommand="TASKMAIL.UILink.selectLinkedMails()" id="row-menu.selectMail"/>
-				<menuseparator/>
-				<menuitem label="&composeReport;" accesskey="C" oncommand="TASKMAIL.Report.composeReport()"/>
-			</menupopup>
-	
-			<hbox id="tandm-fb" align="center">
-				<spacer flex="1"/>
-				<label value="&filter.label;" class="filterLabel"/>
-				<toolbarbutton id="tandm-sticky-view" type="checkbox"
-                       crop="none"
-                       tooltiptext="&stickyViewFilterTTP;"/>
-				<menulist  id="viewFilter" oncommand="TASKMAIL.UI.onViewChange()"
-				           tooltiptext="&viewFilterTTP;">
-					<menupopup style="padding-top:10px">
-						<menuitem label="&mailViewFilter;"       value="2" tooltiptext="&mailViewTTP;"/>
-						<menuitem label="&folderViewFilter;"     value="0"/>
-						<menuitem label="&subFolderViewFilter;"  value="1" selected="true"/>
-						<menuitem label="&allViewFilter;"        value="3" tooltiptext="&allViewTTP;"/>
-						<menuitem label="&hotListViewFilter;"    value="4" tooltiptext="&hotListViewFilterTTP;"/>
-					</menupopup>
-				</menulist>
-				<toolbarbutton id="tandm-sticky-text" type="checkbox"
-                       crop="none"
-                       tooltiptext="&textFilterTTP;"/>
-				<button type="menu"  id="stateFilter"  taskSelectedIdExp="1,2" persist="taskSelectedIdExp" oncommand="TASKMAIL.UI.changeStateFilter(event)" tooltiptext="&stateFilterTTP;">
-						<menupopup id="stateFilterPopup">
+		<hbox>
+			<vbox flex="1" persist="width" id="tandm-taskPane">
+				<menupopup id="row-menu" onpopupshowing="TASKMAIL.UI.adjustContextMenu('task');">
+					<menuitem label="&add;"          accesskey="A" oncommand="TASKMAIL.UI.beginAddTask('empty')"/>
+					<menuitem label="&addWithLink;"  accesskey="L" oncommand="TASKMAIL.UI.beginAddTaskWithLink()" key="add-linked"/>
+					<menuitem label="&update;"       accesskey="T" oncommand="TASKMAIL.UI.beginUpdateTask()"/>
+					<menuitem label="&delete;"       accesskey="D" oncommand="TASKMAIL.UI.removeTask()" id="row-menu.delete" key="taskmail-suppr"/>
+					<menuseparator/>
+					<menuitem label="&markDone;"     accesskey="M" oncommand="TASKMAIL.UI.updateTaskStateDone(event, 4);" key="mark-done" id="row-menu.markDone"/>
+					<menu label="&changePriority;"   accesskey="P">
+						<menupopup>
+							<menuitem label="&incrementPriority;" accesskey="I" oncommand="TASKMAIL.UI.incrementPriority(event);" key="increment-task"/>
+							<menuitem label="&decrementPriority;" accesskey="M" oncommand="TASKMAIL.UI.decrementPriority(event);" key="decrement-task"/>
+							<menuseparator/>
+							<menuitem label="0" value="0" accesskey="0" class="taskPriority-0" oncommand="TASKMAIL.UI.updatePriority(event, 0);"/>
+							<menuitem label="1" value="1" accesskey="1" class="taskPriority-1" oncommand="TASKMAIL.UI.updatePriority(event, 1);"/>
+							<menuitem label="2" value="2" accesskey="2" class="taskPriority-2" oncommand="TASKMAIL.UI.updatePriority(event, 2);"/>
+							<menuitem label="3" value="3" accesskey="3" class="taskPriority-3" oncommand="TASKMAIL.UI.updatePriority(event, 3);"/>
+							<menuitem label="4" value="4" accesskey="4" class="taskPriority-4" oncommand="TASKMAIL.UI.updatePriority(event, 4);"/>
+							<menuitem label="5" value="5" accesskey="5" class="taskPriority-5" oncommand="TASKMAIL.UI.updatePriority(event, 5);"/>
+							<menuitem label="6" value="6" accesskey="6" class="taskPriority-6" oncommand="TASKMAIL.UI.updatePriority(event, 6);"/>
+							<menuitem label="7" value="7" accesskey="7" class="taskPriority-7" oncommand="TASKMAIL.UI.updatePriority(event, 7);"/>
+							<menuitem label="8" value="8" accesskey="8" class="taskPriority-8" oncommand="TASKMAIL.UI.updatePriority(event, 8);"/>
+							<menuitem label="9" value="9" accesskey="9" class="taskPriority-9" oncommand="TASKMAIL.UI.updatePriority(event, 9);"/>  						
 						</menupopup>
-				</button>
-				<textbox id="tandm-search" type="search" flex="1" emptytext="&textFilter;" timeout="500" oncommand="TASKMAIL.UI.refreshTaskList();"/>
-			</hbox>
+					</menu>
+					<menu id="taskContext-moveMenu"
+						label="&moveTask;"
+						accesskey="O"
+						oncommand="TASKMAIL.UI.moveTask(event.target._folder)">
+						<menupopup id="taskContext-fileHereMenu"
+							type="folder"
+							mode="filing"
+							showFileHereLabel="true"
+							showRecent="false"
+							fileHereLabel="&moveHere;"
+							fileHereAccessKey="I"/>
+					</menu>
+					<menuseparator/>
+					<menuitem label="&linkMail;"     accesskey="I" oncommand="TASKMAIL.UILink.linkTask()"/>
+					<menuitem label="&unlinkMail;"   accesskey="U" oncommand="TASKMAIL.UILink.unlinkTask()"/>
+					<menuitem label="&goNextMail;"   accesskey="X" oncommand="TASKMAIL.UILink.showLinkedMail()" id="row-menu-goNextMail" key="show-linked"/>
+					<menuitem label="&goFolder;"     accesskey="F" oncommand="TASKMAIL.UILink.goFolder()"       id="row-menu.goFolder"/>
+					<menuitem label="&selectMail;"   accesskey="S" oncommand="TASKMAIL.UILink.selectLinkedMails()" id="row-menu.selectMail"/>
+					<menuseparator/>
+					<menuitem label="&composeReport;" accesskey="C" oncommand="TASKMAIL.Report.composeReport()"/>
+				</menupopup>
+		
+				<hbox id="tandm-fb" align="center">
+					<spacer flex="1"/>
+					<label value="&filter.label;" class="filterLabel"/>
+					<toolbarbutton id="tandm-sticky-view" type="checkbox"
+	                       crop="none"
+	                       tooltiptext="&stickyViewFilterTTP;"/>
+					<menulist  id="viewFilter" oncommand="TASKMAIL.UI.onViewChange()"
+					           tooltiptext="&viewFilterTTP;">
+						<menupopup style="padding-top:10px">
+							<menuitem label="&mailViewFilter;"       value="2" tooltiptext="&mailViewTTP;"/>
+							<menuitem label="&folderViewFilter;"     value="0"/>
+							<menuitem label="&subFolderViewFilter;"  value="1" selected="true"/>
+							<menuitem label="&allViewFilter;"        value="3" tooltiptext="&allViewTTP;"/>
+							<menuitem label="&hotListViewFilter;"    value="4" tooltiptext="&hotListViewFilterTTP;"/>
+						</menupopup>
+					</menulist>
+					<toolbarbutton id="tandm-sticky-text" type="checkbox"
+	                       crop="none"
+	                       tooltiptext="&textFilterTTP;"/>
+					<button type="menu"  id="stateFilter"  taskSelectedIdExp="1,2" persist="taskSelectedIdExp" oncommand="TASKMAIL.UI.changeStateFilter(event)" tooltiptext="&stateFilterTTP;">
+							<menupopup id="stateFilterPopup">
+							</menupopup>
+					</button>
+					<textbox id="tandm-search" type="search" flex="1" emptytext="&textFilter;" timeout="500" oncommand="TASKMAIL.UI.refreshTaskList();"/>
+				</hbox>
+	
+				<tree id="taskList" class="plain" ondblclick="TASKMAIL.UI.doubleClikTask(event)" context="row-menu" seltype="multiple"  flex="1" minheight="75"
+							enableColumnDrag="true">
+					<treecols>
+						<treecol id="taskSubfolderCol" tooltiptext="&header.subfolder;" class="treecol-image subfolderColumnHeader"
+										label="&taskColHeadSubfolder;" fixed="true"
+										persist="ordinal hidden"/>
+						<splitter class="tree-splitter"/>
+						<treecol id="taskLinkCol" tooltiptext="&linkMailHeader;" class="treecol-image taskColumnHeader"
+										label="&taskColHeadLink;" fixed="true"
+										persist="ordinal hidden"/>
+						<splitter class="tree-splitter"/>
+						<treecol id="taskPriorityCol" class="treecol-image priorityColumnHeader"
+										label="&priority;" fixed="true"
+										sortDirection="natural"
+										onclick="TASKMAIL.UI.onChangeOrder(event);"
+										persist="sortDirection ordinal hidden class"/>
+						<splitter class="tree-splitter"/>
+						<treecol id="taskStateCol" label="&state;" class="stateColumnHeader"
+										onclick="TASKMAIL.UI.onChangeOrder(event);"
+										persist="sortDirection ordinal hidden width"/>
+						<splitter class="tree-splitter"/>
+						<treecol id="taskTitleCol" label="&title;" flex="1" ignoreincolumnpicker="true"
+										persist="width ordinal hidden"/>
+	
+						<splitter class="tree-splitter"/>
+						<treecol id="taskCreateDateCol" label="&createDateCol;" hidden="true"
+										onclick="TASKMAIL.UI.onChangeOrder(event);"
+										persist="sortDirection ordinal hidden width"/>
+						<splitter class="tree-splitter"/>
+						<treecol id="taskDueDateCol" label="&dueDateCol;" 
+										onclick="TASKMAIL.UI.onChangeOrder(event);"
+										persist="sortDirection ordinal hidden width"/>
+						<splitter class="tree-splitter"/>
+						<treecol id="taskCompleteDateCol" label="&completeDateCol;" hidden="true" 
+										onclick="TASKMAIL.UI.onChangeOrder(event);"
+										persist="sortDirection ordinal hidden width"/>
+	
+						<splitter class="tree-splitter"/>
+						<treecol id="taskFoldernameCol" label="&foldernameCol;" hidden="true" persist="width ordinal hidden"/>
+					</treecols>
+					<treechildren id="taskTreeChild"
+										ondragstart="TASKMAIL.UIDrag.onStartTask(event);"
+										ondragover="TASKMAIL.UIDrag.onOverTask(event);"
+										ondrop="TASKMAIL.UIDrag.onDropTask(event);">
+						
+					</treechildren>
+				</tree>
+			</vbox>
 
-			<tree id="taskList" class="plain" ondblclick="TASKMAIL.UI.doubleClikTask(event)" context="row-menu" seltype="multiple"  flex="1" minheight="75"
-						enableColumnDrag="true">
-				<treecols>
-					<treecol id="taskSubfolderCol" tooltiptext="&header.subfolder;" class="treecol-image subfolderColumnHeader"
-									label="&taskColHeadSubfolder;" fixed="true"
-									persist="ordinal hidden"/>
-					<splitter class="tree-splitter"/>
-					<treecol id="taskLinkCol" tooltiptext="&linkMailHeader;" class="treecol-image taskColumnHeader"
-									label="&taskColHeadLink;" fixed="true"
-									persist="ordinal hidden"/>
-					<splitter class="tree-splitter"/>
-					<treecol id="taskPriorityCol" class="treecol-image priorityColumnHeader"
-									label="&priority;" fixed="true"
-									sortDirection="natural"
-									onclick="TASKMAIL.UI.onChangeOrder(event);"
-									persist="sortDirection ordinal hidden class"/>
-					<splitter class="tree-splitter"/>
-					<treecol id="taskStateCol" label="&state;" class="stateColumnHeader"
-									onclick="TASKMAIL.UI.onChangeOrder(event);"
-									persist="sortDirection ordinal hidden width"/>
-					<splitter class="tree-splitter"/>
-					<treecol id="taskTitleCol" label="&title;" flex="1" ignoreincolumnpicker="true"
-									persist="width ordinal hidden"/>
-
-					<splitter class="tree-splitter"/>
-					<treecol id="taskCreateDateCol" label="&createDateCol;" hidden="true"
-									onclick="TASKMAIL.UI.onChangeOrder(event);"
-									persist="sortDirection ordinal hidden width"/>
-					<splitter class="tree-splitter"/>
-					<treecol id="taskDueDateCol" label="&dueDateCol;" 
-									onclick="TASKMAIL.UI.onChangeOrder(event);"
-									persist="sortDirection ordinal hidden width"/>
-					<splitter class="tree-splitter"/>
-					<treecol id="taskCompleteDateCol" label="&completeDateCol;" hidden="true" 
-									onclick="TASKMAIL.UI.onChangeOrder(event);"
-									persist="sortDirection ordinal hidden width"/>
-
-					<splitter class="tree-splitter"/>
-					<treecol id="taskFoldernameCol" label="&foldernameCol;" hidden="true" persist="width ordinal hidden"/>
-				</treecols>
-				<treechildren id="taskTreeChild"
-									ondragstart="TASKMAIL.UIDrag.onStartTask(event);"
-									ondragover="TASKMAIL.UIDrag.onOverTask(event);"
-									ondrop="TASKMAIL.UIDrag.onDropTask(event);">
-					
-				</treechildren>
-			</tree>
+			<splitter id="tandm-detail-splitter" collapse="after" state="collapsed">
+				<grippy/>
+			</splitter>
 			
-			<vbox collapsed="true" id="addTask" flex="10" tooltiptext="&detailTTP;">
+			<vbox id="addTask" tooltiptext="&detailTTP;">
 				<grid flex="1">
 					<columns>
 						<column/>
@@ -266,7 +272,7 @@
 						</row>
 						<row>		
 							<label value="&state; :"/>  
-              <hbox>
+				              <hbox>
   							<menulist  id="taskState" flex="2" oncommand="TASKMAIL.UI.onStateChanged();">
   								<menupopup>
   								</menupopup>
@@ -325,7 +331,7 @@
 					<button label="&cancel;" oncommand="TASKMAIL.UI.cancelSaveTask()"/>
 				</hbox>
 			</vbox>
-		</vbox>
+		</hbox>
 	</vbox>
 	
 	<tree id="threadTree" >
