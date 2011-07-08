@@ -1645,7 +1645,6 @@ TASKMAIL.UILink = {
 	 */
 	selectLinkedMails : function() {
 		var folder = gDBView.msgFolder;
-		var tasks = TASKMAIL.UI.getSelectedTasks();
 		var tasks = TASKMAIL.UI.getSelectedTasksKeys();
 		var allMails = TASKMAIL.Link.getMailsFromTaskIDsInFolder(tasks, folder.URI);
 		if (allMails.length > 0) {
@@ -1801,7 +1800,7 @@ TASKMAIL.Link = {
 	 * @param taskId    [String]
 	 * @return [link]
 	 */
-	getMailsFromTaskIDsInFolder : function(taskIDs) {
+	getMailsFromTaskIDs : function(taskIDs) {
 		// récupére la liste de tous les emails liés avec les tâches sélectionnées
 		// en ne prenant que les emails du folder en cours de visu.
 		var allMails = new Array();
