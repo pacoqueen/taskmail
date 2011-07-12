@@ -564,25 +564,27 @@ TASKMAIL.DB = {
 	},
 
 	/**
-	 * @param aMsgs
-	 *            An array of the message headers about to be deleted
+	 * Supprime les tâches liées directes (celles dans le folder du message).
+	 * @param aMsgs An array of the message headers about to be deleted
 	 */
 	msgsDeletedSQLite : function(aMsgs) {
 		TASKMAIL.consoleService.logStringMessage("msgsDeletedSQLite");
 		try {
 			this.dbConnection.beginTransaction();
-			var TASK_SQL = "delete from tasks where rowid in (select taskId from links where folderURI = :URI and messageId = :ID)";
+			var TASK_SQL = "delete from tasks where rowid in (select taskId from links where folderURI = :URI and messageId = :ID) and folderURI = :TASK_FOLDER_URI";
 			var LINK_SQL = "delete from links where folderURI = :URI and messageId = :ID";
 			var msgEnum = aMsgs.enumerate();
 			while (msgEnum.hasMoreElements()) {
 				var msg = msgEnum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
 				var msgKey = msg.messageKey;
+				// folder = xxx/Trash.
 				var folderURI = msg.folder.URI;
 				var messageId = msg.folder.GetMessageHeader(msg.messageKey).messageId;
 				TASKMAIL.consoleService.logStringMessage("msgsDeletedSQLite" + folderURI + "," + msgKey + "," + messageId);
 				var stat = this.dbConnection.createStatement(TASK_SQL);
 				stat.bindStringParameter(0, folderURI);
 				stat.bindStringParameter(1, messageId);
+				stat.bindStringParameter(2, folderURI);
 				stat.execute();
 
 				var stat2 = this.dbConnection.createStatement(LINK_SQL);
@@ -599,19 +601,16 @@ TASKMAIL.DB = {
 	},
 
 	/**
-	 * DÃ©placement des mails et des taches liÃ©es.
-	 * @param aSrcMsgs
-	 *            An array of the message headers in the source folder
-	 * @param aDestFolder
-	 *            The folder these messages were moved to.
-	 * @param aDestMsgs
-	 *            Present only for local folder moves, it provides the list of
-	 *            target message headers.
+	 * Déplacement des mails et des taches directement liées (celles dans le même folder que le message).
+	 * @param aSrcMsgs    An array of the message headers in the source folder
+	 * @param aDestFolder The folder these messages were moved to.
+	 * @param aDestMsgs   Present only for local folder moves, it provides the list of
+	 *                    target message headers.
 	 */
 	msgsMoveCopyCompletedSQLite : function(aSrcMsgs, aDestFolder, aDestMsgs) {
 		TASKMAIL.consoleService.logStringMessage("msgsMoveCopyCompletedSQLite");
 		try {
-			var TASK_SQL = "update tasks set folderURI = :NEW_URI where rowid in (select taskId from links where folderURI = :OLD_URI and messageId = :OLD_MSG_KEY)";
+			var TASK_SQL = "update tasks set folderURI = :NEW_URI where rowid in (select taskId from links where folderURI = :OLD_URI and messageId = :OLD_MSG_KEY) and folderURI = :TASK_FOLDER_URI";
 			var LINK_SQL = "update links set folderURI = :NEW_URI where folderURI = :OLD_URI and messageId = :OLD_MSG_KEY";
 
 			var srcEnum = aSrcMsgs.enumerate();
@@ -633,6 +632,7 @@ TASKMAIL.DB = {
 				stat.bindStringParameter(0, destMsg.folder.URI);
 				stat.bindStringParameter(1, srcMsg.folder.URI);
 				stat.bindStringParameter(2, messageId);
+				stat.bindStringParameter(3, srcMsg.folder.URI);
 				stat.execute();
 
 				var stat2 = this.dbConnection.createStatement(LINK_SQL);
@@ -650,13 +650,9 @@ TASKMAIL.DB = {
 	},
 
 	/**
-	 * @param aSrcFolder
-	 *            A source folder from to move the task
-	 * @param aTask
-	 *            A task to move
-	 * @param aDestFolder
-	 *            A destination folder
-	 * 
+	 * @param aSrcFolder  A source folder from to move the task
+	 * @param aTask       A task to move
+	 * @param aDestFolder A destination folder
 	 * @todo Pas encore de gestion du déplacement de tache avec des liens. Gérer
 	 *       plusieurs taches
 	 */

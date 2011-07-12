@@ -155,18 +155,10 @@ TASKMAIL.UI = {
 	},
 
 	/**
-	 * déplace les taches dans un nouveau folder si les taches n'ont pas de
-	 * liens.
+	 * déplace les taches dans un nouveau folder.
 	 */
 	moveTask : function(aDestFolder) {
 		var tasks = TASKMAIL.UI.getSelectedTasksKeys();
-		for (var i = 0; i < tasks.length; i++) {
-			// si la tache a un lien, on ne fait rien.
-			if (TASKMAIL.Link.getMailKeysFromTaskID(tasks[i]) != null) {
-				alert(TASKMAIL.UI.stringsBundle.getString("moveLinkAlert"));
-				return;
-			}
-		}
 		for (var i = 0; i < tasks.length; i++) {
 			TASKMAIL.DB.taskMoveSQLite(tasks[i], aDestFolder);
 		}
@@ -2019,59 +2011,22 @@ TASKMAIL.MailListener = {
 		// TASKMAIL.consoleService.logStringMessage(aFolder.baseMessageURI);
 		TASKMAIL.DB.deleteFolderSQLite(aFolder);
 	},
+	
 	folderMoveCopyCompleted : function(aMove, aSrcFolder, aDestFolder) {
 		if (aMove) {
 			TASKMAIL.DB.moveFolderSQLite(aSrcFolder, aDestFolder);
 		}
 	},
+	
 	msgsMoveCopyCompleted : function(aMove, aSrcMsgs, aDestFolder, aDestMsgs) {
 		if (aMove) {
-			var moveable = this.msgsMoveable(aSrcMsgs);
-			// si problème on alerte mais le déplacement de message est
-			// déjà
-			// fait donc on laisse faire.
-			// @todo voir comment empecher le déplacement
-			if (!moveable) {
-				alert(TASKMAIL.UI.stringsBundle.getString("moveMailAlert"));
-			}
-			TASKMAIL.DB.msgsMoveCopyCompletedSQLite(aSrcMsgs, aDestFolder,
-					aDestMsgs);
+			TASKMAIL.DB.msgsMoveCopyCompletedSQLite(aSrcMsgs, aDestFolder, aDestMsgs);
 			TASKMAIL.UI.refreshTaskList();
 		}
 	},
+	
 	msgsDeleted : function(aMsgs) {
 		TASKMAIL.DB.msgsDeletedSQLite(aMsgs);
-	},
-	/**
-	 * si l'email est liée à au moins une tache liée à un autre mail, one ne
-	 * fait rien.
-	 * 
-	 * @param selectedMsgs
-	 */
-	msgsMoveable : function(selectedMsgs) {
-		// 1 transforme enum en Array de selected msg key
-		var selectedMsgKey = new Array();
-		var srcEnum = selectedMsgs.enumerate();
-		while (srcEnum.hasMoreElements()) {
-			var srcMsg = srcEnum.getNext()
-					.QueryInterface(Components.interfaces.nsIMsgDBHdr);
-			selectedMsgKey.push(srcMsg.messageKey);
-		}
-		// 2 pour chaque selected msg, recupére les taches liées
-		// dès qu'un msg lié hors sélection, on stoppe
-		var stop = false;
-		for (var i = 0; i < selectedMsgKey.length && !stop; i++) {
-			var taskIDs = TASKMAIL.Link.getTaskIDFromMailID(srcMsg.folder.URI, selectedMsgKey[i]);
-			for (var j = 0; j < taskIDs.length && !stop; j++) {
-				var msgKeys = TASKMAIL.Link.getMailKeysFromTaskID(taskIDs[j]);
-				for (var k = 0; k < msgKeys.length && !stop; k++) {
-					if (selectedMsgKey.indexOf(msgKeys[k]) == -1) {
-						stop = true;
-					}
-				}
-			}
-		}
-		return !stop;
 	}
 }
 
