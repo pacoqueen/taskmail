@@ -954,6 +954,17 @@ TASKMAIL.UI = {
 		}
 		this.viewBeforeEvent = viewFilter;
 	},
+	
+	/**
+	 * On refraichie la liste de tache sur unsitck. 
+	 */
+	onViewStick : function () {
+		var sticky = document.getElementById("tandm-sticky-view").checked;
+		if (!sticky) {
+			var folder = GetSelectedMsgFolders()[0];
+			TASKMAIL.UI.refreshTaskPane(folder);
+		}
+	},
 	 
   /**
 	 * return all the root folders, Array.length == 0 if no folder

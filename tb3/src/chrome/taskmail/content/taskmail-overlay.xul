@@ -181,7 +181,8 @@
 					<label value="&filter.label;" class="filterLabel"/>
 					<toolbarbutton id="tandm-sticky-view" type="checkbox"
 	                       crop="none"
-	                       tooltiptext="&stickyViewFilterTTP;"/>
+	                       tooltiptext="&stickyViewFilterTTP;"
+	                       oncommand="TASKMAIL.UI.onViewStick();"/>
 					<menulist  id="viewFilter" oncommand="TASKMAIL.UI.onViewChange()"
 					           tooltiptext="&viewFilterTTP;">
 						<menupopup style="padding-top:10px">
