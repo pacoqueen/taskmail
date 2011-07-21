@@ -470,11 +470,11 @@ TASKMAIL.UI = {
 		}
 	},
 	
-	// folder visulisé (courant ou celui au moment du sticky).
+	// folder visulisé (nsIMsgFolder, courant ou celui au moment du sticky). 
 	viewedFolder : null,
 	
 	onFolderSelect : function() {
-		TASKMAIL.consoleService.logStringMessage("onFolderSelect");
+//		TASKMAIL.consoleService.logStringMessage("onFolderSelect");
 		var folder = GetSelectedMsgFolders()[0];
 		TASKMAIL.UI.refreshTaskPane(folder);
 	},
@@ -511,7 +511,7 @@ TASKMAIL.UI = {
 	},
 
 	refreshTaskPane : function (folder) {
-		TASKMAIL.consoleService.logStringMessage("refreshTaskPane");
+//		TASKMAIL.conshtasklistoleService.logStringMessage("refreshTaskPane");
 		// si la vue n'est pas figée et en 'vue multi folder', on repasse en vue 'folder'.
 		var currentView = document.getElementById("viewFilter").selectedItem.value;
 		if ((currentView == TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
@@ -535,7 +535,7 @@ TASKMAIL.UI = {
 		{
 			// save current folder to manage task action when view is sticky.
 			// before refrehsing view.
-			TASKMAIL.consoleService.logStringMessage("folder saving" + folder.URI);
+			TASKMAIL.consoleService.logStringMessage("folder saving : " + folder.URI);
 			TASKMAIL.UI.viewedFolder = folder;
 			
 			TASKMAIL.UI.refreshTaskList();
@@ -544,7 +544,7 @@ TASKMAIL.UI = {
 	},
 	
 	refreshTaskList : function() {
-		TASKMAIL.consoleService.logStringMessage("refreshTaskList");
+//		TASKMAIL.consoleService.logStringMessage("refreshTaskList");
 		// le refresh du folder est lancé avant l'handler de la colonne des
 		// emails.
 		var selectedTasks = TASKMAIL.UI.getSelectedTasksKeys();
@@ -963,6 +963,8 @@ TASKMAIL.UI = {
 		if (!sticky) {
 			var folder = GetSelectedMsgFolders()[0];
 			TASKMAIL.UI.refreshTaskPane(folder);
+			// to refresh folder viewed icon in folder tree. 
+			document.getElementById("folderTree").treeBoxObject.invalidate();
 		}
 	},
 	 
@@ -1043,6 +1045,8 @@ TASKMAIL.UI = {
     this.getStatesFromPref();
     
     this.initialiseOrder();
+    
+    gFolderTreeView.getCellProperties = TASKMAIL.UI.new_getCellProperties;
 	},
 	
 	observe : function (subject, topic, data) {
@@ -1348,6 +1352,16 @@ TASKMAIL.UI = {
 	                              aDate.getDate());
   	}
 		return result;
+  },
+  
+  new_getCellProperties : function (row,col,props) {
+    gFolderTreeView._rowMap[row].getProperties(props,col);
+    if (col.id == "folderNameCol") {
+      if (TASKMAIL.UI.viewedFolder != null && gFolderTreeView._rowMap[row]._folder.URI == TASKMAIL.UI.viewedFolder.URI) {
+	      var acAtomServ = Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService);
+	      props.AppendElement(acAtomServ.getAtom("tandm-viewedFolder"));
+      }      
+    }
   }
 }
 
@@ -1573,7 +1587,7 @@ TASKMAIL.UILink = {
 		if (this.noStatusBarRefresh) {
 			return;
 		}
-		TASKMAIL.consoleService.logStringMessage("refreshStatusBar");
+//		TASKMAIL.consoleService.logStringMessage("refreshStatusBar");
 		var statusbarLabel = "";
 		if (sens == "task") {
 			var mails = gFolderDisplay.selectedMessages;
@@ -1703,7 +1717,7 @@ TASKMAIL.Link = {
 	},
 
 	resetLink : function() {
-		TASKMAIL.consoleService.logStringMessage("resetLink");
+//		TASKMAIL.consoleService.logStringMessage("resetLink");
 		this.nbLinks = 0;
 		TASKMAIL.UILink.lastLinkedShowed = null;
 	},

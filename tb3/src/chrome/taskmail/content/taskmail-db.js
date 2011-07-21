@@ -424,7 +424,7 @@ TASKMAIL.DB = {
 	 * (folder, subfolders, all folders). 
 	 */
 	getLinkSQLite : function(msgFolder, taskFolder, viewFilter) {
-		TASKMAIL.consoleService.logStringMessage("getLinkSQLite,msgFolderName="+msgFolder.URI+"taskFolderName="+taskFolder.URI);
+//		TASKMAIL.consoleService.logStringMessage("getLinkSQLite,msgFolderName="+msgFolder.URI+"taskFolderName="+taskFolder.URI);
 		try {
 			// remonte tous les liens avec les messages en cours (ceux du folder)
 			// et remonte tous les liens avec les tâche visualisées.
@@ -451,14 +451,14 @@ TASKMAIL.DB = {
 					Components.utils.reportError("getLinkSQLite, problème récup messageId=" + messageId);
 					continue;
 				}
-				TASKMAIL.consoleService.logStringMessage("getLinkSQLite:" + messageFolderURI + "," + messageId + "," + stat.getInt32(2)
-					+ "," + stat.getInt32(2));				
+//				TASKMAIL.consoleService.logStringMessage("getLinkSQLite:" + messageFolderURI + "," + messageId + "," + stat.getInt32(2)
+//					+ "," + stat.getInt32(2));				
 				TASKMAIL.Link.addLink(messageFolderURI,
 				                      messageKey,
 				                      threadKey,
 				                      stat.getInt32(2));
 			}
-			TASKMAIL.consoleService.logStringMessage("getLinkSQLite,result count="+TASKMAIL.Link.nbLinks);
+//			TASKMAIL.consoleService.logStringMessage("getLinkSQLite,result count="+TASKMAIL.Link.nbLinks);
 		} catch (err) {
 			Components.utils.reportError("getLinkSQLite, folder=" + folder == null ? "null" : folderURI + ", erreur=" + err);
 		}

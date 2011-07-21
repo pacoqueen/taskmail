@@ -170,12 +170,17 @@ radio[pane=taskmail-reportPane] {list-style-image: url("chrome://taskmail/skin/r
   list-style-image: url("chrome://messenger/skin/icons/xp-pin-red.png");
 }
 
- {
-  list-style-image: url("chrome://messenger/skin/icons/xp-pin-red.png");
-}
-
 #tandm-fb {
 	border-top: 1px solid rgb(255,255,255);
 	border-bottom: 1px solid rgb(255,255,255);
 	background-image: -moz-linear-gradient(center top , rgb(242, 247, 253) 0pt, rgb(233, 242, 252) 12px, rgb(227, 238, 251) 12px, rgb(227, 238, 251) 100%);
+}
+
+/*#folderTree treechildren::-moz-tree-cell-text(tandm-viewedFolder) {
+	color: #FF0000;
+	font-weight: bold;
+}*/
+
+#folderTree treechildren::-moz-tree-image(tandm-viewedFolder) {
+  list-style-image: url("chrome://taskmail/skin/taskmail_logo_menu.png");
 }
