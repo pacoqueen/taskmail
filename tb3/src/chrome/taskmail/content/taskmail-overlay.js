@@ -963,9 +963,9 @@ TASKMAIL.UI = {
 		if (!sticky) {
 			var folder = GetSelectedMsgFolders()[0];
 			TASKMAIL.UI.refreshTaskPane(folder);
-			// to refresh folder viewed icon in folder tree. 
-			document.getElementById("folderTree").treeBoxObject.invalidate();
 		}
+		// to refresh folder viewed icon in folder tree. 
+		document.getElementById("folderTree").treeBoxObject.invalidate();
 	},
 	 
   /**
@@ -1357,7 +1357,8 @@ TASKMAIL.UI = {
   new_getCellProperties : function (row,col,props) {
     gFolderTreeView._rowMap[row].getProperties(props,col);
     if (col.id == "folderNameCol") {
-      if (TASKMAIL.UI.viewedFolder != null && gFolderTreeView._rowMap[row]._folder.URI == TASKMAIL.UI.viewedFolder.URI) {
+    	var sticky = document.getElementById("tandm-sticky-view").checked;
+      if (sticky && gFolderTreeView._rowMap[row]._folder.URI == TASKMAIL.UI.viewedFolder.URI) {
 	      var acAtomServ = Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService);
 	      props.AppendElement(acAtomServ.getAtom("tandm-viewedFolder"));
       }      
