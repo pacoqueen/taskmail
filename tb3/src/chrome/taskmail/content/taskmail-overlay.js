@@ -1048,6 +1048,7 @@ TASKMAIL.UI = {
     
     this.initialiseOrder();
     
+    // replace default getCellProperties.
     gFolderTreeView.getCellProperties = TASKMAIL.UI.new_getCellProperties;
 	},
 	
@@ -1356,12 +1357,17 @@ TASKMAIL.UI = {
 		return result;
   },
   
+  /**
+   * Change icon folder when task view is sticky or task view shows 
+   * an other folder that current one.
+   */
   new_getCellProperties : function (row,col,props) {
     gFolderTreeView._rowMap[row].getProperties(props,col);
     if (col.id == "folderNameCol") {
     	var sticky = document.getElementById("tandm-sticky-view").checked;
-    	var currentFolder = gDBView.msgFolder.URI;
-      if (gFolderTreeView._rowMap[row]._folder.URI == TASKMAIL.UI.viewedFolder.URI
+    	var viewedFolder = TASKMAIL.UI.viewedFolder != null ? TASKMAIL.UI.viewedFolder.URI : null;
+    	var currentFolder = gDBView != null ? gDBView.msgFolder.URI : null;
+      if (gFolderTreeView._rowMap[row]._folder.URI == viewedFolder
 			    && (sticky || TASKMAIL.UI.viewedFolder.URI != currentFolder)) {
 	      var acAtomServ = Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService);
 	      props.AppendElement(acAtomServ.getAtom("tandm-viewedFolder"));
