@@ -1616,7 +1616,6 @@ TASKMAIL.UILink = {
 						statusbarLabel = TASKMAIL.UI.stringsBundle.
 							getString("statusbar.text.empty");				
 			}
-			statusbarLabel += " T";
 		} else {
 			var selectedTasks = TASKMAIL.UI.getSelectedTasksKeys();
 			if (selectedTasks.length == 1) {
@@ -1638,7 +1637,6 @@ TASKMAIL.UILink = {
 					statusbarLabel = TASKMAIL.UI.stringsBundle.
 						getString("statusbar.text.nolink");
 				}
-				statusbarLabel += " M";
 			} else {
 				statusbarLabel = TASKMAIL.UI.stringsBundle.
 						getString("statusbar.text.empty");
