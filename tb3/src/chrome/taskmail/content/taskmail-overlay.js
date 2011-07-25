@@ -541,6 +541,8 @@ TASKMAIL.UI = {
 			TASKMAIL.UI.refreshTaskList();
 		}
 		TASKMAIL.UI.refreshTaskFolderIcon();
+		// to refresh folder viewed icon in folder tree. 
+		document.getElementById("folderTree").treeBoxObject.invalidate();
 	},
 	
 	refreshTaskList : function() {
@@ -1358,7 +1360,9 @@ TASKMAIL.UI = {
     gFolderTreeView._rowMap[row].getProperties(props,col);
     if (col.id == "folderNameCol") {
     	var sticky = document.getElementById("tandm-sticky-view").checked;
-      if (sticky && gFolderTreeView._rowMap[row]._folder.URI == TASKMAIL.UI.viewedFolder.URI) {
+    	var currentFolder = gDBView.msgFolder.URI;
+      if (gFolderTreeView._rowMap[row]._folder.URI == TASKMAIL.UI.viewedFolder.URI
+			    && (sticky || TASKMAIL.UI.viewedFolder.URI != currentFolder)) {
 	      var acAtomServ = Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService);
 	      props.AppendElement(acAtomServ.getAtom("tandm-viewedFolder"));
       }      
