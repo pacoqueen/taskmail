@@ -39,7 +39,7 @@ TASKMAIL.COLUMN = {
 	    } else if (type == 1) {
 	    	linkURI = "chrome://taskmail/skin/link_task.png";
 	    }
-//	    TASKMAIL.consoleService.logStringMessage("getImageSrc:mailKey="+mailKey+",selectedTaskKeys="+selectedTaskKeys+",result="+linkURI);
+//	    consoleService.logStringMessage("getImageSrc:mailKey="+mailKey+",selectedTaskKeys="+selectedTaskKeys+",result="+linkURI);
 	  	return linkURI;
 	  },
 	
