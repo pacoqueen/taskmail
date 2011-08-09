@@ -3,8 +3,8 @@ if (!TASKMAIL.Report)
 TASKMAIL.Report = {
 
   /**
-   * GÃ©nÃ©re un rapport HTML de toutes les tÃ¢ches visibles.
-   * Utilise les prÃ©fÃ©rences.
+   * Génére un rapport HTML de toutes les tâches visibles.
+   * Utilise les préférences.
    */
 	composeReport : function () {
 		var msgComposeType = Components.interfaces.nsIMsgCompType;
@@ -32,9 +32,9 @@ TASKMAIL.Report = {
 				var subject = prefs.getCharPref("subject");
 				var templateBody = prefs.getCharPref("body");
 				
-				var temp = TASKMAIL.UI.retrieveTasks(true);
+				var temp = TASKMAIL.UI.retrieveTasks();
 				var currentOrder = document.getElementById("taskPriorityCol").getAttribute("sortDirection");
-				// si la liste est triï¿½e, on la met ï¿½ plat
+				// si la liste est triée, on la met à plat
 				if (currentOrder != "natural") {
 					temp = TASKMAIL.UI.makeFlatTaskList(temp);
 				}
@@ -53,8 +53,8 @@ TASKMAIL.Report = {
 	},
 
 	/**
-	 * gÃ©nÃ©re la partie du rapport correspondant Ã  une tache.
-	 * gÃ©nere la partie du template qui est entre #TASK# en y substituant les informations.
+	 * génére la partie du rapport correspondant à une tache.
+	 * génere la partie du template qui est entre #TASK# en y substituant les informations.
 	 */
 	_getReportTask : function (task, templateTask) {
 	  var result = templateTask.replace("#TASK_TITLE#",task.title);
@@ -66,7 +66,7 @@ TASKMAIL.Report = {
 	},
 	
 	/**
-	 * gÃ©nÃ¨re la partie du rapport correspondant Ã  un folder.
+	 * génére la partie du rapport correspondant à un folder.
 	 * remplace ce qui est entre #TASK# par la liste des taches.
 	 * remplace ce qui est entre #SUBTASK# par le contenu recursif des sous folders.
 	 */
@@ -78,13 +78,13 @@ TASKMAIL.Report = {
 		
 	  var templateTask = templateFolder.substring(templateFolder.indexOf("#TASK#") + 6,
 	                                            templateFolder.lastIndexOf("#TASK#"));
-	  // gÃ©nÃ¨re le texte de la liste des taches
+	  // génére le texte de la liste des taches
 	  var reportTasks = "";
 	  for(var i = 0; i < content.tasks.length; i++) {
 	    reportTasks += this._getReportTask(content.tasks[i], templateTask);
 	  }
 	  
-	  // gÃ©nÃ¨re la liste des sous folders
+	  // génére la liste des sous folders
 	  var reportSubFolders = "";
 	  for (var j = 0; j < content.subContents.length; j++ ) {
 	    reportSubFolders += this._getReportFolder(content.subContents[j], templateFolder);
@@ -103,7 +103,7 @@ TASKMAIL.Report = {
 	},
 
 	/*
-	 * GÃ©nÃ¨re le corps du rapport.
+	 * Génére le corps du rapport.
 	 * Prend tout ce qui est autour des #.
 	 */
 	_getReportBody : function (temp, templateBody) {
