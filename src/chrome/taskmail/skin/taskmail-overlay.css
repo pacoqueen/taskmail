@@ -50,11 +50,6 @@ treechildren::-moz-tree-image(linked_hilight)
   list-style-image: url('chrome://taskmail/skin/link_mail_hilight.jpg');
 }
 
-treechildren::-moz-tree-image(linked_outside)
-{
-  list-style-image: url('chrome://taskmail/skin/link_mail_outside.jpg');
-}
-
 treechildren::-moz-tree-cell-text(next-task)
 {
   color : rgb(255,165,0);
@@ -70,7 +65,6 @@ treechildren::-moz-tree-cell-text(overdue-task)
 #taskList {
 	padding :  0px;
 	margin : 0px;
-	border-top: 1px solid rgb(0,0,0);
 }
 
 .minorLabel {
@@ -152,35 +146,4 @@ radio[pane=taskmail-reportPane] {list-style-image: url("chrome://taskmail/skin/r
 
 .checkbox-no-label > .checkbox-label-box {
    display:none;
-}
-
-#tandm-sticky-view,
-#tandm-sticky-text {
-  background: none;
-  border-width: 0;
-  -moz-border-image: none;
-  margin-right:2px;
-}
-
-#tandm-sticky-text, #tandm-sticky-view {
-  list-style-image: url("chrome://messenger/skin/icons/xp-pin-grey.png");
-}
-
-#tandm-sticky-text[checked], #tandm-sticky-view[checked] {
-  list-style-image: url("chrome://messenger/skin/icons/xp-pin-red.png");
-}
-
-#tandm-fb {
-	border-top: 1px solid rgb(255,255,255);
-	border-bottom: 1px solid rgb(255,255,255);
-	background-image: -moz-linear-gradient(center top , rgb(242, 247, 253) 0pt, rgb(233, 242, 252) 12px, rgb(227, 238, 251) 12px, rgb(227, 238, 251) 100%);
-}
-
-/*#folderTree treechildren::-moz-tree-cell-text(tandm-viewedFolder) {
-	color: #FF0000;
-	font-weight: bold;
-}*/
-
-#folderTree treechildren::-moz-tree-image(tandm-viewedFolder) {
-  list-style-image: url("chrome://taskmail/skin/taskmail_logo_menu.png");
 }
