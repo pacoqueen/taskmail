@@ -33,7 +33,7 @@ TASKMAIL.Report = {
 				var templateBody = prefs.getCharPref("body");
 				
 				var temp = TASKMAIL.UI.retrieveTasks(true);
-				var currentOrder = document.getElementById("taskPriorityCol").getAttribute("sortDirection");
+				var currentOrder = document.getElementById("taskmail-taskPriorityCol").getAttribute("sortDirection");
 				// si la liste est tri�e, on la met � plat
 				if (currentOrder != "natural") {
 					temp = TASKMAIL.UI.makeFlatTaskList(temp);

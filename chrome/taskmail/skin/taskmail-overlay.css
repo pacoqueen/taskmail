@@ -67,7 +67,7 @@ treechildren::-moz-tree-cell-text(overdue-task)
   font-weight: bold;
 }
 
-#taskList {
+#taskmail-taskList {
 	padding :  0px;
 	margin : 0px;
 	border-top: 1px solid rgb(0,0,0);
@@ -82,7 +82,7 @@ treechildren::-moz-tree-cell-text(overdue-task)
 	padding-top:5px;	
 }
 
-#addTask label {
+#taskmail-addTask label {
 	margin-top: 5px;
 }
 
@@ -134,19 +134,19 @@ treechildren::-moz-tree-cell(taskPriority9) {
 radio[pane=taskmail-pane] {list-style-image: url("chrome://taskmail/skin/generalPane.png")}
 radio[pane=taskmail-reportPane] {list-style-image: url("chrome://taskmail/skin/reportPane.png")}
 
-#qfb-task {
+#taskmail-qfb-task {
   list-style-image:  url('chrome://taskmail/skin/link_task.png');
 }
 
-#qfb-task-linked {
+#taskmail-qfb-task-linked {
   list-style-image:  url('chrome://taskmail/skin/link_task_hilight.png');
 }
 
-#qfb-task-thread {
+#taskmail-qfb-task-thread {
   list-style-image:  url('chrome://messenger/skin/icons/thread.png');
 }
 
-#menuAddTask, #menu-selectLinked, #menu-goNextMail {
+#taskmail-menuAddTask, #taskmail-menu-selectLinked, #taskmail-menu-goNextMail {
   list-style-image:url('chrome://taskmail/skin/taskmail_logo_menu.png');
 }
 
@@ -154,7 +154,7 @@ radio[pane=taskmail-reportPane] {list-style-image: url("chrome://taskmail/skin/r
    display:none;
 }
 
-#tandm-sticky-view,
+#taskmail-sticky-view,
 #tandm-sticky-text {
   background: none;
   border-width: 0;
@@ -162,15 +162,15 @@ radio[pane=taskmail-reportPane] {list-style-image: url("chrome://taskmail/skin/r
   margin-right:2px;
 }
 
-#tandm-sticky-text, #tandm-sticky-view {
+#tandm-sticky-text, #taskmail-sticky-view {
   list-style-image: url("chrome://messenger/skin/icons/xp-pin-grey.png");
 }
 
-#tandm-sticky-text[checked], #tandm-sticky-view[checked] {
+#tandm-sticky-text[checked], #taskmail-sticky-view[checked] {
   list-style-image: url("chrome://messenger/skin/icons/xp-pin-red.png");
 }
 
-#tandm-fb {
+#taskmail-fb {
 	border-top: 1px solid rgb(255,255,255);
 	border-bottom: 1px solid rgb(255,255,255);
 	background-image: -moz-linear-gradient(center top , rgb(242, 247, 253) 0pt, rgb(233, 242, 252) 12px, rgb(227, 238, 251) 12px, rgb(227, 238, 251) 100%);
