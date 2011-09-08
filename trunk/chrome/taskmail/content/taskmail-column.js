@@ -54,7 +54,7 @@ TASKMAIL.COLUMN = {
 	},
 	
 	addCustomColumnHandler : function () {
-  	gDBView.addColumnHandler("colTask", this.columnHandler);
+  	gDBView.addColumnHandler("taskmail-colTask", this.columnHandler);
   }
 }
 

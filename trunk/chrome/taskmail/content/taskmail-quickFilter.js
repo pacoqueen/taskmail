@@ -98,13 +98,13 @@ TASKMAIL.QFB = {
 	 */
 	onCommandSubFilter : function() {
 		TASKMAIL.consoleService.logStringMessage("onCommandSubFilter");
-		var linkButton = document.getElementById("qfb-task-linked");
+		var linkButton = document.getElementById("taskmail-qfb-task-linked");
 		if (linkButton.checked) {
     	TASKMAIL.consoleService.logStringMessage("onCommandSubFilter => ajoute select event");
-    	document.getElementById("taskList").addEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
+    	document.getElementById("taskmail-taskList").addEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
     } else {
     	TASKMAIL.consoleService.logStringMessage("onCommandSubFilter => supprime select event");
-    	document.getElementById("taskList").removeEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
+    	document.getElementById("taskmail-taskList").removeEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
     }
 		QuickFilterBarMuxer.updateSearch();
 	},
@@ -121,11 +121,11 @@ TASKMAIL.QFB.init();
 
 QuickFilterManager.defineFilter({
   name: "tache",
-  domId: "qfb-task",
+  domId: "taskmail-qfb-task",
   appendTerms: function(aTermCreator, aTerms, aFilterValue) {
   	TASKMAIL.consoleService.logStringMessage("appendTerms");
-  	var linked = document.getElementById("qfb-task-linked").checked;
-  	var threaded = document.getElementById("qfb-task-thread").checked;
+  	var linked = document.getElementById("taskmail-qfb-task-linked").checked;
+  	var threaded = document.getElementById("taskmail-qfb-task-thread").checked;
   	if (threaded) {
   		var termName = "TaskMail#threadLinkedTerm";
   	} else {
@@ -191,22 +191,22 @@ QuickFilterManager.defineFilter({
   	TASKMAIL.consoleService.logStringMessage("onCommand(" + aNode.id + ")");
   	if (!aNode.checked) {
     	TASKMAIL.consoleService.logStringMessage("onCommand => supprime select event");
-    	document.getElementById("taskList").removeEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
+    	document.getElementById("taskmail-taskList").removeEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
     } else {
-	    var linkButton = document.getElementById("qfb-task-linked");
+	    var linkButton = document.getElementById("taskmail-qfb-task-linked");
 			if (linkButton.checked) {
 				// subFilters could be checked when main filter is activating.
 				TASKMAIL.consoleService.logStringMessage("onCommand => ajout select event");
-	    	document.getElementById("taskList").addEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
+	    	document.getElementById("taskmail-taskList").addEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
 			}
     }
     // make subFilters visible or not.
     if (aNode.checked) {
-    	document.getElementById("qfb-task-linked").style.visibility = "visible";
-    	document.getElementById("qfb-task-thread").style.visibility = "visible";
+    	document.getElementById("taskmail-qfb-task-linked").style.visibility = "visible";
+    	document.getElementById("taskmail-qfb-task-thread").style.visibility = "visible";
     } else {
-    	document.getElementById("qfb-task-linked").style.visibility = "hidden";
-    	document.getElementById("qfb-task-thread").style.visibility = "hidden";
+    	document.getElementById("taskmail-qfb-task-linked").style.visibility = "hidden";
+    	document.getElementById("taskmail-qfb-task-thread").style.visibility = "hidden";
     }
     var checked = aNode.checked ? true : null;
     return [checked, true];
@@ -218,7 +218,7 @@ QuickFilterManager.defineFilter({
   clearState: function(aState) {
     TASKMAIL.consoleService.logStringMessage("clearState => supprime select event");
     // remove possible task's select callback and hide subFilters.
-    document.getElementById("taskList").removeEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
+    document.getElementById("taskmail-taskList").removeEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
     return [null, false];
   },
   
@@ -233,14 +233,14 @@ QuickFilterManager.defineFilter({
   	
 	  if (aFilterValue == null) {
 //		  TASKMAIL.consoleService.logStringMessage("reflectInDOM => supprime select event");
-		  document.getElementById("taskList").removeEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
-		  document.getElementById("qfb-task-linked").style.visibility = "hidden";
-		  document.getElementById("qfb-task-thread").style.visibility = "hidden";
+		  document.getElementById("taskmail-taskList").removeEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
+		  document.getElementById("taskmail-qfb-task-linked").style.visibility = "hidden";
+		  document.getElementById("taskmail-qfb-task-thread").style.visibility = "hidden";
 	  } else {
 	  	// utile quand thunderbird est relancé.
 	  	// seul l'état du main filter est conservé.
-	  	document.getElementById("qfb-task-linked").style.visibility = "visible";
-	  	document.getElementById("qfb-task-thread").style.visibility = "visible";
+	  	document.getElementById("taskmail-qfb-task-linked").style.visibility = "visible";
+	  	document.getElementById("taskmail-qfb-task-thread").style.visibility = "visible";
 	  }
   }
 });
