@@ -46,15 +46,15 @@
 				<menuitem label="&menuViewTaskPane;"  accesskey="M" oncommand="TASKMAIL.UI.toggleTaskPane();" type="checkbox" autocheck="false" id="taskmail-menu.viewTaskPane" key="taskmail-viewTasksMailsPane" insertbefore="viewSortMenuSeparator"/>
 			</menupopup>
 		</menu>
-  	<menu id="menu_Go">
+  		<menu id="menu_Go">
 			<menupopup id="menu_GoPopup" onpopupshowing="TASKMAIL.UI.adjustGoMenu();">
 				<menuseparator/>
 				<menuitem label="&menuGoNextTaskMail;"   accesskey="A" oncommand="TASKMAIL.UILink.showLinked()" id="taskmail-menu-goNextMail" key="taskmail-show-linked" class="menuitem-iconic"/>
 			</menupopup>
 		</menu>
-  	<menu id="taskmail-menu" label="Tasks &amp; Mails" accesskey="T" insertbefore="tasksMenu">
-      <menupopup id="taskmail-popup" onpopupshowing="TASKMAIL.UI.adjustTaskMenu();">
-        <menuitem label="&add;"          accesskey="A" oncommand="TASKMAIL.UI.beginAddTask('empty')"/>
+  		<menu id="taskmail-menu" label="Tasks &amp; Mails" accesskey="T" insertbefore="tasksMenu">
+      		<menupopup id="taskmail-popup" onpopupshowing="TASKMAIL.UI.adjustTaskMenu();">
+        		<menuitem label="&add;"          accesskey="A" oncommand="TASKMAIL.UI.beginAddTask('empty')"/>
 				<menuitem label="&addWithLink;"  accesskey="L" oncommand="TASKMAIL.UI.beginAddTaskWithLink()" key="taskmail-add-linked"/>
 				<menuseparator/>
 				<menuitem label="&markDone;"     accesskey="M" oncommand="TASKMAIL.UI.updateTaskStateDone(event, 4);" key="taskmail-mark-done" id="taskmail-menu.markDone"/>
