@@ -50,7 +50,7 @@ TASKMAIL.PREFS = {
   	if (this.states.length == 0) {
   		this.states = this.getStates();
   	}
-    this.mStatesListBox = document.getElementById("stateList");
+    this.mStatesListBox = document.getElementById("taskmail-stateList");
     for (var i = 0; i < this.states.length; ++i)
     {
 //	  	var newListItem = document.createElement("listitem");

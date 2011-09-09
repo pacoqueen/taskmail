@@ -16,9 +16,9 @@
     </preferences>
     <groupbox>
       <caption label="&states.caption;"/>
-	    <label control="stateList" value="&prefs.state.intro;"/>
+	    <label control="taskmail-stateList" value="&prefs.state.intro;"/>
     	<hbox>
-	      <listbox id="stateList" flex="1" rows="10" ondblclick="TASKMAIL.PREFS.editState();" onselect="TASKMAIL.PREFS.selectState();"></listbox>
+	      <listbox id="taskmail-stateList" flex="1" rows="10" ondblclick="TASKMAIL.PREFS.editState();" onselect="TASKMAIL.PREFS.selectState();"></listbox>
 	      <vbox>
 	        <button label="&addState;" accesskey="&addState.key;" oncommand="TASKMAIL.PREFS.addState();"/>
 	        <button label="&editState;" accesskey="&editState.key;" oncommand="TASKMAIL.PREFS.editState();"/>
@@ -53,24 +53,24 @@
             <label value="&fields.comment;"/>
           </row>
           <row>
-            <label control="report_to" value="&field.to; :"/>
-            <textbox preference="taskmail_report_to" id="report_to" flex="1"/>
+            <label control="taskmail-report_to" value="&field.to; :"/>
+            <textbox preference="taskmail_report_to" id="taskmail-report_to" flex="1"/>
           </row>
           <row>
-            <label control="report_cc" value="&field.cc; : "/>
-            <textbox preference="taskmail_report_cc" id="report_cc"/>
+            <label control="taskmail-report_cc" value="&field.cc; : "/>
+            <textbox preference="taskmail_report_cc" id="taskmail-report_cc"/>
           </row>
           <row>
-            <label control="report_subject" value="&field.subject; : "/>
-            <textbox preference="taskmail_report_subject" id="report_suject"/>
+            <label control="taskmail-report_subject" value="&field.subject; : "/>
+            <textbox preference="taskmail_report_subject" id="taskmail-report_suject"/>
           </row>
           <row>
-            <label control="report_body" value="&field.body; : "/>
-            <textbox preference="taskmail_report_body" id="report_body" multiline="true" rows="15" width="450"/>
+            <label control="taskmail-report_body" value="&field.body; : "/>
+            <textbox preference="taskmail_report_body" id="taskmail-report_body" multiline="true" rows="15" width="450"/>
           </row>
           <row>
             <spacer/>
-            <label value="documentation" class="text-link"  	          href="http://tasksandmails.mozdev.org/manual.html" 			  onclick="TASKMAIL.PREFS.loadManual(event);"/></row>
+            <label value="documentation" class="text-link" href="http://tasksandmails.mozdev.org/manual.html" onclick="TASKMAIL.PREFS.loadManual(event);"/></row>
             <row>
               <spacer/>
               <button label="&reset;" accesskey="&reset.key;" oncommand="TASKMAIL.PREFS.resetReportPrefs();"/>
