@@ -659,7 +659,8 @@ TASKMAIL.UI = {
 	 */
 	makeFlatTaskList : function (temp) {
 		for(var i=0; i<temp.subContents.length; i++) {
-			temp.tasks = temp.tasks.concat(this.makeFlatTaskList(temp.subContents[i]).tasks);
+			var subtemp = this.makeFlatTaskList(temp.subContents[i]);
+			temp.tasks = temp.tasks.concat(subtemp.tasks);
 		}
 		temp.subContents = new Array();
 		return temp;
