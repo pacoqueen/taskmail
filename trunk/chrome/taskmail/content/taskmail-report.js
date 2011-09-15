@@ -58,6 +58,9 @@ TASKMAIL.Report = {
 	  result = result.replace("#TASK_STATE#",stateLabel);
 	  result = result.replace("#TASK_DESC#",task.desc);
 	  result = result.replace("#TASK_PRIO#",task.priority);
+		result = result.replace("#TASK_CREATION_DATE#",   task.createDate   == null ? "" : TASKMAIL.UI.formatDate(task.createDate));
+		result = result.replace("#TASK_DUE_DATE#",        task.dueDate      == null ? "" : TASKMAIL.UI.formatDate(task.dueDate));
+		result = result.replace("#TASK_COMPLETION_DATE#", task.completeDate == null ? "" : TASKMAIL.UI.formatDate(task.completeDate));
 		return result;
 	},
 	
