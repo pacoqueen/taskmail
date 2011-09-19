@@ -136,9 +136,12 @@ TASKMAIL.DB = {
 		}
 	},
 			
-	getTaskListSQLite : function(folderMsg, mailId, folder, stateFilter, viewFilter, needFolderTree, text) {
+	/**
+	 * @return array[Task]
+	 */
+	getTaskListSQLite : function(folderMsg, mailId, folder, stateFilter, viewFilter, text) {
 //		TASKMAIL.consoleService.logStringMessage("getTaskListSQLite");
-		var result = new TASKMAIL.Content();
+		var result = new Array();
 		try {
 			var sql = "select tasks.rowid, title, state, desc, priority, createDate, dueDate, completeDate, tasks.folderURI ";
 			sql += this.getTaskListWhereClause(stateFilter, viewFilter, folderMsg, mailId, folder, text);
@@ -168,18 +171,10 @@ TASKMAIL.DB = {
 				}
 				var task = new TASKMAIL.Task(id, taskFolder, prettyName, title, desc, state, prio,
 				                             createDate, dueDate, completeDate);
-				result.tasks.push(task);
+				result.push(task);
 			}
 		} catch (err) {
 			Components.utils.reportError("getTaskListSQLite " + err);
-		}
-		if (needFolderTree) {
-			var root = new TASKMAIL.Content();
-			root.folderName = "root";
-			root.subContents.push(result);
-			this.createFolderTree(result, root);
-			root.invisibleTasksCount = result.invisibleTasksCount;
-			result = root;
 		}
 		return result;
 	},

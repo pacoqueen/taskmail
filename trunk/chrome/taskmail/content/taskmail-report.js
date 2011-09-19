@@ -32,9 +32,12 @@ TASKMAIL.Report = {
 				var subject = prefs.getCharPref("subject");
 				var templateBody = prefs.getCharPref("body");
 				
+				var temp = TASKMAIL.UI.retrieveTasks();
 				var currentOrder = document.getElementById("taskmail-taskPriorityCol").getAttribute("sortDirection");
-				var temp = TASKMAIL.UI.retrieveTasks(currentOrder == "natural");
-				temp = TASKMAIL.UI.sortTaskList(temp);
+				temp = TASKMAIL.UI.sortTaskList(temp);					
+				if (currentOrder == "natural") {
+					TASKMAIL.DB.createFolderTree(temp, null);
+				}
 		  	
 				var body = this._getReportBody(temp, templateBody);
 				

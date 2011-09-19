@@ -612,8 +612,12 @@ TASKMAIL.UI = {
 		}
 	},
 
-	retrieveTasks : function(needFolderTree) {
+	/**
+	 * @return Content (only one, flat, no arbo).
+	 */
+	retrieveTasks : function() {
 		var result = new TASKMAIL.Content();
+		result.folderName = "root";
 		
 		var currentMsgFolder  = GetSelectedMsgFolders()[0];;
 		var currentTaskFolder = TASKMAIL.UI.viewedFolder;
@@ -629,27 +633,27 @@ TASKMAIL.UI = {
 				// TASKMAIL.consoleService.logStringMessage(selectedMailKey);
 				// il faut charger les liens avant les taches
 				TASKMAIL.DB.getLinkSQLite(currentMsgFolder, currentTaskFolder, viewFilter);
-				result = TASKMAIL.DB.getTaskListSQLite(currentMsgFolder, messageId,
-						currentTaskFolder, stateFilter, viewFilter, needFolderTree, text);
+				result.tasks = TASKMAIL.DB.getTaskListSQLite(currentMsgFolder, messageId,
+						currentTaskFolder, stateFilter, viewFilter, text);
 			} catch (err) {
 				// Components.utils.reportError("dbUpgrade " + err);
 			}
 		} else if (viewFilter == this.VIEW_FILTER_ALL_FOLDERS || viewFilter == this.VIEW_FILTER_HOTLIST) {
 			// all folders or hot list
 			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, currentTaskFolder, viewFilter);
-			result = TASKMAIL.DB.getTaskListSQLite(null, null,
-						null, stateFilter, viewFilter, needFolderTree, text);
+			result.tasks = TASKMAIL.DB.getTaskListSQLite(null, null,
+						null, stateFilter, viewFilter, text);
 		} else if (viewFilter == this.VIEW_FILTER_FOLDER) {
 			// folder
 			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, currentTaskFolder, viewFilter);
-			result = TASKMAIL.DB.getTaskListSQLite(null, null,
-					currentTaskFolder, stateFilter, viewFilter, needFolderTree, text);
+			result.tasks = TASKMAIL.DB.getTaskListSQLite(null, null,
+					currentTaskFolder, stateFilter, viewFilter, text);
 		} else {
 			// subfolders (viewFilter == this.VIEW_FILTER_SUBFOLDERS)
 			// il faut charger les liens avant les taches
 			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, currentTaskFolder, viewFilter);
-			result = TASKMAIL.DB.getTaskListSQLite(null, null,
-					currentTaskFolder, stateFilter, viewFilter, needFolderTree, text);
+			result.tasks = TASKMAIL.DB.getTaskListSQLite(null, null,
+					currentTaskFolder, stateFilter, viewFilter, text);
 		}
 		return result;
 	},
@@ -668,7 +672,8 @@ TASKMAIL.UI = {
 	
 	/**
 	 * tri un content
-	 * @var this.currentOrder
+	 * @param Content
+	 * @return Content ordered
 	 */
 	sortTaskList : function (temp) {
 		switch (this.currentOrder.columnId) {
@@ -696,7 +701,7 @@ TASKMAIL.UI = {
 		// On va remonter les liens, on reset donc les tableaux
 		TASKMAIL.Link.resetLink();
 		
-		var temp = this.retrieveTasks(false);
+		var temp = this.retrieveTasks();
 		temp = this.sortTaskList(temp);
 		for(var i=0; i<temp.tasks.length; i++) {
 				this.fillTaskList(temp.tasks[i]);
