@@ -616,8 +616,8 @@ TASKMAIL.UI = {
 	 * @return Content (only one, flat, no arbo).
 	 */
 	retrieveTasks : function() {
-		var result = new TASKMAIL.Content();
-		result.folderName = "root";
+		var result = new Array();
+		//result.folderName = "root";
 		
 		var currentMsgFolder  = GetSelectedMsgFolders()[0];;
 		var currentTaskFolder = TASKMAIL.UI.viewedFolder;
@@ -633,7 +633,7 @@ TASKMAIL.UI = {
 				// TASKMAIL.consoleService.logStringMessage(selectedMailKey);
 				// il faut charger les liens avant les taches
 				TASKMAIL.DB.getLinkSQLite(currentMsgFolder, currentTaskFolder, viewFilter);
-				result.tasks = TASKMAIL.DB.getTaskListSQLite(currentMsgFolder, messageId,
+				result = TASKMAIL.DB.getTaskListSQLite(currentMsgFolder, messageId,
 						currentTaskFolder, stateFilter, viewFilter, text);
 			} catch (err) {
 				// Components.utils.reportError("dbUpgrade " + err);
@@ -641,56 +641,44 @@ TASKMAIL.UI = {
 		} else if (viewFilter == this.VIEW_FILTER_ALL_FOLDERS || viewFilter == this.VIEW_FILTER_HOTLIST) {
 			// all folders or hot list
 			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, currentTaskFolder, viewFilter);
-			result.tasks = TASKMAIL.DB.getTaskListSQLite(null, null,
+			result = TASKMAIL.DB.getTaskListSQLite(null, null,
 						null, stateFilter, viewFilter, text);
 		} else if (viewFilter == this.VIEW_FILTER_FOLDER) {
 			// folder
 			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, currentTaskFolder, viewFilter);
-			result.tasks = TASKMAIL.DB.getTaskListSQLite(null, null,
+			result = TASKMAIL.DB.getTaskListSQLite(null, null,
 					currentTaskFolder, stateFilter, viewFilter, text);
 		} else {
 			// subfolders (viewFilter == this.VIEW_FILTER_SUBFOLDERS)
 			// il faut charger les liens avant les taches
 			TASKMAIL.DB.getLinkSQLite(currentMsgFolder, currentTaskFolder, viewFilter);
-			result.tasks = TASKMAIL.DB.getTaskListSQLite(null, null,
+			result = TASKMAIL.DB.getTaskListSQLite(null, null,
 					currentTaskFolder, stateFilter, viewFilter, text);
 		}
 		return result;
 	},
 
 	/**
-	 * transforme une arbo de Content en un seul content.
-	 */
-	makeFlatTaskList : function (temp) {
-		for(var i=0; i<temp.subContents.length; i++) {
-			var subtemp = this.makeFlatTaskList(temp.subContents[i]);
-			temp.tasks = temp.tasks.concat(subtemp.tasks);
-		}
-		temp.subContents = new Array();
-		return temp;
-	},
-	
-	/**
 	 * tri un content
-	 * @param Content
-	 * @return Content ordered
+	 * @param Array[Task]
+	 * @return Array[Task] ordered
 	 */
 	sortTaskList : function (temp) {
 		switch (this.currentOrder.columnId) {
 			case "taskmail-taskPriorityCol":
-				temp.tasks = temp.tasks.sort(function (a,b) { return TASKMAIL.sortTask(a,b,"priority",TASKMAIL.UI.currentOrder.order);});
+				temp = temp.sort(function (a,b) { return TASKMAIL.sortTask(a,b,"priority",TASKMAIL.UI.currentOrder.order);});
 				break;
 			case "taskmail-taskStateCol":
-				temp.tasks = temp.tasks.sort(function (a,b) { return TASKMAIL.sortTask(a,b,"state",TASKMAIL.UI.currentOrder.order);});
+				temp = temp.sort(function (a,b) { return TASKMAIL.sortTask(a,b,"state",TASKMAIL.UI.currentOrder.order);});
 				break;
 			case "taskmail-taskCreateDateCol":
-				temp.tasks = temp.tasks.sort(function (a,b) { return TASKMAIL.sortTask(a,b,"createDate",TASKMAIL.UI.currentOrder.order);});
+				temp = temp.sort(function (a,b) { return TASKMAIL.sortTask(a,b,"createDate",TASKMAIL.UI.currentOrder.order);});
 				break;
 			case "taskmail-taskDueDateCol":
-				temp.tasks = temp.tasks.sort(function (a,b) { return TASKMAIL.sortTask(a,b,"dueDate",TASKMAIL.UI.currentOrder.order);});
+				temp = temp.sort(function (a,b) { return TASKMAIL.sortTask(a,b,"dueDate",TASKMAIL.UI.currentOrder.order);});
 				break;
 			case "taskmail-taskCompleteDateCol":
-				temp.tasks = temp.tasks.sort(function (a,b) { return TASKMAIL.sortTask(a,b,"completeDate",TASKMAIL.UI.currentOrder.order);});
+				temp = temp.sort(function (a,b) { return TASKMAIL.sortTask(a,b,"completeDate",TASKMAIL.UI.currentOrder.order);});
 				break;
 		}
 		
@@ -703,8 +691,8 @@ TASKMAIL.UI = {
 		
 		var temp = this.retrieveTasks();
 		temp = this.sortTaskList(temp);
-		for(var i=0; i<temp.tasks.length; i++) {
-				this.fillTaskList(temp.tasks[i]);
+		for(var i=0; i<temp.length; i++) {
+				this.fillTaskList(temp[i]);
 		}
 		
 		// refresh link

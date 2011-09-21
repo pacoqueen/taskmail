@@ -32,14 +32,19 @@ TASKMAIL.Report = {
 				var subject = prefs.getCharPref("subject");
 				var templateBody = prefs.getCharPref("body");
 				
-				var temp = TASKMAIL.UI.retrieveTasks();
-				var currentOrder = document.getElementById("taskmail-taskPriorityCol").getAttribute("sortDirection");
-				temp = TASKMAIL.UI.sortTaskList(temp);					
-				if (currentOrder == "natural") {
-					TASKMAIL.DB.createFolderTree(temp, null);
+				var tasks = TASKMAIL.UI.retrieveTasks();
+				var content = new TASKMAIL.Content();
+				content.tasks = tasks;
+				tasks = TASKMAIL.UI.sortTaskList(tasks);					
+				if (TASKMAIL.UI.currentOrder.columnId == "") {
+					this.makeContentTree(content, null);
+				} else if (TASKMAIL.UI.currentOrder.columnId == "taskmail-taskCreateDateCol") {
+					content.folderName = "Creation date order";
+				} else {
+					this.makeContentSort(content);
 				}
 		  	
-				var body = this._getReportBody(temp, templateBody);
+				var body = this._getReportBody(content, templateBody);
 				
 				composeFields.to = to;
 				composeFields.cc = cc;
@@ -51,6 +56,114 @@ TASKMAIL.Report = {
 		}
 	},
 
+	/**
+	 * @param aCurrent.tasks doit être trié par folderURI
+	 */
+	makeContentTree : function (aCurrent, aParent) {
+		// découpe la liste en 3 : celle du folder,  celles des sous folder et celles restante (cibling)
+		//                         (0 to currentEnd), (currentEnd + 1 to subTasksEnd), (ciblingStart - aCurrent.tasks.length) 
+		var currentEnd = 0;
+		var subTasksEnd = 0;
+		// cherche la derniere tache du folder courant
+		for(var i=0; i<aCurrent.tasks.length-1; i++) {
+			var previousFolderURI = aCurrent.tasks[0].folderURI;
+			if (previousFolderURI == aCurrent.tasks[i+1].folderURI) {
+				currentEnd = i + 1;
+			}
+		}
+		// cherche la derniere tache des sous-folers en parcourant les taches suivantes
+		// tant que les taches ont un folderURI qui contient le folderURI du folder courant
+		var currentFolderURI = aCurrent.tasks[0].folderURI;
+		for(var i=currentEnd + 1; i<aCurrent.tasks.length; i++) {
+			if (aCurrent.tasks[i].folderURI.indexOf(currentFolderURI) > -1) {
+				// folderURI contient folderURI du folder courant => sous taches.
+				subTasksEnd = i;
+			}
+		}
+		if (subTasksEnd != 0) {
+			// si on a trouvé des sous-taches, on crée l'arborescence pour ces sous-taches.
+			var tmp = new TASKMAIL.Content();
+			tmp.tasks = aCurrent.tasks.slice(currentEnd + 1, subTasksEnd + 1);
+			aCurrent.subContents.push(tmp);
+			this.makeContentTree(tmp, aCurrent);
+		}
+		// on cherche les taches cibling après les courantes ou les sous-taches.
+		var ciblingStart = (subTasksEnd > currentEnd ? subTasksEnd : currentEnd) + 1;
+		if (ciblingStart < aCurrent.tasks.length) {
+			// il y a des taches après ciblingStart
+			var tmp = new TASKMAIL.Content();
+			tmp.tasks = aCurrent.tasks.slice(ciblingStart, aCurrent.tasks.length + 1);
+			aParent.subContents.push(tmp);
+			this.makeContentTree(tmp, aParent);
+		}
+		// on ne garde que les taches du folder courant.
+		// si on n'a que des taches dans le folder courant, currentEnd = length, 
+		// le splice ne fera donc rien
+		if (aCurrent.tasks.length > currentEnd) {
+			aCurrent.tasks.splice(currentEnd + 1,aCurrent.tasks.length);
+		}
+		if (aCurrent.tasks.length > 0) {
+			var prettyName = GetMsgFolderFromUri(aCurrent.tasks[0].folderURI, false).prettyName;
+			aCurrent.folderName = prettyName;
+		}
+	},
+	
+	/**
+	 * @param aCurrent.tasks doit être trié par folderURI
+	 */
+	makeContentSort : function (rootContent) {
+		var property = null;
+		switch (TASKMAIL.UI.currentOrder.columnId) {
+			case "taskmail-taskPriorityCol":
+				property = "priority";
+				break;
+			case "taskmail-taskStateCol":
+				property = "state";
+				break;
+			case "taskmail-taskCreateDateCol":
+				property = "createDate";
+				break;
+			case "taskmail-taskDueDateCol":
+				property = "dueDate";
+				break;
+			case "taskmail-taskCompleteDateCol":
+				property = "completeDate";
+				break;
+		}
+		while (rootContent.tasks.length > 0) {
+			var i = 0;
+			while ((i <= rootContent.tasks.length-2) && (rootContent.tasks[i][property] == rootContent.tasks[i+1][property])) {
+				i++;
+			}
+			rootContent.subContents.push(new TASKMAIL.Content());
+			var removed = rootContent.tasks.splice(0,i+1);
+			rootContent.subContents[rootContent.subContents.length-1].tasks = removed;
+			if (property == "state") {
+				var stateLabel = TASKMAIL.UI.states[removed[0][property]].label;
+				var folderLabel =  property + " " + stateLabel;
+			} else if (property == "createDate" ||
+			           property == "dueDate" ||
+			           property == "completeDate") {
+				var folderLabel =  property + " " + TASKMAIL.UI.formatDate(removed[0][property]);	
+			} else {
+				var folderLabel =  property + " " + removed[0][property];	
+			}
+			rootContent.subContents[rootContent.subContents.length-1].folderName = folderLabel;
+		}
+	},
+	
+	/**
+	 * transforme une arbo de Content en un seul content.
+	 */
+	makeFlatTaskList : function (temp) {
+		for(var i=0; i<temp.subContents.length; i++) {
+			var subtemp = this.makeFlatTaskList(temp.subContents[i]);
+			temp.tasks = temp.tasks.concat(subtemp.tasks);
+		}
+		temp.subContents = new Array();
+		return temp;
+	},
+	
 	/**
 	 * génére la partie du rapport correspondant à une tache.
 	 * génere la partie du template qui est entre #TASK# en y substituant les informations.
@@ -110,8 +223,15 @@ TASKMAIL.Report = {
 	 */
 	_getReportBody : function (temp, templateBody) {
 	  var result = templateBody.substring(0, templateBody.indexOf("#FOLDER#"));
-	  result += this._getReportFolder(temp, templateBody.substring(templateBody.indexOf("#FOLDER#") + 8,
-	                                                               templateBody.lastIndexOf("#FOLDER#")));
+	  var templateFolder = templateBody.substring(templateBody.indexOf("#FOLDER#") + 8,
+		                                            templateBody.lastIndexOf("#FOLDER#"));
+	  if (temp.tasks.length == 0) {
+	  	for(var i=0; i<temp.subContents.length; i++) {
+			  result += this._getReportFolder(temp.subContents[i], templateFolder);
+	  	}
+	  } else {
+		  result += this._getReportFolder(temp, templateFolder);
+	  }
 	  result += templateBody.substring(templateBody.lastIndexOf("#FOLDER#") + 8);
 		return result;
 	}	
