@@ -146,19 +146,7 @@ TASKMAIL.Report = {
 			rootContent.subContents.push(new TASKMAIL.Content());
 			var removed = rootContent.tasks.splice(0,i+1);
 			rootContent.subContents[rootContent.subContents.length-1].tasks = removed;
-			if (property == "state") {
-				// le titre du groupe a besoin d'un libelle I18N
-				var stateLabel = TASKMAIL.UI.states[removed[0][property]].label;
-				var folderLabel =  property + " " + stateLabel;
-//			} else if (property == "createDate" ||
-//			           property == "dueDate" ||
-//			           property == "completeDate") {
-//				var folderLabel =  property + " " + TASKMAIL.UI.formatDate(removed[0][property]);	
-			} else {
-				// le titre n'a pas besoin de I18N
-				var folderLabel =  property + " " + removed[0][property];	
-			}
-			rootContent.subContents[rootContent.subContents.length-1].folderName = folderLabel;
+			rootContent.subContents[rootContent.subContents.length-1].folderName = removed[0][property];
 		}
 	},
 	
@@ -229,7 +217,31 @@ TASKMAIL.Report = {
 		    
 		  result = result.replace("#SUB_FOLDERS#",reportSubFolders);
 		  
-		  result = result.replace("#FOLDER_NAME#",content.folderName);
+			var label = "";
+			switch (TASKMAIL.UI.currentOrder.columnId) {
+				case "taskmail-taskPriorityCol":
+					property = "priority";
+					break;
+				case "taskmail-taskStateCol":
+					property = "state";
+					break;
+				
+			}
+			var folderLabel = "";
+			switch (TASKMAIL.UI.currentOrder.columnId) {
+				case "taskmail-taskPriorityCol":
+					folderLabel = TASKMAIL.UI.stringsBundle.getString('reportPriority')
+					              + " " + content.folderName;	
+					break;
+				case "taskmail-taskStateCol":
+					folderLabel = TASKMAIL.UI.stringsBundle.getString('reportState')
+					               + " " + TASKMAIL.UI.states[content.folderName].label;
+					break;
+				default:
+					folderLabel = content.folderName;	
+					break;
+			}
+		  result = result.replace("#FOLDER_NAME#",folderLabel);
 	  }
 	  
 	  return result;
