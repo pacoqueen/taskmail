@@ -179,58 +179,6 @@ TASKMAIL.DB = {
 		return result;
 	},
 	
-	/**
-	 * @param aCurrent.tasks doit être trié par folderURI
-	 */
-	createFolderTree : function (aCurrent, aParent) {
-		// découpe la liste en 3 : celle du folder,  celles des sous folder et celles restante (cibling)
-		//                         (0 to currentEnd), (currentEnd + 1 to subTasksEnd), (ciblingStart - aCurrent.tasks.length) 
-		var currentEnd = 0;
-		var subTasksEnd = 0;
-		// cherche la derniere tache du folder courant
-		for(var i=0; i<aCurrent.tasks.length-1; i++) {
-			var previousFolderURI = aCurrent.tasks[0].folderURI;
-			if (previousFolderURI == aCurrent.tasks[i+1].folderURI) {
-				currentEnd = i + 1;
-			}
-		}
-		// cherche la derniere tache des sous-folers en parcourant les taches suivantes
-		// tant que les taches ont un folderURI qui contient le folderURI du folder courant
-		var currentFolderURI = aCurrent.tasks[0].folderURI;
-		for(var i=currentEnd + 1; i<aCurrent.tasks.length; i++) {
-			if (aCurrent.tasks[i].folderURI.indexOf(currentFolderURI) > -1) {
-				// folderURI contient folderURI du folder courant => sous taches.
-				subTasksEnd = i;
-			}
-		}
-		if (subTasksEnd != 0) {
-			// si on a trouvé des sous-taches, on crée l'arborescence pour ces sous-taches.
-			var tmp = new TASKMAIL.Content();
-			tmp.tasks = aCurrent.tasks.slice(currentEnd + 1, subTasksEnd + 1);
-			aCurrent.subContents.push(tmp);
-			this.createFolderTree(tmp, aCurrent);
-		}
-		// on cherche les taches cibling après les courantes ou les sous-taches.
-		var ciblingStart = (subTasksEnd > currentEnd ? subTasksEnd : currentEnd) + 1;
-		if (ciblingStart < aCurrent.tasks.length) {
-			// il y a des taches après ciblingStart
-			var tmp = new TASKMAIL.Content();
-			tmp.tasks = aCurrent.tasks.slice(ciblingStart, aCurrent.tasks.length + 1);
-			aParent.subContents.push(tmp);
-			this.createFolderTree(tmp, aParent);
-		}
-		// on ne garde que les taches du folder courant.
-		// si on n'a que des taches dans le folder courant, currentEnd = length, 
-		// le splice ne fera donc rien
-		if (aCurrent.tasks.length > currentEnd) {
-			aCurrent.tasks.splice(currentEnd + 1,aCurrent.tasks.length);
-		}
-		if (aCurrent.tasks.length > 0) {
-			var prettyName = GetMsgFolderFromUri(aCurrent.tasks[0].folderURI, false).prettyName;
-			aCurrent.folderName = prettyName;
-		}
-	},
-	
 	getTaskDetailSQLite : function(pk) {
 		TASKMAIL.consoleService.logStringMessage("getTaskDetailSQLite");
 		var result = null;
