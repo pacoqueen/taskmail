@@ -1,0 +1,25 @@
+<!ENTITY window.title         "Task &amp; mail opciones">
+<!ENTITY prefs.pane.report    "Informe">
+<!ENTITY states.caption       "Estado de los carpetas">
+<!ENTITY report.caption       "Informe de carpetas">
+<!ENTITY fields.comment       "Para campos campos Para y CC, una coma para hacer frente a Separe.">
+<!ENTITY field.to             "A">
+<!ENTITY field.cc             "CC">
+<!ENTITY field.subject        "Tema">
+<!ENTITY field.body           "cuerpo">
+<!ENTITY reset                "reajustar">
+<!ENTITY reset.key            "R">
+<!ENTITY prefs.pane.state     "Estado">
+<!ENTITY prefs.state.intro    "Los Estados pueden utilizar para organizar y filtrar las tareas.">
+<!ENTITY prefs.state.warning  "Advertencia, no elimine un estado utilizado.">
+<!ENTITY prefs.state.done     "El estado de hecho podría cambiar el nombre, pero debe conservar su significado.">
+<!ENTITY addState             "añadir">
+<!ENTITY editState            "editar">
+<!ENTITY removeState          "borrar">
+<!ENTITY addState.key         "A">
+<!ENTITY editState.key        "E">
+<!ENTITY removeState.key      "D">
+<!ENTITY upState              "hasta">
+<!ENTITY upState.key          "U">
+<!ENTITY downState            "abajo">
+<!ENTITY downState.key        "W">
