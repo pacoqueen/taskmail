@@ -18,8 +18,8 @@
 <!ENTITY removeState          "Borrar">
 <!ENTITY addState.key         "A">
 <!ENTITY editState.key        "E">
-<!ENTITY removeState.key      "D">
-<!ENTITY upState              "Arriba">
-<!ENTITY upState.key          "U">
-<!ENTITY downState            "Abajo">
-<!ENTITY downState.key        "W">
+<!ENTITY removeState.key      "B">
+<!ENTITY upState              "ArriBa">
+<!ENTITY upState.key          "B">
+<!ENTITY downState            "AbaJo">
+<!ENTITY downState.key        "J">
