@@ -7,7 +7,7 @@ TASKMAIL.PREFS = {
 
 	resetReportPrefs : function  () {
 	  var hDefaultBranch = Components.classes["@mozilla.org/preferences-service;1"]
-	  .getService(Components.interfaces.nsIPrefService).getDefaultBranch("taskmail.report.");
+	  .getService(Components.interfaces.nsIPrefService).getDefaultBranch("extensions.taskmail.report.");
 	  var preferences = ["to","cc","subject","body"];
 	  for(var i = 0; i < preferences.length; i++) {
 	    try {
@@ -31,7 +31,7 @@ TASKMAIL.PREFS = {
 		var result = new Array();
   	var prefs = Components.classes["@mozilla.org/preferences-service;1"]
 				.getService(Components.interfaces.nsIPrefService)
-				.getBranch("taskmail.");
+				.getBranch("extensions.taskmail.");
 		prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
     var statesPref = prefs.getComplexValue("states",Components.interfaces.nsIPrefLocalizedString).data;
     var statePrefArray = statesPref.split(",");

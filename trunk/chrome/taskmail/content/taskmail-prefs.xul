@@ -12,7 +12,7 @@
 	
 	<prefpane id="taskmail-pane" label="&prefs.pane.state;" onpaneload="TASKMAIL.PREFS.init();">
     <preferences>
-      <preference id="taskmail_states" name="taskmail.states" type="string"/>
+      <preference id="taskmail_states" name="extensions.taskmail.states" type="string"/>
     </preferences>
     <groupbox>
       <caption label="&states.caption;"/>
@@ -35,10 +35,10 @@
   
   <prefpane id="taskmail-reportPane" label="&prefs.pane.report;">
     <preferences>
-      <preference id="taskmail_report_to" name="taskmail.report.to" type="string"/>
-      <preference id="taskmail_report_cc" name="taskmail.report.cc" type="string"/>
-      <preference id="taskmail_report_subject" name="taskmail.report.subject" type="string"/>
-      <preference id="taskmail_report_body" name="taskmail.report.body" type="string"/>
+      <preference id="taskmail_report_to" name="extensions.taskmail.report.to" type="string"/>
+      <preference id="taskmail_report_cc" name="extensions.taskmail.report.cc" type="string"/>
+      <preference id="taskmail_report_subject" name="extensions.taskmail.report.subject" type="string"/>
+      <preference id="taskmail_report_body" name="extensions.taskmail.report.body" type="string"/>
     </preferences>
     <groupbox>
       <caption label="&report.caption;"/>
