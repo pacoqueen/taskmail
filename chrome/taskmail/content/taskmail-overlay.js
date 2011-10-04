@@ -1036,7 +1036,7 @@ TASKMAIL.UI = {
 		// pose un observe sur les états définis dans les préférences
 		this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
          .getService(Components.interfaces.nsIPrefService)
-         .getBranch("taskmail.");
+         .getBranch("extensions.taskmail.");
 		this.prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
     this.prefs.addObserver("", this, false);
     // charge les états pour la liste de tâches et le détail d'une tâche.
