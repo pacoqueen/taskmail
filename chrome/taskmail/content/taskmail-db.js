@@ -86,11 +86,11 @@ TASKMAIL.DB = {
 	               && folder != null) {
 				// sinon recherche par folder
 				sql += " from tasks where 1=1 ";
-				if (viewFilter == TASKMAIL.UI.VIEW_FILTER_SUBFOLDERS) {
-					sql += " and folderURI like :folderURI escape \"&\""; 
-				} else {
+				if (viewFilter != TASKMAIL.UI.VIEW_FILTER_SUBFOLDERS) {
 					sql += " and folderURI = :folderURI "; 
-				}
+				} else {
+					sql += " and ( folderURI = :folderURI or folderURI like :subfolderURI escape \"&\" ) "; 
+				}                                       
 	    } else {
 				// sinon recherche de tous les folders
 				sql += " from tasks where 1=1 ";
@@ -124,10 +124,11 @@ TASKMAIL.DB = {
 	               && folder != null) {
 				var folderURI = folder.URI;
 				var argValue = folderURI;
-				if (viewFilter == TASKMAIL.UI.VIEW_FILTER_SUBFOLDERS) {
-					argValue = folderURI.replace("%","&%") + "%";
-				}
 				stat.bindStringParameter(i, argValue); i++;
+				if (viewFilter == TASKMAIL.UI.VIEW_FILTER_SUBFOLDERS) {
+					argValue = folderURI.replace("%","&%") + "/%";
+  				stat.bindStringParameter(i, argValue); i++;
+				}
 			}
 			if (text != null && text != "") {
 				stat.bindStringParameter(i, "%" + text + "%"); i++;
@@ -137,6 +138,12 @@ TASKMAIL.DB = {
 	},
 			
 	/**
+	 * @param folderMsg nsiMsgFolder (use URI) use with mailId if viewFilter is Message. 
+	 * @param mailId nsIMsgDBHdr.messageKey (qsdqsdqsdqsdqsd)
+	 * @param folder nsiMsgFolder (use URI) folder to retreive if viewfilder is folder or subfolders.
+	 * @param stateFilter string (or null) Concatenation of state to retrive "12345" 
+	 * @param viewFilter int 
+	 * @param text string (or null)
 	 * @return array[Task]
 	 */
 	getTaskListSQLite : function(folderMsg, mailId, folder, stateFilter, viewFilter, text) {
@@ -431,18 +438,20 @@ TASKMAIL.DB = {
 			var origSubFolderURI = aOrigFolder.URI;
 			var newSubFolderURI = aNewFolder.URI;
 
-			var sql = "update tasks set folderURI = replace(folderURI, :old, :new) where folderURI like :like";
+			var sql = "update tasks set folderURI = replace(folderURI, :old, :new) where (folderURI = :equal) or (folderURI like :like)";
 			var stat4 = this.dbConnection.createStatement(sql);
 			stat4.bindStringParameter(0, origSubFolderURI);
 			stat4.bindStringParameter(1, newSubFolderURI);
-			stat4.bindStringParameter(2, origSubFolderURI + "%");
+			stat4.bindStringParameter(2, origSubFolderURI);
+			stat4.bindStringParameter(3, origSubFolderURI + "/%");
 			stat4.execute();
 
-			sql = "update links set folderURI = replace(folderURI, :old, :new) where folderURI like :like";
+			sql = "update links set folderURI = replace(folderURI, :old, :new) where (folderURI = :equal) or (folderURI like :like)";
 			var stat5 = this.dbConnection.createStatement(sql);
 			stat5.bindStringParameter(0, origSubFolderURI);
 			stat5.bindStringParameter(1, newSubFolderURI);
-			stat5.bindStringParameter(2, origSubFolderURI + "%");
+			stat5.bindStringParameter(2, origSubFolderURI);
+			stat5.bindStringParameter(3, origSubFolderURI + "/%");
 			stat5.execute();
 		} catch (err) {
 			this.dbConnection.rollbackTransaction();
@@ -496,18 +505,20 @@ TASKMAIL.DB = {
 
 			this.dbConnection.beginTransaction();
 
-			var sql = "update tasks set folderURI = replace(folderURI, :OLD_URI,:NEW_URI) where folderURI like :OLD_LIKE_URI";
+			var sql = "update tasks set folderURI = replace(folderURI, :OLD_URI,:NEW_URI) where (folderURI = :equal) or (folderURI like :OLD_LIKE_URI)";
 			var stat = this.dbConnection.createStatement(sql);
 			stat.bindStringParameter(0, oldParentURI);
 			stat.bindStringParameter(1, newParentURI);
-			stat.bindStringParameter(2, aSrcFolder.URI + "%");
+			stat.bindStringParameter(2, aSrcFolder.URI);
+			stat.bindStringParameter(3, aSrcFolder.URI + "/%");
 			stat.execute();
 
-			sql = "update links set folderURI = replace(folderURI, :OLD_URI, :NEW_URI) where folderURI like :OLD_LIKE_URI";
+			sql = "update links set folderURI = replace(folderURI, :OLD_URI, :NEW_URI) where (folderURI = :equal) or (folderURI like :OLD_LIKE_URI)";
 			var stat2 = this.dbConnection.createStatement(sql);
 			stat2.bindStringParameter(0, oldParentURI);
 			stat2.bindStringParameter(1, newParentURI);
-			stat2.bindStringParameter(2, aSrcFolder.URI + "%");
+			stat2.bindStringParameter(2, aSrcFolder.URI);
+			stat2.bindStringParameter(3, aSrcFolder.URI + "/%");
 			stat2.execute();
 		} catch (err) {
 			this.dbConnection.rollbackTransaction();
