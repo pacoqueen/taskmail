@@ -1444,6 +1444,7 @@ TASKMAIL.UILink = {
 	 * appelé par shift-L.
 	 */
 	showLinked : function (event) {
+		TASKMAIL.consoleService.logStringMessage("showLinked");
 		var focused = document.commandDispatcher.focusedElement;
 		if (document.getElementById("taskmail-taskList") == focused) {
 			TASKMAIL.UILink.showLinkedMail();

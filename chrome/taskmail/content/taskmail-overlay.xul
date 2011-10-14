@@ -204,7 +204,7 @@
 				</hbox>
 	
 				<tree id="taskmail-taskList" class="plain" ondblclick="TASKMAIL.UI.doubleClikTask(event)" context="taskmail-row-menu" seltype="multiple"  flex="1" minheight="75"
-							enableColumnDrag="true">
+				            enableColumnDrag="true" disableKeyNavigation="true">
 					<treecols>
 						<treecol id="taskmail-taskSubfolderCol" tooltiptext="&header.subfolder;" class="treecol-image subfolderColumnHeader"
 										label="&taskColHeadSubfolder;" fixed="true"
