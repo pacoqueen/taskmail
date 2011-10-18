@@ -74,22 +74,29 @@ var test_renameFolderSQLite = function(){
 }
 
 var test_moveFolderSQLite = function(){
+	/* vérifie que l'on n'a pas renommé folder4bis par erreur */
 	var folderURIOrig = "mailbox://nobody@Local%20Folders/folder4";
 	var folderURIDest = "mailbox://nobody@Local%20Folders/folder4ter";
 	var folderOrig = controller.window.GetMsgFolderFromUri(folderURIOrig, false);
 	var folderDest = controller.window.GetMsgFolderFromUri(folderURIDest, false);
   controller.window.TASKMAIL.DB.moveFolderSQLite(folderOrig, folderDest);
-  /* vérifie que l'on n'a pas renommé folder4bis par erreur */
+  
+ 	/* plus aucune tâche sous l'ancien nom */
  	assertCount("select count(*) as count from tasks where folderURI = \"mailbox://nobody@Local%20Folders/folder4\"",
 	 	0,"pas le bon nombre de tâche trouvée")
+ 	/* plus aucune tâche dans un sousfolder sous l'ancien nom */
  	assertCount("select count(*) as count from tasks where folderURI = \"mailbox://nobody@Local%20Folders/folder4/subfolder\"",
 	 	0,"pas le bon nombre de tâche trouvée")
+ 	/* on a bien plusieurs tâche renommées */
  	assertCount("select count(*) as count from tasks where folderURI like \"mailbox://nobody@Local%20Folders/folder4ter%\"",
  		2, "pas le bon nombre de tâche trouvée");
+ 	/* plus aucun lien sous l'ancien nom */
  	assertCount("select count(*) as count from links where folderURI = \"mailbox://nobody@Local%20Folders/folder4\"",
 	 	0,"pas le bon nombre de tâche trouvée")
+ 	/* plus aucun lien sous l'ancien nom y compris dans un sousfolder */
  	assertCount("select count(*) as count from links where folderURI = \"mailbox://nobody@Local%20Folders/folder4/subfolder\"",
 	 	0,"pas le bon nombre de tâche trouvée")
+ 	/* on a bien plusieurs liens renommées */
  	assertCount("select count(*) as count from links where folderURI like \"mailbox://nobody@Local%20Folders/folder4ter%\"",
  		2, "pas le bon nombre de tâche trouvée");
 }
