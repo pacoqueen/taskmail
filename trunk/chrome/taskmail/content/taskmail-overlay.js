@@ -1045,7 +1045,8 @@ TASKMAIL.UI = {
     this.initialiseOrder();
     
     // replace default getCellProperties.
-    gFolderTreeView.getCellProperties = TASKMAIL.UI.new_getCellProperties;
+    this.oldGetCellProperties = gFolderTreeView.getCellProperties;
+		gFolderTreeView.getCellProperties = TASKMAIL.UI.new_getCellProperties;
 	},
 	
 	observe : function (subject, topic, data) {
@@ -1218,7 +1219,8 @@ TASKMAIL.UI = {
   
   toggleTaskPane : function () {
   	var pane = document.getElementById("taskmail-splitter");
-  	if (pane.getAttribute("state") == "open") {
+  	TASKMAIL.consoleService.logStringMessage("toggleTaskPane, pane.collapsed=" + pane.getAttribute("state"));
+		if (pane.getAttribute("state") == "open" || pane.getAttribute("state") == null) {
   		pane.setAttribute("state","collapsed");
   	} else {
   		pane.setAttribute("state","open");
@@ -1354,6 +1356,11 @@ TASKMAIL.UI = {
   },
   
   /**
+   * Old callback.
+   */
+	oldGetCellProperties : null,
+	
+	/**
    * Change icon folder when task view is sticky or task view shows 
    * an other folder that current one.
    */
@@ -1369,6 +1376,8 @@ TASKMAIL.UI = {
 	      props.AppendElement(acAtomServ.getAtom("tandm-viewedFolder"));
       }      
     }
+    // Call old version. Make color folder extension works with Tasks & mails.
+    TASKMAIL.UI.oldGetCellProperties(row,col,props); 
   }
 }
 
