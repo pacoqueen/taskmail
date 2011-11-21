@@ -6,20 +6,16 @@ if (!TASKMAIL.UI)
 TASKMAIL.UI = {
 	
 	/**
-	 * Open detail or show next linked email. 
+	 * Open detail
 	 */
 	doubleClikTask : function(event) {
-		if (event.ctrlKey) {
-			TASKMAIL.UILink.showLinkedMail();
+		var box = document.getElementById("taskmail-addTask");
+		var selectedTask = TASKMAIL.UI.getSelectedTasks();
+		if (box.collapsed || this.taskDetailPK != selectedTask[0].id) {
+			// si on double clique sur une autre tache, ça l'ouvre
+			this.beginUpdateTask();
 		} else {
-			var box = document.getElementById("taskmail-addTask");
-			var selectedTask = TASKMAIL.UI.getSelectedTasks();
-			if (box.collapsed || this.taskDetailPK != selectedTask[0].id) {
-				// si on double clique sur une autre tache, ça l'ouvre
-				this.beginUpdateTask();
-			} else {
-				this.cancelSaveTask();
-			}
+			this.cancelSaveTask();
 		}
 	},
 
@@ -498,17 +494,33 @@ TASKMAIL.UI = {
 		TASKMAIL.UILink.lastLinkedShowed = null;
 		TASKMAIL.UILink.refreshStatusBar("task");
 	},
-
+	
 	/**
 	 * called on task selection.
 	 */
 	onTaskSelect : function() {
+//		TASKMAIL.consoleService.logStringMessage("onTaskSelect");
 		var tree = document.getElementById("threadTree");
 		// parcours tout les taches et regarde s'il existe une tache liée
 		var column = tree.columns.getNamedColumn("taskmail-colTask");
 		tree.treeBoxObject.invalidateColumn(column);
 		TASKMAIL.UILink.lastLinkedShowed = null;
 		TASKMAIL.UILink.refreshStatusBar("mail");
+	},
+
+	/**
+	 * called on task selection.
+	 */
+	onTaskClick : function(event) {
+//		TASKMAIL.consoleService.logStringMessage("onTaskClick");
+		// According to preference and mouse button used, show linked message.
+	    var prefserv = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+	    var pref = prefserv.getCharPref("extensions.taskmail.showMessageOnMouseClick");
+		if ((event.button == 0 && pref == "LEFT") ||
+		    (event.button == 1 && pref == "MIDDLE"))
+		{
+			TASKMAIL.UILink.showLinkedMail();
+		}
 	},
 
 	refreshTaskPane : function (folder) {
@@ -994,6 +1006,8 @@ TASKMAIL.UI = {
 				function(e) {
 					TASKMAIL.UI.onTaskSelect();
 				}, false);
+		document.getElementById("taskmail-taskList").addEventListener("click",
+				TASKMAIL.UI.onTaskClick, false);
 		// bug, pas possible d'utiliser onpopupshowing dans le .xul
 		document.getElementById("mailContext").addEventListener("popupshowing",
 				function(e) {
@@ -1034,12 +1048,10 @@ TASKMAIL.UI = {
 	                              .getService(Components.interfaces.nsIScriptableDateFormat);
 	
 		// pose un observe sur les états définis dans les préférences
-		this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
-         .getService(Components.interfaces.nsIPrefService)
-         .getBranch("extensions.taskmail.");
-		this.prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
-    this.prefs.addObserver("", this, false);
-    // charge les états pour la liste de tâches et le détail d'une tâche.
+		var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+		prefs.addObserver("", this, false);
+
+	// charge les états pour la liste de tâches et le détail d'une tâche.
     this.getStatesFromPref();
     
     this.initialiseOrder();
@@ -1050,12 +1062,14 @@ TASKMAIL.UI = {
 	},
 	
 	observe : function (subject, topic, data) {
+		TASKMAIL.consoleService.logStringMessage("preferences observer");
 		if (topic != "nsPref:changed") {
-	    return;
-	  }
+			return;
+		}
 	 
-	  switch(data) {
-			case "states":
+		switch(data) {
+			case "extensions.taskmail.states":
+				TASKMAIL.consoleService.logStringMessage("states changed");
 				this.getStatesFromPref();
 				this.refreshTaskList();
 				break;
@@ -1067,7 +1081,6 @@ TASKMAIL.UI = {
 	 */
 	states : new Array(),
 	
-	prefs : null,
 	dateService : null,
 	
 	/**
@@ -1078,7 +1091,8 @@ TASKMAIL.UI = {
 	getStatesFromPref : function () {
 		//TASKMAIL.consoleService.logStringMessage("getStatesFromPref");
 		var result = new Array();
-    var statesPref = this.prefs.getComplexValue("states",Components.interfaces.nsIPrefLocalizedString).data;
+	    var prefserv = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+	    var statesPref = prefserv.getComplexValue("extensions.taskmail.states",Components.interfaces.nsIPrefLocalizedString).data;
     var statePrefArray = statesPref.split(",");
     for(var index=0; index<statePrefArray.length; index++) {
     	var id         = parseInt(statePrefArray[index].substring(0,statePrefArray[index].indexOf("|")));

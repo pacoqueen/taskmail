@@ -12,8 +12,18 @@
 	
 	<prefpane id="taskmail-pane" label="&prefs.pane.state;" onpaneload="TASKMAIL.PREFS.init();">
     <preferences>
-      <preference id="taskmail_states" name="extensions.taskmail.states" type="string"/>
+      <preference id="taskmail_states"                  name="extensions.taskmail.states" type="string"/>
+      <preference id="taskmail_showMessageOnMouseClick" name="extensions.taskmail.showMessageOnMouseClick" type="string"/>
     </preferences>
+	<groupbox>
+		<caption label="&taskmail-UI;"/>
+    	<label value="&taskmail-UI-label;"/>
+		<radiogroup orient="horizontal" preference="taskmail_showMessageOnMouseClick">
+			<radio id="showMessageLeft"   value="LEFT"   label="&taskmail-UI-left;"   accesskey="&taskmail-UI-left-key;" selected="true"/>
+			<radio id="showMessageMiddle" value="MIDDLE" label="&taskmail-UI-middle;" accesskey="&taskmail-UI-middle-key;"/>
+		</radiogroup>
+	</groupbox>
+	
     <groupbox>
       <caption label="&states.caption;"/>
 	    <label control="taskmail-stateList" value="&prefs.state.intro;"/>

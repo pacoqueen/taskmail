@@ -91,7 +91,9 @@
 				<menuitem label="&menuLinkTaskMail;"     accesskey="L" oncommand="TASKMAIL.UILink.linkTask()"/>
 				<menuitem label="&menuUnlinkTaskMail;"   accesskey="U" oncommand="TASKMAIL.UILink.unlinkTask()"/>
 				<menuseparator/>
-				<menuitem label="&composeReport;" accesskey="C" oncommand="TASKMAIL.Report.composeReport()"/>
+				<menuitem label="&composeReport;" accesskey="C"                oncommand="TASKMAIL.Report.composeReport()"/>
+				<menuseparator/>
+				<menuitem label="&menuOptions;"   accesskey="&menuOptionsKey;" oncommand="window.open('chrome://taskmail/content/taskmail-prefs.xul','preferences','chrome,toolbar');"/>
       </menupopup>
     </menu>
 	</menubar>

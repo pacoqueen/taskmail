@@ -78,3 +78,5 @@
 <!ENTITY qfb-task-linkTTP      "Afficher seulement les messages liés aux tâches sélectionnées.">
 <!ENTITY qfb-task-thread       "Tâches avec discussions">
 <!ENTITY qfb-task-threadTTP    "Afficher les messages ou les discussions.">
+<!ENTITY menuOptions           "Options">
+<!ENTITY menuOptionsKey        "O">

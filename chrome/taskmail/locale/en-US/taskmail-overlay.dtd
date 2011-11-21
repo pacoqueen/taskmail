@@ -78,3 +78,5 @@
 <!ENTITY qfb-task-linkTTP      "Show only messages linked to selected tasks.">
 <!ENTITY qfb-task-thread       "Task with thread">
 <!ENTITY qfb-task-threadTTP    "Show messages or thread.">
+<!ENTITY menuOptions           "Options">
+<!ENTITY menuOptionsKey        "O">
