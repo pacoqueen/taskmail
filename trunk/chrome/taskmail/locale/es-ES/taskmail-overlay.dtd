@@ -78,3 +78,5 @@
 <!ENTITY qfb-task-linkTTP      "Mostrar solamente mensajes enlazados a las tareas seleccionadas.">
 <!ENTITY qfb-task-thread       "Tareas con hilos">
 <!ENTITY qfb-task-threadTTP    "Muestra mensajes o hilos.">
+<!ENTITY menuOptions           "Options">
+<!ENTITY menuOptionsKey        "O">

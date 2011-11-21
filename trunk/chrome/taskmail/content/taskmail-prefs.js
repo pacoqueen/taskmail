@@ -29,11 +29,10 @@ TASKMAIL.PREFS = {
 	
 	getStates : function () {
 		var result = new Array();
-  	var prefs = Components.classes["@mozilla.org/preferences-service;1"]
-				.getService(Components.interfaces.nsIPrefService)
-				.getBranch("extensions.taskmail.");
-		prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
-    var statesPref = prefs.getComplexValue("states",Components.interfaces.nsIPrefLocalizedString).data;
+    
+    var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+    var statesPref = prefs.getComplexValue("extensions.taskmail.states",Components.interfaces.nsIPrefLocalizedString).data;
+	
     var statePrefArray = statesPref.split(",");
     for(var index=0; index<statePrefArray.length; index++) {
     	var id         = parseInt(statePrefArray[index].substring(0,statePrefArray[index].indexOf("|")));

@@ -23,3 +23,9 @@
 <!ENTITY upState.key          "B">
 <!ENTITY downState            "AbaJo">
 <!ENTITY downState.key        "J">
+<!ENTITY taskmail-UI            "Interface">
+<!ENTITY taskmail-UI-label      "Show linked messages when select a task with :">
+<!ENTITY taskmail-UI-left       "Left button">
+<!ENTITY taskmail-UI-left-key   "L">
+<!ENTITY taskmail-UI-middle     "Middle mouse">
+<!ENTITY taskmail-UI-middle-key "M">

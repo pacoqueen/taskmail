@@ -78,3 +78,5 @@
 <!ENTITY qfb-task-linkTTP      "Toon alleen berichten gelinkt met geselecteerde taak.">
 <!ENTITY qfb-task-thread       "Taak met discussie">
 <!ENTITY qfb-task-threadTTP    "Toon berichten of discussie.">
+<!ENTITY menuOptions           "Options">
+<!ENTITY menuOptionsKey        "O">
