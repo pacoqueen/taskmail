@@ -533,9 +533,9 @@ TASKMAIL.UI = {
 			document.getElementById("taskmail-viewFilter").value =  TASKMAIL.UI.previousFolderDepView;
 		} 
 		
-		var stickyText = document.getElementById("tandm-sticky-text").checked;
+		var stickyText = document.getElementById("taskmail-sticky-text").checked;
 		if (!stickyText) {
-			document.getElementById("tandm-search").reset();
+			document.getElementById("taskmail-search").reset();
 		}
 		
 		// refresh task list when view is not 'all folder' and view is not sticky.		
@@ -635,7 +635,7 @@ TASKMAIL.UI = {
 		var currentTaskFolder = TASKMAIL.UI.viewedFolder;
 		var viewFilter = document.getElementById("taskmail-viewFilter").selectedItem.value;
 		var stateFilter = this.getDBStateFilterString();
-		var text = document.getElementById("tandm-search").value;
+		var text = document.getElementById("taskmail-search").value;
 
 		if (viewFilter == this.VIEW_FILTER_MESSAGE) {
 			// recherche par mail
@@ -1062,7 +1062,7 @@ TASKMAIL.UI = {
 	},
 	
 	observe : function (subject, topic, data) {
-		TASKMAIL.consoleService.logStringMessage("preferences observer");
+		//TASKMAIL.consoleService.logStringMessage("preferences observer");
 		if (topic != "nsPref:changed") {
 			return;
 		}
@@ -1387,7 +1387,7 @@ TASKMAIL.UI = {
       if (gFolderTreeView._rowMap[row]._folder.URI == viewedFolder
 			    && (sticky || TASKMAIL.UI.viewedFolder.URI != currentFolder)) {
 	      var acAtomServ = Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService);
-	      props.AppendElement(acAtomServ.getAtom("tandm-viewedFolder"));
+	      props.AppendElement(acAtomServ.getAtom("taskmail-viewedFolder"));
       }      
     }
     // Call old version. Make color folder extension works with Tasks & mails.
@@ -1545,9 +1545,9 @@ TASKMAIL.UILink = {
 				  	} 
 				  }
 				  // annule le filtre text
-					var stickyText = document.getElementById("tandm-search").value;
+					var stickyText = document.getElementById("taskmail-search").value;
 					if (stickyText != "") {
-						document.getElementById("tandm-search").reset();
+						document.getElementById("taskmail-search").reset();
 						TASKMAIL.UI.refreshTaskList();
 					}
 				}
@@ -1782,6 +1782,7 @@ TASKMAIL.Link = {
 				}
 			}
 		}
+		var result = -1;
 		if (linkWithThisMail) {
 			result = 2;
 		} else if (linkOutsideFolder) {

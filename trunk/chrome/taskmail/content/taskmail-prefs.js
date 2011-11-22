@@ -143,7 +143,7 @@ TASKMAIL.PREFS = {
   	// on grise le bouton supprimer l'état si l'état en cours est 'fait' (4).
   	var index = this.mStatesListBox.selectedIndex;
   	if (index >= 0) {
-	  	var button = document.getElementById("deleteStateButton").disabled = (this.states[index].id == 4);
+	  	var button = document.getElementById("taskmail-deleteStateButton").disabled = (this.states[index].id == 4);
   	}
   },
     

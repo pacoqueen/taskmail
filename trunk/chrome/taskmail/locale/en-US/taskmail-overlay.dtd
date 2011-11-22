@@ -34,7 +34,7 @@
 <!ENTITY title                 "Title">
 <!ENTITY detail                "Detail">
 <!ENTITY priority              "Priority">
-<!ENTITY detailTTP             "Entrée or CTRL-Entrée = Save, SHIFT-Echap = Cancel">
+<!ENTITY detailTTP             "Return or CTRL-Return = Save, SHIFT-Cancel = Cancel">
 <!ENTITY dates                 "Dates">
 <!ENTITY createDate            "Creation">
 <!ENTITY dueDate               "Due">

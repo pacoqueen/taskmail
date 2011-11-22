@@ -2,17 +2,17 @@
 <!ENTITY prefs.pane.report      "Report">
 <!ENTITY states.caption         "Tasks states">
 <!ENTITY report.caption         "Tasks report">
-<!ENTITY fields.comment         "For fileds To and CC, a comma to separe address.">
+<!ENTITY fields.comment         "For fields To and CC, a comma to separate address.">
 <!ENTITY field.to               "To">
 <!ENTITY field.cc               "CC">
-<!ENTITY field.subject          "Subjet">
+<!ENTITY field.subject          "Subject">
 <!ENTITY field.body             "Body">
 <!ENTITY reset                  "Reset">
 <!ENTITY reset.key              "R">
 <!ENTITY prefs.pane.state       "States">
-<!ENTITY prefs.state.intro      "States may be used to oragnise and filter tasks.">
+<!ENTITY prefs.state.intro      "States may be used to organize and filter tasks.">
 <!ENTITY prefs.state.warning    "Warning, do not delete an used state.">
-<!ENTITY prefs.state.done       "The state Done could be renmmed but must retain its meaning.">
+<!ENTITY prefs.state.done       "The state Done could be renamed but must retain its meaning.">
 <!ENTITY addState               "Add">
 <!ENTITY editState              "Edit">
 <!ENTITY removeState            "Delete">
