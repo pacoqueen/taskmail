@@ -19,8 +19,8 @@
 		<caption label="&taskmail-UI;"/>
     	<label value="&taskmail-UI-label;"/>
 		<radiogroup orient="horizontal" preference="taskmail_showMessageOnMouseClick">
-			<radio id="showMessageLeft"   value="LEFT"   label="&taskmail-UI-left;"   accesskey="&taskmail-UI-left-key;" selected="true"/>
-			<radio id="showMessageMiddle" value="MIDDLE" label="&taskmail-UI-middle;" accesskey="&taskmail-UI-middle-key;"/>
+			<radio id="taskmail-showMessageLeft"   value="LEFT"   label="&taskmail-UI-left;"   accesskey="&taskmail-UI-left-key;" selected="true"/>
+			<radio id="taskmail-showMessageMiddle" value="MIDDLE" label="&taskmail-UI-middle;" accesskey="&taskmail-UI-middle-key;"/>
 		</radiogroup>
 	</groupbox>
 	
@@ -32,7 +32,7 @@
 	      <vbox>
 	        <button label="&addState;" accesskey="&addState.key;" oncommand="TASKMAIL.PREFS.addState();"/>
 	        <button label="&editState;" accesskey="&editState.key;" oncommand="TASKMAIL.PREFS.editState();"/>
-	        <button label="&removeState;" accesskey="&removeState.key;" oncommand="TASKMAIL.PREFS.deleteState();" id="deleteStateButton"/>
+	        <button label="&removeState;" accesskey="&removeState.key;" oncommand="TASKMAIL.PREFS.deleteState();" id="taskmail-deleteStateButton"/>
 	        <separator orient="horizontal"/>
 	        <button label="&upState;" accesskey="&upState.key;" oncommand="TASKMAIL.PREFS.upState();"/>
 	        <button label="&downState;" accesskey="&downState.key;" oncommand="TASKMAIL.PREFS.downState();"/>

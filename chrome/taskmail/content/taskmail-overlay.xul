@@ -199,10 +199,10 @@
 							<menupopup id="taskmail-stateFilterPopup">
 							</menupopup>
 					</button>
-					<toolbarbutton id="tandm-sticky-text" type="checkbox"
+					<toolbarbutton id="taskmail-sticky-text" type="checkbox"
 	                       crop="none"
 	                       tooltiptext="&textFilterTTP;"/>
-					<textbox id="tandm-search" type="search" flex="1" emptytext="&textFilter;" timeout="500" oncommand="TASKMAIL.UI.refreshTaskList();"/>
+					<textbox id="taskmail-search" type="search" flex="1" emptytext="&textFilter;" timeout="500" oncommand="TASKMAIL.UI.refreshTaskList();"/>
 				</hbox>
 	
 				<tree id="taskmail-taskList" class="plain" ondblclick="TASKMAIL.UI.doubleClikTask(event)" context="taskmail-row-menu" seltype="multiple"  flex="1" minheight="75"
