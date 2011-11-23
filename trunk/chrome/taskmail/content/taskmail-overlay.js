@@ -1046,9 +1046,12 @@ TASKMAIL.UI = {
 		// for date formating
 		this.dateService = Components.classes["@mozilla.org/intl/scriptabledateformat;1"]
 	                              .getService(Components.interfaces.nsIScriptableDateFormat);
+
+		// Migrate preferences from taskmail. to extensions.taskmail.
+		this.migratePrefs();
 	
-		// pose un observe sur les états définis dans les préférences
 		var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+		// pose un observe sur les états définis dans les préférences
 		prefs.addObserver("", this, false);
 
 	// charge les états pour la liste de tâches et le détail d'une tâche.
@@ -1059,6 +1062,25 @@ TASKMAIL.UI = {
     // replace default getCellProperties.
     this.oldGetCellProperties = gFolderTreeView.getCellProperties;
 		gFolderTreeView.getCellProperties = TASKMAIL.UI.new_getCellProperties;
+	},
+	
+	/**
+	 * migrate preferences from taskmail. to extensions.taskmail.
+	 * needed until 2.2.1 desappears.
+	 */
+	migratePrefs : function  () {
+		var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
+		var oldBranch = prefs.getBranch("taskmail.");
+		var obj = {};
+		var keys = oldBranch.getChildList("",obj);
+		if (keys.length > 0) {
+			var newBranch = prefs.getBranch("extensions.taskmail.");
+			for(var i=0; i<keys.length; i++) {
+				var value = oldBranch.getCharPref(keys[i]);
+				newBranch.setCharPref(keys[i], value);
+			}
+			oldBranch.deleteBranch("");
+		}
 	},
 	
 	observe : function (subject, topic, data) {
