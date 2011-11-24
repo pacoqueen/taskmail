@@ -514,13 +514,16 @@ TASKMAIL.UI = {
 	onTaskClick : function(event) {
 //		TASKMAIL.consoleService.logStringMessage("onTaskClick");
 		// According to preference and mouse button used, show linked message.
-	    var prefserv = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
-	    var pref = prefserv.getCharPref("extensions.taskmail.showMessageOnMouseClick");
-		if ((event.button == 0 && pref == "LEFT") ||
-		    (event.button == 1 && pref == "MIDDLE"))
-		{
-			TASKMAIL.UILink.showLinkedMail();
-		}
+	  if (event.target.localName == "treechildren") {
+	  	// Do nothing if click on column header
+		  var prefserv = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+		  var pref = prefserv.getCharPref("extensions.taskmail.showMessageOnMouseClick");
+			if ((event.button == 0 && pref == "LEFT") ||
+			    (event.button == 1 && pref == "MIDDLE"))
+			{
+				TASKMAIL.UILink.showLinkedMail();
+			}
+	  }
 	},
 
 	refreshTaskPane : function (folder) {
