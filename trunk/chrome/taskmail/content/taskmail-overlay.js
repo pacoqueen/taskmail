@@ -254,7 +254,7 @@ TASKMAIL.UI = {
 			dynaLabel = this.stringsBundle.getString('menuSelectLinkedTaskMail');
 			dynaDisbled = true;
 		} 
-		TASKMAIL.consoleService.logStringMessage(dynaLabel);
+//		TASKMAIL.consoleService.logStringMessage(dynaLabel);
 		menuitem.label = dynaLabel;
 		menuitem.setAttribute("disabled",dynaDisbled);
 	},
@@ -460,6 +460,7 @@ TASKMAIL.UI = {
 	 * when state is changed to 'done', then set complete date.
 	 */
 	onStateChanged : function() {
+//		TASKMAIL.consoleService.logStringMessage("onStateChanged");
 		var stateInput = document.getElementById("taskmail-taskState").selectedItem.value;
 		if (stateInput == TASKMAIL.done_state) {
 			document.getElementById("taskmail-taskCompleteDateChk").checked = true;
@@ -485,7 +486,7 @@ TASKMAIL.UI = {
 	 * called on mail selection.
 	 */
 	onMessageSelect : function () {
-		TASKMAIL.consoleService.logStringMessage("onMessageSelect");
+//		TASKMAIL.consoleService.logStringMessage("onMessageSelect");
 		var currentView = document.getElementById("taskmail-viewFilter").selectedItem.value;
 		if (currentView == TASKMAIL.UI.VIEW_FILTER_MESSAGE) {
 			TASKMAIL.UI.refreshTaskList();
@@ -526,14 +527,20 @@ TASKMAIL.UI = {
 	  }
 	},
 
+	// is thunderbird starting ? used to refresh task list.
+	thunderbirdInit : true,
+	
 	refreshTaskPane : function (folder) {
-//		TASKMAIL.conshtasklistoleService.logStringMessage("refreshTaskPane");
+//		TASKMAIL.consoleService.logStringMessage("refreshTaskPane");
 		// si la vue n'est pas figée et en 'vue multi folder', on repasse en vue 'folder'.
+		// si init thunderbird, on ne change pas la vue et conserve celle persistée
 		var currentView = document.getElementById("taskmail-viewFilter").selectedItem.value;
-		if ((currentView == TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
-		     || currentView == TASKMAIL.UI.VIEW_FILTER_HOTLIST)
-				&& !document.getElementById("taskmail-sticky-view").checked) {
-			document.getElementById("taskmail-viewFilter").value =  TASKMAIL.UI.previousFolderDepView;
+		if (     (currentView == TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
+		       || currentView == TASKMAIL.UI.VIEW_FILTER_HOTLIST)
+				&& !document.getElementById("taskmail-sticky-view").checked
+				&& !TASKMAIL.UI.thunderbirdInit)
+		{
+			document.getElementById("taskmail-viewFilter").value =  TASKMAIL.UI.savedFolderView;
 		} 
 		
 		var stickyText = document.getElementById("taskmail-sticky-text").checked;
@@ -543,15 +550,17 @@ TASKMAIL.UI = {
 		
 		// refresh task list when view is not 'all folder' and view is not sticky.		
 		// View can be changed at the begin of this method.
+		// si init thunderbird, même si vue all_folder, on charge la liste des tâches.
 		var sticky = document.getElementById("taskmail-sticky-view").checked;
 		currentView = document.getElementById("taskmail-viewFilter").selectedItem.value;
-		if (currentView != TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
-		    && currentView != TASKMAIL.UI.VIEW_FILTER_HOTLIST
-		    && !sticky)
+		if (     (currentView != TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
+		       && currentView != TASKMAIL.UI.VIEW_FILTER_HOTLIST
+		       && !sticky)
+		    || TASKMAIL.UI.thunderbirdInit)
 		{
 			// save current folder to manage task action when view is sticky.
 			// before refrehsing view.
-			TASKMAIL.consoleService.logStringMessage("folder saving : " + folder.URI);
+//			TASKMAIL.consoleService.logStringMessage("folder saving : " + folder.URI);
 			TASKMAIL.UI.viewedFolder = folder;
 			
 			TASKMAIL.UI.refreshTaskList();
@@ -559,6 +568,8 @@ TASKMAIL.UI = {
 		TASKMAIL.UI.refreshTaskFolderIcon();
 		// to refresh folder viewed icon in folder tree. 
 		document.getElementById("folderTree").treeBoxObject.invalidate();
+		
+		TASKMAIL.UI.thunderbirdInit = false;
 	},
 	
 	refreshTaskList : function() {
@@ -640,6 +651,7 @@ TASKMAIL.UI = {
 		var stateFilter = this.getDBStateFilterString();
 		var text = document.getElementById("taskmail-search").value;
 
+//		TASKMAIL.consoleService.logStringMessage("retrieveTasks : viewFilter=" + viewFilter + ",currentMsgFolder="+currentMsgFolder+",currentTaskFolder="+currentTaskFolder);
 		if (viewFilter == this.VIEW_FILTER_MESSAGE) {
 			// recherche par mail
 			try {
@@ -879,7 +891,7 @@ TASKMAIL.UI = {
   			result  = parseInt(listBox.view.getItemAtIndex(currentIndex).firstChild.getAttribute("pk"));
   		}
     } catch (ex) {
-      TASKMAIL.consoleService.logStringMessage("getCurrentTaskKey:currentIndex="+currentIndex);
+//      TASKMAIL.consoleService.logStringMessage("getCurrentTaskKey:currentIndex="+currentIndex);
     }
 		return result;
 	},
@@ -946,11 +958,11 @@ TASKMAIL.UI = {
 	// the previous view just before changing view, to detect changing between 'all folder' and 'folder'
 	viewBeforeEvent : 1,
 	
-	// the previous view before changing to 'all folder' view.
-	previousFolderDepView : 1,
+	// the previous view before changing to 'all folder' view to restore.
+	savedFolderView : 1,
 
 	onViewChange : function() {
-		TASKMAIL.consoleService.logStringMessage("onViewChange");
+//		TASKMAIL.consoleService.logStringMessage("onViewChange");
 		var viewFilter = document.getElementById("taskmail-viewFilter").selectedItem.value;
 		
 		var isPreviousFilterAllFolders = this.viewBeforeEvent == this.VIEW_FILTER_ALL_FOLDERS ||
@@ -962,7 +974,7 @@ TASKMAIL.UI = {
 		// si on passe en vue 'all folder', on sauvegarde la vue précédente pour pouvoir la restaurer.
 		// ne sauvegarde pas la vue précédente en passant de 'all folders' à 'hot list'.
 		if (isCurrentFilterAllFolders && !isPreviousFilterAllFolders) {
-			this.previousFolderDepView = this.viewBeforeEvent;
+			this.savedFolderView = this.viewBeforeEvent;
 		}
 		this.viewBeforeEvent = viewFilter;
 	},
@@ -1001,6 +1013,7 @@ TASKMAIL.UI = {
   },
 
 	init : function() {
+//		TASKMAIL.consoleService.logStringMessage("début init");
 		document.getElementById("folderTree").addEventListener("select",
 				TASKMAIL.UI.onFolderSelect, false);
 		document.getElementById("threadTree").addEventListener("select",
@@ -1038,7 +1051,6 @@ TASKMAIL.UI = {
                                  nsIFolderListener.event);
 
 		this.stringsBundle = document.getElementById("taskmail-string-bundle");
-		TASKMAIL.consoleService.logStringMessage("init string bundle : " + this.stringsBundle);
 		
 		document.getElementById("folderTree").addEventListener("dragover", TASKMAIL.UIDrag.onOverFolder, false);
 		document.getElementById("folderTree").addEventListener("drop", TASKMAIL.UIDrag.onDropFolder, false);
@@ -1057,7 +1069,7 @@ TASKMAIL.UI = {
 		// pose un observe sur les états définis dans les préférences
 		prefs.addObserver("", this, false);
 
-	// charge les états pour la liste de tâches et le détail d'une tâche.
+		// charge les états pour la liste de tâches et le détail d'une tâche.
     this.getStatesFromPref();
     
     this.initialiseOrder();
@@ -1094,7 +1106,7 @@ TASKMAIL.UI = {
 	 
 		switch(data) {
 			case "extensions.taskmail.states":
-				TASKMAIL.consoleService.logStringMessage("states changed");
+//				TASKMAIL.consoleService.logStringMessage("states changed");
 				this.getStatesFromPref();
 				this.refreshTaskList();
 				break;
@@ -1316,7 +1328,7 @@ TASKMAIL.UI = {
    * only one column ordered. order walks trought "natural", "descending", "ascending".
    */
   onChangeOrder : function (event) {
-  	TASKMAIL.consoleService.logStringMessage("onChangeOrder");
+//  	TASKMAIL.consoleService.logStringMessage("onChangeOrder");
   	// if asking to make an new column ordered and there is a previous order*
   	// then reset previous order
   	if(this.currentOrder.columnId != "" && event.target.getAttribute("id") != this.currentOrder.columnId) {
@@ -1492,7 +1504,7 @@ TASKMAIL.UILink = {
 	 * appelé par shift-L.
 	 */
 	showLinked : function (event) {
-		TASKMAIL.consoleService.logStringMessage("showLinked");
+//		TASKMAIL.consoleService.logStringMessage("showLinked");
 		var focused = document.commandDispatcher.focusedElement;
 		if (document.getElementById("taskmail-taskList") == focused) {
 			TASKMAIL.UILink.showLinkedMail();
@@ -1719,7 +1731,7 @@ TASKMAIL.UILink = {
 		var tasks = TASKMAIL.UI.getSelectedTasksKeys();
 		var allMails = TASKMAIL.Link.getMailsFromTaskIDsInFolder(tasks, folder.URI);
 		if (allMails.length > 0) {
-			TASKMAIL.consoleService.logStringMessage("selectLinkedMails, nb mails linked : " + allMails.length);
+//			TASKMAIL.consoleService.logStringMessage("selectLinkedMails, nb mails linked : " + allMails.length);
 			gDBView.selection.clearSelection();
 			for (var i = 0; i < allMails.length; i++) {
 				var j = gDBView.findIndexFromKey(allMails[i], false);
