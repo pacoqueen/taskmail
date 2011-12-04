@@ -184,13 +184,15 @@
 					<toolbarbutton id="taskmail-sticky-view" type="checkbox"
 	                       crop="none"
 	                       tooltiptext="&stickyViewFilterTTP;"
-	                       oncommand="TASKMAIL.UI.onViewStick();"/>
+	                       oncommand="TASKMAIL.UI.onViewStick();"
+	                       persist="checked"/>
 					<menulist  id="taskmail-viewFilter" oncommand="TASKMAIL.UI.onViewChange()"
-					           tooltiptext="&viewFilterTTP;">
+					           tooltiptext="&viewFilterTTP;"
+					           persist="value">
 						<menupopup style="padding-top:10px">
-							<menuitem label="&mailViewFilter;"       value="2" tooltiptext="&mailViewTTP;"/>
+							<menuitem label="&subFolderViewFilter;"  value="1"/>
 							<menuitem label="&folderViewFilter;"     value="0"/>
-							<menuitem label="&subFolderViewFilter;"  value="1" selected="true"/>
+							<menuitem label="&mailViewFilter;"       value="2" tooltiptext="&mailViewTTP;"/>
 							<menuitem label="&allViewFilter;"        value="3" tooltiptext="&allViewTTP;"/>
 							<menuitem label="&hotListViewFilter;"    value="4" tooltiptext="&hotListViewFilterTTP;"/>
 						</menupopup>
