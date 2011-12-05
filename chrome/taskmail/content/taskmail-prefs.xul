@@ -11,37 +11,50 @@
 	</stringbundleset>
 	
 	<prefpane id="taskmail-pane" label="&prefs.pane.state;" onpaneload="TASKMAIL.PREFS.init();">
-    <preferences>
-      <preference id="taskmail_states"                  name="extensions.taskmail.states" type="string"/>
-      <preference id="taskmail_showMessageOnMouseClick" name="extensions.taskmail.showMessageOnMouseClick" type="string"/>
-    </preferences>
-	<groupbox>
-		<caption label="&taskmail-UI;"/>
-    	<label value="&taskmail-UI-label;"/>
-		<radiogroup orient="horizontal" preference="taskmail_showMessageOnMouseClick">
-			<radio id="taskmail-showMessageLeft"   value="LEFT"   label="&taskmail-UI-left;"   accesskey="&taskmail-UI-left-key;" selected="true"/>
-			<radio id="taskmail-showMessageMiddle" value="MIDDLE" label="&taskmail-UI-middle;" accesskey="&taskmail-UI-middle-key;"/>
-		</radiogroup>
-	</groupbox>
-	
-    <groupbox>
-      <caption label="&states.caption;"/>
-	    <label control="taskmail-stateList" value="&prefs.state.intro;"/>
-    	<hbox>
-	      <listbox id="taskmail-stateList" flex="1" rows="10" ondblclick="TASKMAIL.PREFS.editState();" onselect="TASKMAIL.PREFS.selectState();"></listbox>
-	      <vbox>
-	        <button label="&addState;" accesskey="&addState.key;" oncommand="TASKMAIL.PREFS.addState();"/>
-	        <button label="&editState;" accesskey="&editState.key;" oncommand="TASKMAIL.PREFS.editState();"/>
-	        <button label="&removeState;" accesskey="&removeState.key;" oncommand="TASKMAIL.PREFS.deleteState();" id="taskmail-deleteStateButton"/>
-	        <separator orient="horizontal"/>
-	        <button label="&upState;" accesskey="&upState.key;" oncommand="TASKMAIL.PREFS.upState();"/>
-	        <button label="&downState;" accesskey="&downState.key;" oncommand="TASKMAIL.PREFS.downState();"/>
-	      </vbox>
-	    </hbox>
-	    <label value="&prefs.state.warning;"/>
-	    <label value="&prefs.state.done;"/>
-    </groupbox>
-  </prefpane>
+		<preferences>
+			<preference id="taskmail_states"                  name="extensions.taskmail.states" type="string"/>
+			<preference id="taskmail_showMessageOnMouseClick" name="extensions.taskmail.showMessageOnMouseClick" type="string"/>
+			<preference id="taskmail_basePath"                name="extensions.taskmail.basePath" type="string"/>
+		</preferences>
+		<groupbox>
+			<caption label="&taskmail-UI;"/>
+			<label value="&taskmail-UI-label;"/>
+			<radiogroup orient="horizontal" preference="taskmail_showMessageOnMouseClick">
+				<radio id="taskmail-showMessageLeft"   value="LEFT"   label="&taskmail-UI-left;"   accesskey="&taskmail-UI-left-key;" selected="true"/>
+				<radio id="taskmail-showMessageMiddle" value="MIDDLE" label="&taskmail-UI-middle;" accesskey="&taskmail-UI-middle-key;"/>
+			</radiogroup>
+		</groupbox>
+		
+		<groupbox>
+			<caption label="&states.caption;"/>
+			<label control="taskmail-stateList" value="&prefs.state.intro;"/>
+			<hbox>
+				<listbox id="taskmail-stateList" flex="1" rows="10" ondblclick="TASKMAIL.PREFS.editState();" onselect="TASKMAIL.PREFS.selectState();"></listbox>
+				<vbox>
+					<button label="&addState;" accesskey="&addState.key;" oncommand="TASKMAIL.PREFS.addState();"/>
+					<button label="&editState;" accesskey="&editState.key;" oncommand="TASKMAIL.PREFS.editState();"/>
+					<button label="&removeState;" accesskey="&removeState.key;" oncommand="TASKMAIL.PREFS.deleteState();" id="taskmail-deleteStateButton"/>
+					<separator orient="horizontal"/>
+					<button label="&upState;" accesskey="&upState.key;" oncommand="TASKMAIL.PREFS.upState();"/>
+					<button label="&downState;" accesskey="&downState.key;" oncommand="TASKMAIL.PREFS.downState();"/>
+				</vbox>
+			</hbox>
+			<label value="&prefs.state.warning;"/>
+			<label value="&prefs.state.done;"/>
+		</groupbox>
+		
+		<groupbox>
+			<caption label="Chemin base"/>
+			<hbox>
+				<label value="Path : "/>
+				<textbox id="taskmail-basePath" preference="taskmail_basePath"/>
+			</hbox>
+			<description width="200">
+				Example : H:\temp. Set path and restart Thunderbird. Be sure that database is in 
+				the specified when thunderbird restart. Clear to restore default path.
+			</description>
+		</groupbox>
+	</prefpane>
   
   <prefpane id="taskmail-reportPane" label="&prefs.pane.report;">
     <preferences>

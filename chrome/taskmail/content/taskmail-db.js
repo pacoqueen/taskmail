@@ -660,10 +660,20 @@ TASKMAIL.DB = {
 		var dirService = Components.classes["@mozilla.org/file/directory_service;1"]
 				.getService(Components.interfaces.nsIProperties);
 
-		// ne pas mettre la base dans le répertoire de l'extension sinon elle serait perdue
-		// durant un upgrade.
-		var dbFile = dirService.get("ProfD", Components.interfaces.nsIFile);
-		dbFile.append("tasks.sqlite");
+	    var prefserv = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+	    try {
+	    	var basePath = prefserv.getCharPref("extensions.taskmail.basePath");
+		    var dbFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);  
+		    dbFile.initWithPath(basePath);  
+		    dbFile.append("tasks.sqlite");
+		    TASKMAIL.consoleService.logStringMessage("dbInit : basePath=" + basePath);
+	    } catch (err) {
+		    // ne pas mettre la base dans le répertoire de l'extension sinon elle serait perdue
+			// durant un upgrade.
+			var dbFile = dirService.get("ProfD", Components.interfaces.nsIFile);
+			dbFile.append("tasks.sqlite");
+		    TASKMAIL.consoleService.logStringMessage("dbInit : ProfD");
+	    }
 
 		var dbService = Components.classes["@mozilla.org/storage/service;1"]
 				.getService(Components.interfaces.mozIStorageService);
