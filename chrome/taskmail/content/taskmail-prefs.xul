@@ -44,14 +44,17 @@
 		</groupbox>
 		
 		<groupbox>
-			<caption label="Chemin base"/>
+			<caption label="Database path (experimental)"/>
 			<hbox>
 				<label value="Path : "/>
 				<textbox id="taskmail-basePath" preference="taskmail_basePath"/>
 			</hbox>
-			<description width="200">
-				Example : H:\temp. Set path and restart Thunderbird. Be sure that database is in 
-				the specified when thunderbird restart. Clear to restore default path.
+			<description width="150" height="50">
+				Example : H:\temp. Set path and restart Thunderbird. You must move database 
+				manually if you want to keep your current database
+				(under windows seven C:\Users\[user]\AppData\Roaming\Thunderbird\Profiles\...).
+				Be sure that database is in 
+				the specified path when thunderbird restart. Clear to restore default path.
 			</description>
 		</groupbox>
 	</prefpane>
