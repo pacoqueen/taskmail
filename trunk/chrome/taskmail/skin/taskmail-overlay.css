@@ -135,15 +135,15 @@ radio[pane=taskmail-pane] {list-style-image: url("chrome://taskmail/skin/general
 radio[pane=taskmail-reportPane] {list-style-image: url("chrome://taskmail/skin/reportPane.png")}
 
 #taskmail-qfb-task {
-  list-style-image:  url('chrome://taskmail/skin/link_task.png');
+  list-style-image:  url("chrome://taskmail/skin/link_task.png") !important;
 }
 
 #taskmail-qfb-task-linked {
-  list-style-image:  url('chrome://taskmail/skin/link_task_hilight.png');
+  list-style-image:  url("chrome://taskmail/skin/link_task_hilight.png") !important;
 }
 
 #taskmail-qfb-task-thread {
-  list-style-image:  url('chrome://messenger/skin/icons/thread.png');
+  list-style-image:  url("chrome://messenger/skin/icons/thread.png") !important;
 }
 
 #taskmail-menuAddTask, #taskmail-menu-selectLinked, #taskmail-menu-goNextMail {
