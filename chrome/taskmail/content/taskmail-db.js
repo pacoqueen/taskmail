@@ -402,6 +402,7 @@ TASKMAIL.DB = {
 			while (stat.executeStep()) {
 				var messageFolderURI =  stat.getString(0);
 				var messageId =  stat.getString(1);
+				var taskId = stat.getInt32(2);
 				try {
 					var folderDB = GetMsgFolderFromUri(messageFolderURI, false); 
 					var message = folderDB.msgDatabase.getMsgHdrForMessageID(messageId);
@@ -410,8 +411,14 @@ TASKMAIL.DB = {
 					//TASKMAIL.consoleService.logStringMessage("messageId=" + messageId + "messageKey=" + messageKey);
 				} catch (err) {
 					Components.utils.reportError("getLinkSQLite, problème récup messageId=" + messageId + 
-						"msgFolderName=" + msgFolder.URI + "taskFolderName="+taskFolder.URI);
-					continue;
+						", links.folderURI=" + messageFolderURI + ", taskId="+stat.getInt32(2));   
+//          var statPurge = this.dbConnection.createStatement("delete from links where folderURI = :FOLDER_URI and messageId = :MESSAGE_ID and taskId = :TASK_ID"); 
+//					statPurge.bindStringParameter(0, messageFolderURI);
+//          statPurge.bindStringParameter(1, messageId);
+//          statPurge.bindInt32Parameter(2, taskId);
+//          statPurge.execute();
+//          Components.utils.reportError("getLinkSQLite, Purge réalisée");   
+          continue;
 				}
 //				TASKMAIL.consoleService.logStringMessage("getLinkSQLite:" + messageFolderURI + "," + messageId + "," + stat.getInt32(2)
 //					+ "," + stat.getInt32(2));				
