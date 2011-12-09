@@ -1416,6 +1416,7 @@ TASKMAIL.UI = {
    * an other folder that current one.
    */
   new_getCellProperties : function (row,col,props) {
+		//TASKMAIL.consoleService.logStringMessage("new_getCellProperties, row=" + row);
     gFolderTreeView._rowMap[row].getProperties(props,col);
     if (col.id == "folderNameCol") {
     	var sticky = document.getElementById("taskmail-sticky-view").checked;
@@ -1428,7 +1429,12 @@ TASKMAIL.UI = {
       }      
     }
     // Call old version. Make color folder extension works with Tasks & mails.
-    TASKMAIL.UI.oldGetCellProperties(row,col,props); 
+    //TASKMAIL.consoleService.logStringMessage("new_getCellProperties, appel ancetre");
+    //TASKMAIL.UI.oldGetCellProperties(row,col,props); 
+    gFolderTreeView.getCellProperties = TASKMAIL.UI.oldGetCellProperties;
+    gFolderTreeView.getCellProperties(row,col,props);
+    gFolderTreeView.getCellProperties = TASKMAIL.UI.new_getCellProperties;
+    //oldGetCellProperties(row,col,props);
   }
 }
 
