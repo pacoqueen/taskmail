@@ -474,7 +474,7 @@ TASKMAIL.UI = {
 	onFolderSelect : function() {
 //		TASKMAIL.consoleService.logStringMessage("onFolderSelect");
 		var folder = GetSelectedMsgFolders()[0];
-		TASKMAIL.UI.refreshTaskPane(folder);
+		TASKMAIL.UI.refreshTaskPane(folder, false);
 	},
 	
 	onViewFolder : function () {
@@ -531,14 +531,15 @@ TASKMAIL.UI = {
 	thunderbirdInit : true,
 	
 	refreshTaskPane : function (folder) {
-//		TASKMAIL.consoleService.logStringMessage("refreshTaskPane");
+		TASKMAIL.consoleService.logStringMessage("refreshTaskPane, showMessageInProgress="+TASKMAIL.UI.showMessageInProgress);
 		// si la vue n'est pas figée et en 'vue multi folder', on repasse en vue 'folder'.
 		// si init thunderbird, on ne change pas la vue et conserve celle persistée
 		var currentView = document.getElementById("taskmail-viewFilter").selectedItem.value;
 		if (     (currentView == TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
 		       || currentView == TASKMAIL.UI.VIEW_FILTER_HOTLIST)
 				&& !document.getElementById("taskmail-sticky-view").checked
-				&& !TASKMAIL.UI.thunderbirdInit)
+				&& !TASKMAIL.UI.thunderbirdInit
+				&& !TASKMAIL.UILink.showMessageInProgress)
 		{
 			document.getElementById("taskmail-viewFilter").value =  TASKMAIL.UI.savedFolderView;
 		} 
@@ -1608,6 +1609,7 @@ TASKMAIL.UILink = {
 		}
 	},
 
+	showMessageInProgress : false,
 	/**
 	 * selection le prochain email liée. basé sur la tache qui a reçue le click
 	 * droit ou item passé suite à un ctrl-double clic.
@@ -1640,11 +1642,18 @@ TASKMAIL.UILink = {
 				if (TASKMAIL.Link.indexOfLink(splitVisibleMails.unvisible, nextTaskId) != -1) {
 					// if task from an other folder then select folder.
 					if (GetSelectedMsgFolders()[0].URI != folderURIToSelect) {
-						// bloque la vue pour empêcher le refresh de la liste de tâche.
-						// lors du changement de folder ce qui pourrait faire disparaitre la tâche.
-						var sticky = document.getElementById("taskmail-sticky-view");
-						sticky.checked = true;
+						var currentView = document.getElementById("taskmail-viewFilter").selectedItem.value;
+						if (currentView != TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
+						    && currentView != TASKMAIL.UI.VIEW_FILTER_HOTLIST) {
+							// bloque la vue pour empêcher le refresh de la liste de tâche.
+							// lors du changement de folder ce qui pourrait faire disparaitre la tâche.
+							var sticky = document.getElementById("taskmail-sticky-view");
+							sticky.checked = true;
+						}
+						this.showMessageInProgress = true;
 						SelectFolder(folderURIToSelect);
+						this.showMessageInProgress = false;
+				    TASKMAIL.consoleService.logStringMessage("after selectFolder");
 					}
 				}
 				this.noStatusBarRefresh = true;
