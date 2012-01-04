@@ -12,16 +12,19 @@
 	
 	<prefpane id="taskmail-pane" label="&prefs.pane.state;" onpaneload="TASKMAIL.PREFS.init();">
     <preferences>
-      <preference id="taskmail_states"                  name="extensions.taskmail.states" type="string"/>
+      <preference id="taskmail_states"                  name="extensions.taskmail.states"                  type="string"/>
       <preference id="taskmail_showMessageOnMouseClick" name="extensions.taskmail.showMessageOnMouseClick" type="string"/>
+      <preference id="taskmail-pref-transientScope"     name="extensions.taskmail.transientScope"          type="bool"/>
     </preferences>
 	<groupbox>
 		<caption label="&taskmail-UI;"/>
     	<label value="&taskmail-UI-label;"/>
-		<radiogroup orient="horizontal" preference="taskmail_showMessageOnMouseClick">
+		<radiogroup class="indent" orient="horizontal" preference="taskmail_showMessageOnMouseClick">
 			<radio id="taskmail-showMessageLeft"   value="LEFT"   label="&taskmail-UI-left;"   accesskey="&taskmail-UI-left-key;" selected="true"/>
 			<radio id="taskmail-showMessageMiddle" value="MIDDLE" label="&taskmail-UI-middle;" accesskey="&taskmail-UI-middle-key;"/>
 		</radiogroup>
+
+    	<checkbox preference="taskmail-pref-transientScope" label="&transientScope;"   accesskey="&transientScope-key;"/>
 	</groupbox>
 	
     <groupbox>

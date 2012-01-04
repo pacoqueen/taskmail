@@ -29,3 +29,5 @@
 <!ENTITY taskmail-UI-left-key   "G">
 <!ENTITY taskmail-UI-middle     "Bouton milieu">
 <!ENTITY taskmail-UI-middle-key "M">
+<!ENTITY transientScope         "Rendre les vues temporaires (changement de folder, voir les messages liés n'est pas concerné).">
+<!ENTITY transientScope-key     "t">
