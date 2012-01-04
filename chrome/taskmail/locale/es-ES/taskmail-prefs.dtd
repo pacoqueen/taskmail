@@ -29,3 +29,5 @@
 <!ENTITY taskmail-UI-left-key   "L">
 <!ENTITY taskmail-UI-middle     "Middle mouse">
 <!ENTITY taskmail-UI-middle-key "M">
+<!ENTITY transientScope         "Make scope transient (on folder change, not on 'view linked message').">
+<!ENTITY transientScope-key     "t">

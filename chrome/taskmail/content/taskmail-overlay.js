@@ -473,14 +473,41 @@ TASKMAIL.UI = {
 	
 	onFolderSelect : function() {
 		TASKMAIL.consoleService.logStringMessage("onFolderSelect");
+		
+		var prefserv = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+	  var transientScope = prefserv.getBoolPref("extensions.taskmail.transientScope");
+
+		// si la vue n'est pas figée et en 'vue multi folder', on repasse en vue 'folder'.
+		// si init thunderbird, on ne change pas la vue et conserve celle persistée
+		var currentView = document.getElementById("taskmail-viewFilter").selectedItem.value;
+		if (     (currentView == TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
+		       || currentView == TASKMAIL.UI.VIEW_FILTER_HOTLIST)
+				&& !document.getElementById("taskmail-sticky-view").checked
+				&& !TASKMAIL.UI.thunderbirdInit
+				&& transientScope
+				&& !TASKMAIL.UILink.dontRefreshTaskPane)
+		{
+			document.getElementById("taskmail-viewFilter").value =  TASKMAIL.UI.savedFolderView;
+		} 
+		
+		var stickyText = document.getElementById("taskmail-sticky-text").checked;
+		if (!stickyText) {
+			document.getElementById("taskmail-search").reset();
+		}
+		
 		var folder = GetSelectedMsgFolders()[0];
 		TASKMAIL.UI.refreshTaskPane(folder);
 	},
 	
 	onViewFolder : function () {
 		TASKMAIL.consoleService.logStringMessage("onViewFolder");
-		var folder = GetSelectedMsgFolders()[0];
-		TASKMAIL.UI.refreshTaskPane(folder);
+		var currentView = document.getElementById("taskmail-viewFilter").selectedItem.value;
+		if (currentView != TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
+		    && currentView != TASKMAIL.UI.VIEW_FILTER_HOTLIST)
+		{
+			var folder = GetSelectedMsgFolders()[0];
+			TASKMAIL.UI.refreshTaskPane(folder);
+		}
 	},
 	
 	/**
@@ -533,32 +560,17 @@ TASKMAIL.UI = {
 	
 	refreshTaskPane : function (folder) {
 		TASKMAIL.consoleService.logStringMessage("refreshTaskPane");
-		if (TASKMAIL.UILink.dontRefreshTaskPane) {
-			TASKMAIL.consoleService.logStringMessage("refreshTaskPane, abort because dontRefreshTaskPane is true");
-			return;
-		}
+//		if (TASKMAIL.UILink.dontRefreshTaskPane) {
+//			TASKMAIL.consoleService.logStringMessage("refreshTaskPane, abort because dontRefreshTaskPane is true");
+//			return;
+//		}
 		
-	  var prefserv = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
-	  var transientScope = prefserv.getBoolPref("extensions.taskmail.transientScope");
+		// save current folder to manage task action when view is sticky.
+		// before refrehsing view.
+		TASKMAIL.consoleService.logStringMessage("folder saving : " + folder.URI);
+		TASKMAIL.UI.viewedFolder = folder;
 
-		// si la vue n'est pas figée et en 'vue multi folder', on repasse en vue 'folder'.
-		// si init thunderbird, on ne change pas la vue et conserve celle persistée
-		var currentView = document.getElementById("taskmail-viewFilter").selectedItem.value;
-		if (     (currentView == TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
-		       || currentView == TASKMAIL.UI.VIEW_FILTER_HOTLIST)
-				&& !document.getElementById("taskmail-sticky-view").checked
-				&& !TASKMAIL.UI.thunderbirdInit
-				&& transientScope)
-		{
-			document.getElementById("taskmail-viewFilter").value =  TASKMAIL.UI.savedFolderView;
-		} 
-		
-		var stickyText = document.getElementById("taskmail-sticky-text").checked;
-		if (!stickyText) {
-			document.getElementById("taskmail-search").reset();
-		}
-		
-		// refresh task list when view is not 'all folder' and view is not sticky.		
+	  // refresh task list when view is not 'all folder' and view is not sticky.		
 		// View can be changed at the begin of this method.
 		// si init thunderbird, même si vue all_folder, on charge la liste des tâches.
 		var sticky = document.getElementById("taskmail-sticky-view").checked;
@@ -568,16 +580,8 @@ TASKMAIL.UI = {
 		       && !sticky)
 		    || TASKMAIL.UI.thunderbirdInit)
 		{
-			// save current folder to manage task action when view is sticky.
-			// before refrehsing view.
-			TASKMAIL.consoleService.logStringMessage("folder saving : " + folder.URI);
-			TASKMAIL.UI.viewedFolder = folder;
 			
 			TASKMAIL.UI.refreshTaskList();
-		} else if (currentView == TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
-		           || currentView == TASKMAIL.UI.VIEW_FILTER_HOTLIST) {
-			TASKMAIL.consoleService.logStringMessage("folder saving : " + folder.URI);
-			TASKMAIL.UI.viewedFolder = folder;
 		}
 		TASKMAIL.UI.refreshTaskFolderIcon();
 		// to refresh folder viewed icon in folder tree. 
@@ -1665,10 +1669,10 @@ TASKMAIL.UILink = {
 //							var sticky = document.getElementById("taskmail-sticky-view");
 //							sticky.checked = true;
 //						}
-						this.dontRefreshTaskPane = true;
-						SelectFolder(folderURIToSelect);
-						this.dontRefreshTaskPane = false;
-				    TASKMAIL.consoleService.logStringMessage("after selectFolder");
+							this.dontRefreshTaskPane = true;
+							SelectFolder(folderURIToSelect);
+							this.dontRefreshTaskPane = false;
+					    TASKMAIL.consoleService.logStringMessage("after selectFolder");
 					}
 				}
 				this.noStatusBarRefresh = true;
