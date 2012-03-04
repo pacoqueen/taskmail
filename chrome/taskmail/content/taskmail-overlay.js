@@ -569,11 +569,13 @@ TASKMAIL.UI = {
 	  // refresh task list when view is not 'all folder' and view is not sticky.		
 		// View can be changed at the begin of this method.
 		// si init thunderbird, même si vue all_folder, on charge la liste des tâches.
+		// pas de refresh sur un voir les messages liés
 		var sticky = document.getElementById("taskmail-sticky-view").checked;
 		currentView = document.getElementById("taskmail-viewFilter").selectedItem.value;
 		if (     (currentView != TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
 		       && currentView != TASKMAIL.UI.VIEW_FILTER_HOTLIST
-		       && !sticky)
+		       && !sticky
+		       && !TASKMAIL.UILink.dontRefreshTaskPane)
 		    || TASKMAIL.UI.thunderbirdInit)
 		{
 			// save current folder to manage task action when view is sticky.
