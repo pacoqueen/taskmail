@@ -105,7 +105,8 @@ TASKMAIL.UI = {
 		var prio = document.getElementById("taskmail-taskPriority").selectedIndex;
 		var dueDate      = this.getDate("taskmail-taskDueDate");
 		var completeDate = this.getDate("taskmail-taskCompleteDate");
-		var currentMsgFolder = TASKMAIL.UI.viewedFolder;
+		// always save task into current folder.
+		var currentMsgFolder = GetSelectedMsgFolders()[0];
 
 		if (this.taskDetailPK == -1) {
 			TASKMAIL.DB.addTaskSQLite(new TASKMAIL.Task(idInput,
@@ -565,11 +566,6 @@ TASKMAIL.UI = {
 //			return;
 //		}
 		
-		// save current folder to manage task action when view is sticky.
-		// before refrehsing view.
-		TASKMAIL.consoleService.logStringMessage("folder saving : " + folder.URI);
-		TASKMAIL.UI.viewedFolder = folder;
-
 	  // refresh task list when view is not 'all folder' and view is not sticky.		
 		// View can be changed at the begin of this method.
 		// si init thunderbird, même si vue all_folder, on charge la liste des tâches.
@@ -580,6 +576,10 @@ TASKMAIL.UI = {
 		       && !sticky)
 		    || TASKMAIL.UI.thunderbirdInit)
 		{
+			// save current folder to manage task action when view is sticky.
+			// before refrehsing view. Inside IF to save only when refreshing view.
+			TASKMAIL.consoleService.logStringMessage("folder saving : " + folder.URI);
+			TASKMAIL.UI.viewedFolder = folder;
 			
 			TASKMAIL.UI.refreshTaskList();
 		}
@@ -1793,9 +1793,9 @@ TASKMAIL.UILink = {
 		var selectedTask = TASKMAIL.UI.getSelectedTasks();
 		var folderURI = selectedTask[0].folderURI;
 		if (GetSelectedMsgFolders()[0].URI != folderURI) {
-			TASKMAIL.UILink.dontRefreshTaskPane = true;
+			//TASKMAIL.UILink.dontRefreshTaskPane = true;
 			SelectFolder(folderURI);
-			TASKMAIL.UILink.dontRefreshTaskPane = false;
+			//TASKMAIL.UILink.dontRefreshTaskPane = false;
 		}
 	}
 }
