@@ -571,7 +571,7 @@ TASKMAIL.UI = {
 		// si init thunderbird, même si vue all_folder, on charge la liste des tâches.
 		// pas de refresh sur un voir les messages liés
 		var sticky = document.getElementById("taskmail-sticky-view").checked;
-		currentView = document.getElementById("taskmail-viewFilter").selectedItem.value;
+		var currentView = document.getElementById("taskmail-viewFilter").selectedItem.value;
 		if (     (currentView != TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
 		       && currentView != TASKMAIL.UI.VIEW_FILTER_HOTLIST
 		       && !sticky
