@@ -36,7 +36,7 @@ TASKMAIL.UI = {
 		var doc = document.getElementById("messagepane").contentDocument;
 		var selection = doc.getSelection();
 		var title = mails.length == 1 ? mails[0].mime2DecodedSubject : null;
-		var desc = selection != "" ? selection.toString() : null;
+		var desc = selection != null && selection != "" ? selection.toString() : null;
 		var task = new TASKMAIL.Task(0, null, null, title, desc, 1, 5, null, null, null);
 		return task;
 	},
