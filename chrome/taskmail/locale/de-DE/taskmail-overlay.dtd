@@ -5,8 +5,8 @@
 <!ENTITY menuSelectLinked      "Aufgaben oder Nachrichten auswählen">
 <!ENTITY menuViewTaskPane      "Ansicht der Aufgaben &amp; Nachrichten">
 <!ENTITY menuGoNextTaskMail    "Nächste Aufgabe oder Nachricht">
-<!ENTITY menuLinkTaskMail      "Aufgabe und Nachrichten verknüpfen">
-<!ENTITY menuUnlinkTaskMail    "Aufgabe und Nachrichten trennen">
+<!ENTITY menuLinkTaskMail      "Aufgabe(n) und Nachrichte(n) verknüpfen">
+<!ENTITY menuUnlinkTaskMail    "Aufgabe(n) und Nachrichte(n) trennen">
 <!ENTITY linkTask     "Verknüpfung mit Aufgaben">
 <!ENTITY linkNewTask  "Verknüpfung mit neuer Aufgabe">
 <!ENTITY linkMail     "Verknüpfung mit Nachrichten">
@@ -53,10 +53,10 @@
 <!ENTITY allViewFilter         "Alle Ordner">
 <!ENTITY mailViewFilter        "Nachricht">
 <!ENTITY subFolderViewFilter   "Unterordner">
-<!ENTITY folderViewFilter      "ordner">
-<!ENTITY hotListViewFilter     "hot list">
+<!ENTITY folderViewFilter      "Ordner">
+<!ENTITY hotListViewFilter     "Mit Priorität ">
 <!ENTITY textFilter            "Filtere Aufgaben nach ...">
-<!ENTITY stickyViewFilterTTP   "Ansicht bei Verzeichniswechsel beibehalten ?">
+<!ENTITY stickyViewFilterTTP   "Ansicht bei Verzeichniswechsel beibehalten?">
 <!ENTITY textFilterTTP         "Text Filter bei Dateiwechsel beibehalten ?">
 <!ENTITY viewFilterTTP         "Filter Ansicht">
 <!ENTITY allViewTTP            "Aufgaben aus allen Ordnern">
@@ -73,10 +73,10 @@
 <!ENTITY foldernameCol         "Ordner">
 <!ENTITY composeReport         "Report erstellen">
 <!ENTITY qfb-task              "Aufgabe">
-<!ENTITY qfb-taskTTP           "Nur Nachrichten mit Aufgaben zeigen.">
+<!ENTITY qfb-taskTTP           "Nur Nachrichten mit Aufgaben zeigen">
 <!ENTITY qfb-task-link         "Ausgewählte Aufgabe">
 <!ENTITY qfb-task-linkTTP      "Nur mit ausgewählten Aufgaben verknüpfte Nachrichten zeigen.">
 <!ENTITY qfb-task-thread       "Aufgabe mit Thread">
 <!ENTITY qfb-task-threadTTP    "Nachrichten oder Thread anzeigen.">
-<!ENTITY menuOptions           "Options">
+<!ENTITY menuOptions           "Optionen">
 <!ENTITY menuOptionsKey        "O">
