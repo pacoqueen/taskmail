@@ -12,7 +12,7 @@
 <!ENTITY prefs.pane.state     "Status">
 <!ENTITY prefs.state.intro    "'Status' kann zum Organisieren und filtern von Aufgaben verwendet werden.">
 <!ENTITY prefs.state.warning  "Warnung: Bitte keinen verwendeten Status löschen.">
-<!ENTITY prefs.state.done     "Der Status 'Erledigt' kann zwar umbenannt werden, muss aber seine Bedeutung erhalten.">
+<!ENTITY prefs.state.done     "Der Status 'erledigt' kann zwar umbenannt werden, muss aber seine Bedeutung erhalten.">
 <!ENTITY addState             "Hinzufügen">
 <!ENTITY editState            "Bearbeiten">
 <!ENTITY removeState          "Löschen">
@@ -24,10 +24,10 @@
 <!ENTITY downState            "Runter">
 <!ENTITY downState.key        "W">
 <!ENTITY taskmail-UI            "Interface">
-<!ENTITY taskmail-UI-label      "Show linked messages when select a task with :">
-<!ENTITY taskmail-UI-left       "Left button">
+<!ENTITY taskmail-UI-label      "Zeige verlinkte Nachrichten bei Auswahl einer Aufgabe mit:">
+<!ENTITY taskmail-UI-left       "Linker Maus-Button">
 <!ENTITY taskmail-UI-left-key   "L">
-<!ENTITY taskmail-UI-middle     "Middle mouse">
+<!ENTITY taskmail-UI-middle     "Mittlerer Maus-Button">
 <!ENTITY taskmail-UI-middle-key "M">
 <!ENTITY transientScope         "Make scope transient (on folder change, not on 'view linked message').">
 <!ENTITY transientScope-key     "t">
