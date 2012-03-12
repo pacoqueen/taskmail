@@ -36,6 +36,7 @@ TASKMAIL.UI = {
 		var doc = document.getElementById("messagepane").contentDocument;
 		var selection = doc.getSelection();
 		var title = mails.length == 1 ? mails[0].mime2DecodedSubject : null;
+		// With Thunderbird Conversation, selection is null.
 		var desc = selection != null && selection != "" ? selection.toString() : null;
 		var task = new TASKMAIL.Task(0, null, null, title, desc, 1, 5, null, null, null);
 		return task;
@@ -561,10 +562,6 @@ TASKMAIL.UI = {
 	
 	refreshTaskPane : function (folder) {
 		TASKMAIL.consoleService.logStringMessage("refreshTaskPane");
-//		if (TASKMAIL.UILink.dontRefreshTaskPane) {
-//			TASKMAIL.consoleService.logStringMessage("refreshTaskPane, abort because dontRefreshTaskPane is true");
-//			return;
-//		}
 		
 	  // refresh task list when view is not 'all folder' and view is not sticky.		
 		// View can be changed at the begin of this method.
@@ -1450,11 +1447,9 @@ TASKMAIL.UI = {
     }
     // Call old version. Make color folder extension works with Tasks & mails.
     //TASKMAIL.consoleService.logStringMessage("new_getCellProperties, appel ancetre");
-    //TASKMAIL.UI.oldGetCellProperties(row,col,props); 
     gFolderTreeView.getCellProperties = TASKMAIL.UI.oldGetCellProperties;
     gFolderTreeView.getCellProperties(row,col,props);
     gFolderTreeView.getCellProperties = TASKMAIL.UI.new_getCellProperties;
-    //oldGetCellProperties(row,col,props);
   }
 }
 
@@ -1662,15 +1657,7 @@ TASKMAIL.UILink = {
 				if (TASKMAIL.Link.indexOfLink(splitVisibleMails.unvisible, nextTaskId) != -1) {
 					// if task from an other folder then select folder.
 					if (GetSelectedMsgFolders()[0].URI != folderURIToSelect) {
-						// on ne bloque plus la vue.
-//						var currentView = document.getElementById("taskmail-viewFilter").selectedItem.value;
-//						if (currentView != TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
-//						    && currentView != TASKMAIL.UI.VIEW_FILTER_HOTLIST) {
-//							// bloque la vue pour empêcher le refresh de la liste de tâche.
-//							// lors du changement de folder ce qui pourrait faire disparaitre la tâche.
-//							var sticky = document.getElementById("taskmail-sticky-view");
-//							sticky.checked = true;
-//						}
+							// On empeche la sortie du scope, etc.
 							this.dontRefreshTaskPane = true;
 							SelectFolder(folderURIToSelect);
 							this.dontRefreshTaskPane = false;
@@ -1795,9 +1782,8 @@ TASKMAIL.UILink = {
 		var selectedTask = TASKMAIL.UI.getSelectedTasks();
 		var folderURI = selectedTask[0].folderURI;
 		if (GetSelectedMsgFolders()[0].URI != folderURI) {
-			//TASKMAIL.UILink.dontRefreshTaskPane = true;
+			// on provoquera la sortie du scope, etc.
 			SelectFolder(folderURI);
-			//TASKMAIL.UILink.dontRefreshTaskPane = false;
 		}
 	}
 }
