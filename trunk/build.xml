@@ -12,9 +12,9 @@
             Thunderbird extension
     </description>
 
-		<property name="version.num" value="2.3.1"/>
-	    	
-    <!-- ================================= 
+		<xmlproperty file="src/install.rdf" keeproot="false"/>
+	
+		<!-- ================================= 
           target: default              
          ================================= -->
     <target name="default" description="Thunderbird extension"
@@ -22,20 +22,13 @@
     </target>
 
   <target name="mozdev" description="build archive for mozdev">
-  	<copy file="src/install.rdf" tofile="build/mozdev/install.rdf">
-			<filterchain>
-				<expandproperties/>
-			</filterchain>
-  	</copy>
-		<replace file="build/mozdev/install.rdf" token="@version@" value="${version.num}"/>
-  	<zip destfile="build/mozdev/tasksandmails-${version.num}.xpi">
-			<fileset dir="src/" excludes="install.rdf"/>
-  		<fileset dir="build/mozdev/" includes="install.rdf"/>
+		<zip destfile="build/mozdev/tasksandmails-${Description.em:version}.xpi">
+			<fileset dir="src/"/>
   	</zip>
   </target>
 
 	<target name="mozilla" depends="mozilla_install" description="build archive for mozilla">
-  	<zip destfile="build/mozilla.org/tasksandmails-${version.num}.xpi">
+  	<zip destfile="build/mozilla.org/tasksandmails-${Description.em:version}.xpi">
 			<fileset dir="src/" excludes="install.rdf"/>
   		<fileset dir="build/mozilla.org/" includes="install.rdf"/>
   	</zip>
@@ -50,7 +43,6 @@
 					<linecontains negate="true">
 						<contains value="em:updateURL"/>
 					</linecontains>
-					<expandproperties/>
 			</filterchain>
 		</copy>
   </target>
