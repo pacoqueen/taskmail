@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href='chrome://taskmail/skin/taskmail-overlay.css' type='text/css'?>
+<!DOCTYPE overlay SYSTEM "chrome://taskmail/locale/taskmail-prefs.dtd">
+
+<window id="taskmail-activity-window" title="Activity"  
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	<script type='application/x-javascript'  src='chrome://taskmail/content/taskmail-db-activity.js'/>
+	<script type='application/x-javascript'  src='chrome://taskmail/content/taskmail-activity.js'/>
+	
+	<label id="taskmail-activity-id"     hidden="false" value="-2"/>
+	<label id="taskmail-activity-taskId" hidden="false" value="-2"/>
+	<label value="Activité :" command="taskmail-activity-desc"/>
+	<textbox id="taskmail-activity-desc" multiline="true" rows="5"/>
+	<button label="refresh" oncommand="TASKMAIL.UI.ACTIVITY.fillActivity();"/>
+	<button label="sauvegarder" oncommand="TASKMAIL.UI.ACTIVITY.saveActivity();"/>
+
+</window>

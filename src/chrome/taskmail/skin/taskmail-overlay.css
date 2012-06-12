@@ -184,3 +184,8 @@ radio[pane=taskmail-reportPane] {list-style-image: url("chrome://taskmail/skin/r
 #folderTree treechildren::-moz-tree-image(taskmail-viewedFolder) {
   list-style-image: url("chrome://taskmail/skin/taskmail_logo_menu.png");
 }
+
+#taskmail-tab-button {
+    list-style-image: url(chrome://taskmail/skin/taskmail_logo_menu.png);
+}
+

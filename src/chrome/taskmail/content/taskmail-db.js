@@ -62,12 +62,30 @@ TASKMAIL = {
 		this.subContents = new Array();
 		this.folderName  = "";
 	},
+	
+	/**
+	 * @param anId, int, -1 if not null
+	 * @param aDate, String, Javascript Date, nullable.
+	 */
+	Activity : function(anId, aTaskId, aDate, aDesc) {
+		this.id     = anId;
+		this.taskId = aTaskId;
+		this.date   = aDate;
+		this.desc   = aDesc;
+	},
 
 	consoleService : Components.classes["@mozilla.org/consoleservice;1"]
 			.getService(Components.interfaces.nsIConsoleService)
 }
 
 TASKMAIL.DB = {
+		
+	toto : 0,
+	
+	test : function () {
+		TASKMAIL.DB.toto = TASKMAIL.DB.toto+1;
+		alert('dans test, toto='  +TASKMAIL.DB.toto);		
+	},
 
 	consoleService : Components.classes["@mozilla.org/consoleservice;1"]
 			.getService(Components.interfaces.nsIConsoleService),

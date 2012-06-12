@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="chrome://taskmail/skin/taskmail-overlay.css" type="text/css"?>
+
+<overlay id="ltnSidebarOverlay"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <hbox id="tabmail-buttons">
+    <toolbarbutton id="taskmail-tab-button" oncommand="alert('goi');"
+      tooltiptext="task ty"/>
+  </hbox>
+
+</overlay>
