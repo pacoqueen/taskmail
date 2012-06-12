@@ -80,3 +80,4 @@
 <!ENTITY qfb-task-threadTTP    "Afficher les messages ou les discussions.">
 <!ENTITY menuOptions           "Options">
 <!ENTITY menuOptionsKey        "O">
+<!ENTITY taskmail-tab-buttonTTP "Aller à l'onglet Tasks &amp; Mails">

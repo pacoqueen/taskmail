@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore" theme="sketch">
+  <widgets xsi:type="model:Window" id="1" x="16" y="24" width="697" height="649" text="Tasks &amp; Mails" measuredWidth="697" measuredHeight="649" minimizeButton="true" maximizeButton="true"/>
+  <widgets xsi:type="model:Tree" id="2" x="26" y="53" width="143" height="610" text="Folder One&#xA;-Folder Two&#xA;--File One&#xA;--File Two&#xA;v Collapse Arrow&#xA;-[>] Closed Folder&#xA;-[v] Open Folder&#xA;> Expand Arrow&#xA;[-] Collapse&#xA;-[+] Expand&#xA;[] You can have&#xA;[x] Checkboxes&#xA;() And even radio buttons&#xA;{attachment} Or just any other icon&#xA;[_] And no icon too" measuredWidth="143" measuredHeight="610" selection="11">
+    <items x="0" y="5" width="143" height="21" text="Folder One"/>
+    <items x="0" y="26" width="143" height="21" text="-Folder Two"/>
+    <items x="0" y="47" width="143" height="21" text="--File One"/>
+    <items x="0" y="68" width="143" height="21" text="--File Two"/>
+    <items x="0" y="89" width="143" height="21" text="v Collapse Arrow"/>
+    <items x="0" y="110" width="143" height="21" text="-[>] Closed Folder"/>
+    <items x="0" y="131" width="143" height="21" text="-[v] Open Folder"/>
+    <items x="0" y="152" width="143" height="21" text="> Expand Arrow"/>
+    <items x="0" y="173" width="143" height="21" text="[-] Collapse"/>
+    <items x="0" y="194" width="143" height="21" text="-[+] Expand"/>
+    <items x="0" y="215" width="143" height="21" text="[] You can have"/>
+    <items x="0" y="236" width="143" height="21" text="[x] Checkboxes"/>
+    <items x="0" y="257" width="143" height="21" text="() And even radio buttons"/>
+    <items x="0" y="278" width="143" height="21" text="{attachment} Or just any other icon"/>
+    <items x="0" y="299" width="143" height="21" text="[_] And no icon too"/>
+  </widgets>
+  <widgets xsi:type="model:Group" id="8" x="173" y="288" width="532" height="220" text="Activités" measuredWidth="532" measuredHeight="220">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:List" id="4" x="183" y="305" width="512" height="193" text="Item One&#xA;Item Two&#xA;Item Three&#xA;|Multiple&#xA;Selection&#xA;|Works like this&#xA;For List, Table and Tree" measuredWidth="512" measuredHeight="193" selection="0" rowHeight="20" horizontalLines="true">
+    <font/>
+    <items x="0" y="2" width="512" height="21" text="Item One"/>
+    <items x="0" y="23" width="512" height="21" text="Item Two"/>
+    <items x="0" y="44" width="512" height="21" text="Item Three"/>
+    <items x="0" y="65" width="512" height="21" text="|Multiple"/>
+    <items x="0" y="86" width="512" height="21" text="Selection"/>
+    <items x="0" y="107" width="512" height="21" text="|Works like this"/>
+    <items x="0" y="128" width="512" height="21" text="For List, Table and Tree"/>
+  </widgets>
+  <widgets xsi:type="model:Group" id="9" x="173" y="47" width="532" height="220" text="Tâches" measuredWidth="532" measuredHeight="220">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:List" id="7" x="183" y="63" width="512" height="194" text="Item One&#xA;Item Two&#xA;Item Three&#xA;|Multiple&#xA;Selection&#xA;|Works like this&#xA;For List, Table and Tree" measuredWidth="512" measuredHeight="194" selection="0" rowHeight="20" horizontalLines="true">
+    <font/>
+    <items x="0" y="2" width="512" height="21" text="Item One"/>
+    <items x="0" y="23" width="512" height="21" text="Item Two"/>
+    <items x="0" y="44" width="512" height="21" text="Item Three"/>
+    <items x="0" y="65" width="512" height="21" text="|Multiple"/>
+    <items x="0" y="86" width="512" height="21" text="Selection"/>
+    <items x="0" y="107" width="512" height="21" text="|Works like this"/>
+    <items x="0" y="128" width="512" height="21" text="For List, Table and Tree"/>
+  </widgets>
+  <widgets xsi:type="model:TextArea" id="5" x="216" y="560" width="202" height="101" text="A *paragraph* of text&#xA;A _second_ row of text" measuredWidth="202" measuredHeight="101">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Label" id="10" x="173" y="520" text="Date : " measuredWidth="38" measuredHeight="23">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:TextField" id="11" x="216" y="520" width="57" text="Text field" measuredWidth="57" measuredHeight="23">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Label" id="12" x="173" y="560" text="Done :" measuredWidth="39" measuredHeight="23">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:TextArea" id="13" x="472" y="560" width="199" height="101" text="A *paragraph* of text&#xA;A _second_ row of text" measuredWidth="199" measuredHeight="101">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Label" id="14" x="424" y="560" text="To do :" measuredWidth="42" measuredHeight="23">
+    <font/>
+  </widgets>
+  <hRuler/>
+  <vRuler/>
+  <font size="12px"/>
+</model:Screen>
