@@ -229,7 +229,8 @@
 										persist="sortDirection ordinal hidden width"/>
 						<splitter class="tree-splitter"/>
 						<treecol id="taskmail-taskTitleCol" label="&title;" flex="1" ignoreincolumnpicker="true"
-										persist="width ordinal hidden"/>
+										onclick="TASKMAIL.UI.onChangeOrder(event);"
+										persist="sortDirection width ordinal hidden"/>
 	
 						<splitter class="tree-splitter"/>
 						<treecol id="taskmail-taskCreateDateCol" label="&createDateCol;" hidden="true"
