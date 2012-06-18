@@ -1344,6 +1344,35 @@ TASKMAIL.UI = {
   },
   
   /**
+   * get next order from column and current sort. 
+   * event.target.getAttribute("id")
+   */
+  getNextColumnOrder : function (column, order) {
+	  var result = "";
+	  switch (column) {
+		  case "taskmail-taskTitleCol" :
+			  if (order == "natural") {
+				  result = "ascending";
+			  } else if (order == "ascending") {
+				  result = "descending";
+			  } else {
+				  result = "natural";
+			  }
+			  break;
+		  default :
+			  if (order == "natural") {
+				  result = "descending";
+			  } else if (order == "descending") {
+				  result = "ascending";
+			  } else {
+				  result = "natural";
+			  }
+		  	  break;
+	  }
+	  return result;
+  },
+  
+  /**
    * manage header during order changes
    * only one column ordered. order walks trought "natural", "descending", "ascending".
    */
@@ -1359,26 +1388,12 @@ TASKMAIL.UI = {
  	// determine if the new order is ascending, descending or neutral
  	// and change DOM attribute and this.currentOrder
  	var currentOrder = event.target.getAttribute("sortDirection");
-  	var order = null;
- 		switch (currentOrder) {
-  		case "natural" :
-  		case "" :
-  			event.target.setAttribute("sortDirection","descending");
-  			this.currentOrder.order = "descending";
-  			this.currentOrder.columnId = event.target.getAttribute("id");
-  			break;
-  		case "descending" :
-  			event.target.setAttribute("sortDirection","ascending");
-  			this.currentOrder.order = "ascending";
-  			this.currentOrder.columnId = event.target.getAttribute("id");
-  			break;
-  		case "ascending" :
-  			event.target.setAttribute("sortDirection","natural");
-  			this.currentOrder.order = "";
-  			this.currentOrder.columnId = "";
-  			break;  			
-  	}
-  	// update class on priority column to display the right iconic arrow.
+  	var order = this.getNextColumnOrder(event.target.getAttribute("id"), currentOrder);
+	event.target.setAttribute("sortDirection",order);
+	this.currentOrder.order = order;
+	this.currentOrder.columnId = order == "natural" ? "" : event.target.getAttribute("id");
+
+	// update class on priority column to display the right iconic arrow.
  	this.updatePriorityColumnHeader();
   	this.refreshTaskList();
   },
