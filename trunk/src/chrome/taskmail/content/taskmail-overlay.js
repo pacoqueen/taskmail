@@ -724,6 +724,9 @@ TASKMAIL.UI = {
 			case "taskmail-taskCompleteDateCol":
 				temp = temp.sort(function (a,b) { return TASKMAIL.sortTask(a,b,"completeDate",TASKMAIL.UI.currentOrder.order);});
 				break;
+			case "taskmail-taskTitleCol":
+				temp = temp.sort(function (a,b) { return TASKMAIL.sortTask(a,b,"title",TASKMAIL.UI.currentOrder.order);});
+				break;
 		}
 		
 		return temp;
@@ -1352,10 +1355,10 @@ TASKMAIL.UI = {
 	  	var taskList = document.getElementById("taskmail-taskList");
   		var previousOrderedColumn = taskList.columns.getNamedColumn(this.currentOrder.columnId); 
   		previousOrderedColumn.element.setAttribute("sortDirection", "natural");
-		}
- 		// determine if the new order is ascending, descending or neutral
- 		// and change DOM attribute and this.currentOrder
- 		var currentOrder = event.target.getAttribute("sortDirection");
+	}
+ 	// determine if the new order is ascending, descending or neutral
+ 	// and change DOM attribute and this.currentOrder
+ 	var currentOrder = event.target.getAttribute("sortDirection");
   	var order = null;
  		switch (currentOrder) {
   		case "natural" :
@@ -1376,7 +1379,7 @@ TASKMAIL.UI = {
   			break;  			
   	}
   	// update class on priority column to display the right iconic arrow.
- 		this.updatePriorityColumnHeader();
+ 	this.updatePriorityColumnHeader();
   	this.refreshTaskList();
   },
   
