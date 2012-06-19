@@ -94,6 +94,7 @@
 				<menuitem label="&composeReport;" accesskey="C"                oncommand="TASKMAIL.Report.composeReport()"/>
 				<menuseparator/>
 				<menuitem label="&menuOptions;"   accesskey="&menuOptionsKey;" oncommand="window.open('chrome://taskmail/content/taskmail-prefs.xul','preferences','chrome,toolbar');"/>
+				<menuitem label="Aide"            accesskey="A" oncommand="TASKMAIL.UI.onShowHelp();"/>
       </menupopup>
     </menu>
 	</menubar>

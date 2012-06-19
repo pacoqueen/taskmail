@@ -1011,6 +1011,29 @@ TASKMAIL.UI = {
 		// to refresh folder viewed icon in folder tree. 
 		document.getElementById("folderTree").treeBoxObject.invalidate();
 	},
+	
+	onShowHelp : function () {
+		let url = "http://tasksandmails.mozdev.org/manual_en.html";  
+		let tabmail = document.getElementById("tabmail");  
+		if (!tabmail) {  
+		  // Try opening new tabs in an existing 3pane window  
+		  let mail3PaneWindow = Components.classes["@mozilla.org/appshell/window-mediator;1"]  
+		                                  .getService(Components.interfaces.nsIWindowMediator)  
+		                                  .getMostRecentWindow("mail:3pane");  
+		  if (mail3PaneWindow) {  
+		    tabmail = mail3PaneWindow.document.getElementById("tabmail");  
+		    mail3PaneWindow.focus();  
+		  }  
+		}  
+		  
+		if (tabmail)  
+		  tabmail.openTab("contentTab", {contentPage: url});  
+		else  
+		  window.openDialog("chrome://messenger/content/", "_blank",  
+		                    "chrome,dialog=no,all", null,  
+		                    { tabType: "contentTab",  
+		                      tabParams: {contentPage: url} }); 
+	},
 	 
   /**
 	 * return all the root folders, Array.length == 0 if no folder
