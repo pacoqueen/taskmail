@@ -1,3 +1,4 @@
+
 if (!TASKMAIL)
 	var TASKMAIL = {};
 if (!TASKMAIL.UI)
@@ -1013,7 +1014,7 @@ TASKMAIL.UI = {
 	},
 	
 	onShowHelp : function () {
-		let url = "http://tasksandmails.mozdev.org/manual_en.html";  
+		let url = "http://tasksandmails.mozdev.org/manuel_en.html";  
 		let tabmail = document.getElementById("tabmail");  
 		if (!tabmail) {  
 		  // Try opening new tabs in an existing 3pane window  
