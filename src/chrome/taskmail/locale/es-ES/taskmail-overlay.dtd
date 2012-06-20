@@ -7,6 +7,8 @@
 <!ENTITY menuGoNextTaskMail    "Ir a la siguiente tarea o correo">
 <!ENTITY menuLinkTaskMail      "Enlazar tareas y correos">
 <!ENTITY menuUnlinkTaskMail    "Desvincular tareas y correos">
+<!ENTITY menuHelp              "Ayuda">
+<!ENTITY menuHelpKey           "u">
 <!ENTITY linkTask     "Enlazar tareas">
 <!ENTITY linkNewTask  "Enlazar nueva tarea">
 <!ENTITY linkMail     "Enlazar correos">

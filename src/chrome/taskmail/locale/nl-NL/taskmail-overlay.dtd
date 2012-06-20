@@ -7,6 +7,8 @@
 <!ENTITY menuGoNextTaskMail    "Ga naar volgende taak/bericht">
 <!ENTITY menuLinkTaskMail      "Link taken en berichten">
 <!ENTITY menuUnlinkTaskMail    "Verbreek link">
+<!ENTITY menuHelp              "Help">
+<!ENTITY menuHelpKey           "H">
 <!ENTITY linkTask     "Link aan taken">
 <!ENTITY linkNewTask  "Link aan een nieuwe taak">
 <!ENTITY linkMail     "Link aan berichten">

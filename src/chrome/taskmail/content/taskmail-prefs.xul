@@ -8,6 +8,7 @@
   
   <stringbundleset id="stringbundleset">
 		<stringbundle id="taskmail-string-bundle-prefs" src="chrome://taskmail/locale/taskmail-prefs.properties"/>
+		<stringbundle id="taskmail-string-bundle" src="chrome://taskmail/locale/taskmail-overlay.properties"/>
 	</stringbundleset>
 	
 	<prefpane id="taskmail-pane" label="&prefs.pane.state;" onpaneload="TASKMAIL.PREFS.init();">

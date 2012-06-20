@@ -1,4 +1,3 @@
-
 if (!TASKMAIL)
 	var TASKMAIL = {};
 if (!TASKMAIL.UI)
@@ -1013,29 +1012,12 @@ TASKMAIL.UI = {
 		document.getElementById("folderTree").treeBoxObject.invalidate();
 	},
 	
-	onShowHelp : function () {
-		let url = "http://tasksandmails.mozdev.org/manuel_en.html";  
-		let tabmail = document.getElementById("tabmail");  
-		if (!tabmail) {  
-		  // Try opening new tabs in an existing 3pane window  
-		  let mail3PaneWindow = Components.classes["@mozilla.org/appshell/window-mediator;1"]  
-		                                  .getService(Components.interfaces.nsIWindowMediator)  
-		                                  .getMostRecentWindow("mail:3pane");  
-		  if (mail3PaneWindow) {  
-		    tabmail = mail3PaneWindow.document.getElementById("tabmail");  
-		    mail3PaneWindow.focus();  
-		  }  
-		}  
-		  
-		if (tabmail)  
-		  tabmail.openTab("contentTab", {contentPage: url});  
-		else  
-		  window.openDialog("chrome://messenger/content/", "_blank",  
-		                    "chrome,dialog=no,all", null,  
-		                    { tabType: "contentTab",  
-		                      tabParams: {contentPage: url} }); 
+	loadManual : function (aEvent) {
+		var stringbundle = document.getElementById("taskmail-string-bundle");
+		var href = stringbundle.getString("docUrl");		
+	 	messenger.openURL(href);
 	},
-	 
+  
   /**
 	 * return all the root folders, Array.length == 0 if no folder
 	 * @return Array(nsIMsgFolder)
