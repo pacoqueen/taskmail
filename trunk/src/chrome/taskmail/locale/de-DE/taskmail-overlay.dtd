@@ -7,6 +7,8 @@
 <!ENTITY menuGoNextTaskMail    "Nächste Aufgabe oder Nachricht">
 <!ENTITY menuLinkTaskMail      "Aufgabe(n) und Nachrichte(n) verknüpfen">
 <!ENTITY menuUnlinkTaskMail    "Aufgabe(n) und Nachrichte(n) trennen">
+<!ENTITY menuHelp              "Hilfe">
+<!ENTITY menuHelpKey           "H">
 <!ENTITY linkTask     "Verknüpfung mit Aufgaben">
 <!ENTITY linkNewTask  "Verknüpfung mit neuer Aufgabe">
 <!ENTITY linkMail     "Verknüpfung mit Nachrichten">

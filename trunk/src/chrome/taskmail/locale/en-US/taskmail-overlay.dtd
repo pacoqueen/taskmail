@@ -7,6 +7,8 @@
 <!ENTITY menuGoNextTaskMail    "Go to next task or message">
 <!ENTITY menuLinkTaskMail      "Link tasks and messages">
 <!ENTITY menuUnlinkTaskMail    "Unlink tasks and messages">
+<!ENTITY menuHelp              "Help">
+<!ENTITY menuHelpKey           "H">
 <!ENTITY linkTask     "Link to tasks">
 <!ENTITY linkNewTask  "Link to a new task">
 <!ENTITY linkMail     "Link to messages">

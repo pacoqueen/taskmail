@@ -7,6 +7,8 @@
 <!ENTITY menuGoNextTaskMail    "Aller à la tâche ou message suivant">
 <!ENTITY menuLinkTaskMail      "Lier tâches et messages">
 <!ENTITY menuUnlinkTaskMail    "Délier tâches et messages">
+<!ENTITY menuHelp              "AiDe">
+<!ENTITY menuHelpKey           "D">
 <!ENTITY linkTask        "Lier aux tâches">
 <!ENTITY linkNewTask     "Lier à une nouvelle tâche">
 <!ENTITY linkMail        "Lier aux messages">

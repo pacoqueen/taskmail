@@ -7,6 +7,8 @@
 <!ENTITY menuGoNextTaskMail     "Vai alla prossima attivitÃ  o messaggio">
 <!ENTITY menuLinkTaskMail       "Collega attivitÃ  e messaggi">
 <!ENTITY menuUnlinkTaskMail     "Scollega attivitÃ  e messaggi">
+<!ENTITY menuHelp              "Aiuto">
+<!ENTITY menuHelpKey           "u">
 <!ENTITY linkTask               "Collega ad una attivitÃ ">
 <!ENTITY linkNewTask            "Collega ad una nuova attivitÃ ">
 <!ENTITY linkMail               "Collega a messaggi">

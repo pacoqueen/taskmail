@@ -18,7 +18,8 @@ TASKMAIL.PREFS = {
 	},
 	
 	loadManual : function (aEvent) {
-		var href = this._stringsBundle.getString("docUrl");		
+		var stringbundle = document.getElementById("taskmail-string-bundle");
+		var href = stringbundle.getString("docUrl");		
 	 	window.opener.openURL(href);
   },
   
