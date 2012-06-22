@@ -39,7 +39,7 @@ TASKMAIL.QFB = {
 	      	result = TASKMAIL.Link.isMessageLinked(msgHdr.folder.URI, msgHdr.messageKey);
 	        break;
 	    }
-//	    TASKMAIL.consoleService.logStringMessage("TaskMail#TermName.match("+msgHdr.messageId+","+searchValue+","+searchOp+")="+result);
+	    TASKMAIL.log("TaskMail#TermName.match("+msgHdr.messageId+","+searchValue+","+searchOp+")="+result);
 	    return result;
 	  }
 	},
@@ -78,7 +78,7 @@ TASKMAIL.QFB = {
 	        result = TASKMAIL.Link.isThreadLinked(msgHdr.threadId);
 	        break;
 	    }
-//	    TASKMAIL.consoleService.logStringMessage("TaskMail#threadLinkedTerm.match("+msgHdr.messageId+","+searchValue+","+searchOp+")="+result);
+	    TASKMAIL.log("TaskMail#threadLinkedTerm.match("+msgHdr.messageId+","+searchValue+","+searchOp+")="+result);
 	    return result;
 	  }
 	},
@@ -88,7 +88,7 @@ TASKMAIL.QFB = {
 	 * refresh search.
 	 */
 	onTaskSelect : function() {
-		TASKMAIL.consoleService.logStringMessage("onTaskSelect");
+		TASKMAIL.log("onTaskSelect");
 		QuickFilterBarMuxer.updateSearch();
 	},
 	
@@ -97,13 +97,13 @@ TASKMAIL.QFB = {
 	 * if linked mode active, then need manage of task select even.
 	 */
 	onCommandSubFilter : function() {
-		TASKMAIL.consoleService.logStringMessage("onCommandSubFilter");
+		TASKMAIL.log("onCommandSubFilter");
 		var linkButton = document.getElementById("taskmail-qfb-task-linked");
 		if (linkButton.checked) {
-    	TASKMAIL.consoleService.logStringMessage("onCommandSubFilter => ajoute select event");
+    	TASKMAIL.log("onCommandSubFilter => ajoute select event");
     	document.getElementById("taskmail-taskList").addEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
     } else {
-    	TASKMAIL.consoleService.logStringMessage("onCommandSubFilter => supprime select event");
+    	TASKMAIL.log("onCommandSubFilter => supprime select event");
     	document.getElementById("taskmail-taskList").removeEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
     }
 		QuickFilterBarMuxer.updateSearch();
@@ -123,7 +123,7 @@ QuickFilterManager.defineFilter({
   name: "tache",
   domId: "taskmail-qfb-task",
   appendTerms: function(aTermCreator, aTerms, aFilterValue) {
-  	TASKMAIL.consoleService.logStringMessage("appendTerms");
+  	TASKMAIL.log("appendTerms");
   	var linked = document.getElementById("taskmail-qfb-task-linked").checked;
   	var threaded = document.getElementById("taskmail-qfb-task-thread").checked;
   	if (threaded) {
@@ -168,13 +168,13 @@ QuickFilterManager.defineFilter({
   },
   
   propagateState: function(aOld, aSticky) {
-//    TASKMAIL.consoleService.logStringMessage("propagateState(" + aOld + "," + aSticky + ")");
+    TASKMAIL.log("propagateState(" + aOld + "," + aSticky + ")");
     
     // if sticky, we need that links have been retrieved 
     // when updateSearch is called, so we call it. Not optimized :(
     // propagateState is called before appendTerms.
     if (aOld != null && aSticky) {
-//    	TASKMAIL.consoleService.logStringMessage("propagateState, get links");
+    	TASKMAIL.log("propagateState, get links");
     	TASKMAIL.Link.resetLink();
     	var currentMsgFolder = TASKMAIL.UI.viewedFolder;
     	TASKMAIL.DB.getLinkSQLite(currentMsgFolder, 2);
@@ -188,15 +188,15 @@ QuickFilterManager.defineFilter({
    * not on subFilters.     
    */
   onCommand: function(aState, aNode, aEvent, aDocument) {
-  	TASKMAIL.consoleService.logStringMessage("onCommand(" + aNode.id + ")");
+  	TASKMAIL.log("onCommand(" + aNode.id + ")");
   	if (!aNode.checked) {
-    	TASKMAIL.consoleService.logStringMessage("onCommand => supprime select event");
+    	TASKMAIL.log("onCommand => supprime select event");
     	document.getElementById("taskmail-taskList").removeEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
     } else {
 	    var linkButton = document.getElementById("taskmail-qfb-task-linked");
 			if (linkButton.checked) {
 				// subFilters could be checked when main filter is activating.
-				TASKMAIL.consoleService.logStringMessage("onCommand => ajout select event");
+				TASKMAIL.log("onCommand => ajout select event");
 	    	document.getElementById("taskmail-taskList").addEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
 			}
     }
@@ -216,7 +216,7 @@ QuickFilterManager.defineFilter({
    * called on quick-filter-bar is hidding.
    */
   clearState: function(aState) {
-    TASKMAIL.consoleService.logStringMessage("clearState => supprime select event");
+    TASKMAIL.log("clearState => supprime select event");
     // remove possible task's select callback and hide subFilters.
     document.getElementById("taskmail-taskList").removeEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
     return [null, false];
@@ -228,11 +228,11 @@ QuickFilterManager.defineFilter({
    */
   reflectInDOM: function TFF_reflectInDOM(aNode, aFilterValue,
                                           aDocument, aMuxer) {
-//	  TASKMAIL.consoleService.logStringMessage("reflectInDom");
+	  TASKMAIL.log("reflectInDom");
 	  aNode.checked = aFilterValue ? true : false;
   	
 	  if (aFilterValue == null) {
-//		  TASKMAIL.consoleService.logStringMessage("reflectInDOM => supprime select event");
+		  TASKMAIL.log("reflectInDOM => supprime select event");
 		  document.getElementById("taskmail-taskList").removeEventListener("select",TASKMAIL.QFB.onTaskSelect, false);
 		  document.getElementById("taskmail-qfb-task-linked").style.visibility = "hidden";
 		  document.getElementById("taskmail-qfb-task-thread").style.visibility = "hidden";

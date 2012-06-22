@@ -256,7 +256,7 @@ TASKMAIL.UI = {
 			dynaLabel = this.stringsBundle.getString('menuSelectLinkedTaskMail');
 			dynaDisbled = true;
 		} 
-//		TASKMAIL.consoleService.logStringMessage(dynaLabel);
+		TASKMAIL.log(dynaLabel);
 		menuitem.label = dynaLabel;
 		menuitem.setAttribute("disabled",dynaDisbled);
 	},
@@ -462,7 +462,7 @@ TASKMAIL.UI = {
 	 * when state is changed to 'done', then set complete date.
 	 */
 	onStateChanged : function() {
-//		TASKMAIL.consoleService.logStringMessage("onStateChanged");
+		TASKMAIL.log("onStateChanged");
 		var stateInput = document.getElementById("taskmail-taskState").selectedItem.value;
 		if (stateInput == TASKMAIL.done_state) {
 			document.getElementById("taskmail-taskCompleteDateChk").checked = true;
@@ -474,7 +474,7 @@ TASKMAIL.UI = {
 	viewedFolder : null,
 	
 	onFolderSelect : function() {
-		TASKMAIL.consoleService.logStringMessage("onFolderSelect");
+		TASKMAIL.log("onFolderSelect");
 		
 		var prefserv = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
 	  var transientScope = prefserv.getBoolPref("extensions.taskmail.transientScope");
@@ -502,7 +502,7 @@ TASKMAIL.UI = {
 	},
 	
 	onViewFolder : function () {
-		TASKMAIL.consoleService.logStringMessage("onViewFolder");
+		TASKMAIL.log("onViewFolder");
 		var currentView = document.getElementById("taskmail-viewFilter").selectedItem.value;
 		if (currentView != TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
 		    && currentView != TASKMAIL.UI.VIEW_FILTER_HOTLIST)
@@ -516,7 +516,7 @@ TASKMAIL.UI = {
 	 * called on mail selection.
 	 */
 	onMessageSelect : function () {
-//		TASKMAIL.consoleService.logStringMessage("onMessageSelect");
+		TASKMAIL.log("onMessageSelect");
 		var currentView = document.getElementById("taskmail-viewFilter").selectedItem.value;
 		if (currentView == TASKMAIL.UI.VIEW_FILTER_MESSAGE) {
 			TASKMAIL.UI.refreshTaskList();
@@ -530,7 +530,7 @@ TASKMAIL.UI = {
 	 * called on task selection.
 	 */
 	onTaskSelect : function() {
-//		TASKMAIL.consoleService.logStringMessage("onTaskSelect");
+		TASKMAIL.log("onTaskSelect");
 		var tree = document.getElementById("threadTree");
 		// parcours tout les taches et regarde s'il existe une tache liée
 		var column = tree.columns.getNamedColumn("taskmail-colTask");
@@ -543,8 +543,8 @@ TASKMAIL.UI = {
 	 * called on task selection.
 	 */
 	onTaskClick : function(event) {
-//		TASKMAIL.consoleService.logStringMessage("onTaskClick");
-		// According to preference and mouse button used, show linked message.
+	  TASKMAIL.log("onTaskClick");
+	  // According to preference and mouse button used, show linked message.
 	  if (event.target.localName == "treechildren") {
 	  	// Do nothing if click on column header
 		  var prefserv = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
@@ -561,8 +561,7 @@ TASKMAIL.UI = {
 	thunderbirdInit : true,
 	
 	refreshTaskPane : function (folder) {
-		TASKMAIL.consoleService.logStringMessage("refreshTaskPane");
-		
+	  TASKMAIL.log("refreshTaskPane");		
 	  // refresh task list when view is not 'all folder' and view is not sticky.		
 		// View can be changed at the begin of this method.
 		// si init thunderbird, même si vue all_folder, on charge la liste des tâches.
@@ -577,7 +576,7 @@ TASKMAIL.UI = {
 		{
 			// save current folder to manage task action when view is sticky.
 			// before refrehsing view. Inside IF to save only when refreshing view.
-			TASKMAIL.consoleService.logStringMessage("folder saving : " + folder.URI);
+			TASKMAIL.log("folder saving : " + folder.URI);
 			TASKMAIL.UI.viewedFolder = folder;
 			
 			TASKMAIL.UI.refreshTaskList();
@@ -590,7 +589,7 @@ TASKMAIL.UI = {
 	},
 	
 	refreshTaskList : function() {
-//		TASKMAIL.consoleService.logStringMessage("refreshTaskList");
+		TASKMAIL.log("refreshTaskList");
 		// le refresh du folder est lancé avant l'handler de la colonne des
 		// emails.
 		var selectedTasks = TASKMAIL.UI.getSelectedTasksKeys();
@@ -607,9 +606,9 @@ TASKMAIL.UI = {
 
 		// la sauvegarde de l'élément courant n'est pas parfaite sur un changement de folder.
 		if (oldCurrentIndex != -1) {
-//			TASKMAIL.consoleService.logStringMessage("refreshTaskList,currentIndex="+oldCurrentIndex);
-//			TASKMAIL.consoleService.logStringMessage("refreshTaskList,currentTaskKey="+currentTaskKey);
-//			TASKMAIL.consoleService.logStringMessage("refreshTaskList,new currentIndex="+TASKMAIL.UI.getTaskIndexesFromTaskID(currentTaskKey));
+			TASKMAIL.log("refreshTaskList,currentIndex="+oldCurrentIndex);
+			TASKMAIL.log("refreshTaskList,currentTaskKey="+currentTaskKey);
+			TASKMAIL.log("refreshTaskList,new currentIndex="+TASKMAIL.UI.getTaskIndexesFromTaskID(currentTaskKey));
 			document.getElementById("taskmail-taskList").currentIndex = TASKMAIL.UI.getTaskIndexesFromTaskID(currentTaskKey);
 		}
 	},
@@ -668,13 +667,13 @@ TASKMAIL.UI = {
 		var stateFilter = this.getDBStateFilterString();
 		var text = document.getElementById("taskmail-search").value;
 
-//		TASKMAIL.consoleService.logStringMessage("retrieveTasks : viewFilter=" + viewFilter + ",currentMsgFolder="+currentMsgFolder+",currentTaskFolder="+currentTaskFolder);
+		TASKMAIL.log("retrieveTasks : viewFilter=" + viewFilter + ",currentMsgFolder="+currentMsgFolder+",currentTaskFolder="+currentTaskFolder);
 		if (viewFilter == this.VIEW_FILTER_MESSAGE) {
 			// recherche par mail
 			try {
 				var mails = gFolderDisplay.selectedMessages;
 				var messageId = mails[0].messageId;
-				// TASKMAIL.consoleService.logStringMessage(selectedMailKey);
+				 TASKMAIL.log(selectedMailKey);
 				// il faut charger les liens avant les taches
 				TASKMAIL.DB.getLinkSQLite(currentMsgFolder, currentTaskFolder, viewFilter);
 				result = TASKMAIL.DB.getTaskListSQLite(currentMsgFolder, messageId,
@@ -776,7 +775,7 @@ TASKMAIL.UI = {
 			}
 			i++;
 		}
-//		TASKMAIL.consoleService.logStringMessage("getTaskIndexesFromTaskID result="+result);
+		TASKMAIL.log("getTaskIndexesFromTaskID result="+result);
 		return result;
 	},
 
@@ -911,7 +910,7 @@ TASKMAIL.UI = {
   			result  = parseInt(listBox.view.getItemAtIndex(currentIndex).firstChild.getAttribute("pk"));
   		}
     } catch (ex) {
-//      TASKMAIL.consoleService.logStringMessage("getCurrentTaskKey:currentIndex="+currentIndex);
+        TASKMAIL.log("getCurrentTaskKey:currentIndex="+currentIndex);
     }
 		return result;
 	},
@@ -938,7 +937,7 @@ TASKMAIL.UI = {
 				i++;
 			}
 		}
-		// TASKMAIL.consoleService.logStringMessage(result);
+		   TASKMAIL.log(result);
 		return result;
 	},
 
@@ -982,7 +981,7 @@ TASKMAIL.UI = {
 	savedFolderView : 1,
 
 	onViewChange : function() {
-//		TASKMAIL.consoleService.logStringMessage("onViewChange");
+  		TASKMAIL.log("onViewChange");
 		var viewFilter = document.getElementById("taskmail-viewFilter").selectedItem.value;
 		
 		var isPreviousFilterAllFolders = this.viewBeforeEvent == this.VIEW_FILTER_ALL_FOLDERS ||
@@ -1039,7 +1038,7 @@ TASKMAIL.UI = {
   },
 
 	init : function() {
-//		TASKMAIL.consoleService.logStringMessage("début init");
+  		TASKMAIL.log("début init");
 		document.getElementById("folderTree").addEventListener("select",
 				TASKMAIL.UI.onFolderSelect, false);
 		document.getElementById("threadTree").addEventListener("select",
@@ -1125,14 +1124,14 @@ TASKMAIL.UI = {
 	},
 	
 	observe : function (subject, topic, data) {
-		//TASKMAIL.consoleService.logStringMessage("preferences observer");
+		  TASKMAIL.log("preferences observer");
 		if (topic != "nsPref:changed") {
 			return;
 		}
 	 
 		switch(data) {
 			case "extensions.taskmail.states":
-//				TASKMAIL.consoleService.logStringMessage("states changed");
+  				TASKMAIL.log("states changed");
 				this.getStatesFromPref();
 				this.refreshTaskList();
 				break;
@@ -1152,7 +1151,7 @@ TASKMAIL.UI = {
 	 * Appelé après changement des préférences par observer ou au lancement de l'appli.
 	 */
 	getStatesFromPref : function () {
-		//TASKMAIL.consoleService.logStringMessage("getStatesFromPref");
+		  TASKMAIL.log("getStatesFromPref");
 		var result = new Array();
 	    var prefserv = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
 	    var statesPref = prefserv.getComplexValue("extensions.taskmail.states",Components.interfaces.nsIPrefLocalizedString).data;
@@ -1206,7 +1205,7 @@ TASKMAIL.UI = {
    * Appele après un cochage d'état.
    */
   changeStateFilter : function (event) {
-  	//TASKMAIL.consoleService.logStringMessage("changeStateFilter");
+  	  TASKMAIL.log("changeStateFilter");
   	var noStatesCheck = true;
   	var stateFilterMenu = document.getElementById("taskmail-stateFilterPopup");
   	for(var i=0; i<stateFilterMenu.childNodes.length; i++) {
@@ -1230,7 +1229,7 @@ TASKMAIL.UI = {
    * pour la persistance du filtre.
    */
   refreshStateFilterLabel : function () {
-  	//TASKMAIL.consoleService.logStringMessage("refreshStateFilterLabel");
+  	  TASKMAIL.log("refreshStateFilterLabel");
     var stateButton = document.getElementById("taskmail-stateFilter");
     var stateFilter = document.getElementById("taskmail-stateFilterPopup");
     var filterLabel = "";
@@ -1296,7 +1295,7 @@ TASKMAIL.UI = {
   
   toggleTaskPane : function () {
   	var pane = document.getElementById("taskmail-splitter");
-  	TASKMAIL.consoleService.logStringMessage("toggleTaskPane, pane.collapsed=" + pane.getAttribute("state"));
+  	TASKMAIL.log("toggleTaskPane, pane.collapsed=" + pane.getAttribute("state"));
 		if (pane.getAttribute("state") == "open" || pane.getAttribute("state") == null) {
   		pane.setAttribute("state","collapsed");
   	} else {
@@ -1383,7 +1382,7 @@ TASKMAIL.UI = {
    * only one column ordered. order walks trought "natural", "descending", "ascending".
    */
   onChangeOrder : function (event) {
-//  	TASKMAIL.consoleService.logStringMessage("onChangeOrder");
+    	TASKMAIL.log("onChangeOrder");
   	// if asking to make an new column ordered and there is a previous order*
   	// then reset previous order
   	if(this.currentOrder.columnId != "" && event.target.getAttribute("id") != this.currentOrder.columnId) {
@@ -1457,7 +1456,7 @@ TASKMAIL.UI = {
    * an other folder that current one.
    */
   new_getCellProperties : function (row,col,props) {
-		//TASKMAIL.consoleService.logStringMessage("new_getCellProperties, row=" + row);
+	//TASKMAIL.log("new_getCellProperties, row=" + row);
     gFolderTreeView._rowMap[row].getProperties(props,col);
     if (col.id == "folderNameCol") {
     	var sticky = document.getElementById("taskmail-sticky-view").checked;
@@ -1470,7 +1469,7 @@ TASKMAIL.UI = {
       }      
     }
     // Call old version. Make color folder extension works with Tasks & mails.
-    //TASKMAIL.consoleService.logStringMessage("new_getCellProperties, appel ancetre");
+    //TASKMAIL.log("new_getCellProperties, appel ancetre");
     gFolderTreeView.getCellProperties = TASKMAIL.UI.oldGetCellProperties;
     gFolderTreeView.getCellProperties(row,col,props);
     gFolderTreeView.getCellProperties = TASKMAIL.UI.new_getCellProperties;
@@ -1549,7 +1548,7 @@ TASKMAIL.UILink = {
 	 * appelé par shift-L.
 	 */
 	showLinked : function (event) {
-//		TASKMAIL.consoleService.logStringMessage("showLinked");
+		TASKMAIL.log("showLinked");
 		var focused = document.commandDispatcher.focusedElement;
 		if (document.getElementById("taskmail-taskList") == focused) {
 			TASKMAIL.UILink.showLinkedMail();
@@ -1685,7 +1684,7 @@ TASKMAIL.UILink = {
 							this.dontRefreshTaskPane = true;
 							SelectFolder(folderURIToSelect);
 							this.dontRefreshTaskPane = false;
-					    TASKMAIL.consoleService.logStringMessage("after selectFolder");
+					    TASKMAIL.log("after selectFolder");
 					}
 				}
 				this.noStatusBarRefresh = true;
@@ -1702,7 +1701,7 @@ TASKMAIL.UILink = {
 		if (this.noStatusBarRefresh) {
 			return;
 		}
-//		TASKMAIL.consoleService.logStringMessage("refreshStatusBar");
+		TASKMAIL.log("refreshStatusBar");
 		var statusbarLabel = "";
 		if (sens == "task") {
 			var mails = gFolderDisplay.selectedMessages;
@@ -1778,7 +1777,7 @@ TASKMAIL.UILink = {
 		var tasks = TASKMAIL.UI.getSelectedTasksKeys();
 		var allMails = TASKMAIL.Link.getMailsFromTaskIDsInFolder(tasks, folder.URI);
 		if (allMails.length > 0) {
-//			TASKMAIL.consoleService.logStringMessage("selectLinkedMails, nb mails linked : " + allMails.length);
+			TASKMAIL.log("selectLinkedMails, nb mails linked : " + allMails.length);
 			gDBView.selection.clearSelection();
 			for (var i = 0; i < allMails.length; i++) {
 				var j = gDBView.findIndexFromKey(allMails[i], false);
@@ -1831,7 +1830,7 @@ TASKMAIL.Link = {
 	},
 
 	resetLink : function() {
-//		TASKMAIL.consoleService.logStringMessage("resetLink");
+		TASKMAIL.log("resetLink");
 		this.nbLinks = 0;
 		TASKMAIL.UILink.lastLinkedShowed = null;
 	},
@@ -1903,7 +1902,7 @@ TASKMAIL.Link = {
 				nbResult += 1;
 			}
 		}
-		// TASKMAIL.consoleService.logStringMessage(result);
+		 TASKMAIL.log(result);
 		return result;
 	},
 
@@ -2064,7 +2063,7 @@ TASKMAIL.Link = {
 				break;
 			}
 		}
-//		TASKMAIL.consoleService.logStringMessage("isMessageLinked" + aFolderURI + "," + aMessageKey + "=" + result);
+		TASKMAIL.log("isMessageLinked" + aFolderURI + "," + aMessageKey + "=" + result);
 		return result;
 	},
 
@@ -2148,7 +2147,7 @@ TASKMAIL.MailListener = {
 		// avant delete
 		// mailbox-message://nobody@Local%20Folders/toto/titi
 		// l'uri est modifié
-		// TASKMAIL.consoleService.logStringMessage(aFolder.baseMessageURI);
+		 TASKMAIL.log(aFolder.baseMessageURI);
 		TASKMAIL.DB.deleteFolderSQLite(aFolder);
 	},
 	
@@ -2185,7 +2184,7 @@ TASKMAIL.FolderCompactListener = {
   	// sur le compactage d'au folder quelconque, on lance un refresh des taches 
   	// car les messages ont pus changés.
   	if (event.toString() == "CompactCompleted") {
-  		Application.console.log("compact completed on folder " + item.URI);
+  		TASKMAIL.log("compact completed on folder " + item.URI);
   		TASKMAIL.UI.refreshTaskList();
   	}
   },
@@ -2203,14 +2202,14 @@ if (!TASKMAIL.UIDrag)
 	TASKMAIL.UIDrag = {};
 TASKMAIL.UIDrag= {
 	onStartTask : function(event, aTask){
-//		TASKMAIL.consoleService.logStringMessage("onStartTask");
+		TASKMAIL.log("onStartTask");
 		event.dataTransfer.setData('application/taskmail', "task");
 	},
 	
 	onOverTask : function (event) {
-//		TASKMAIL.consoleService.logStringMessage("onOverTask");
+		TASKMAIL.log("onOverTask");
 //		for(var i=0; i<event.dataTransfer.types.length; i++) {
-//			TASKMAIL.consoleService.logStringMessage(event.dataTransfer.types[i]);
+			TASKMAIL.log(event.dataTransfer.types[i]);
 //		}
 		var isMail = event.dataTransfer.types.contains("text/x-moz-message") ||
 								 // autorise le drag d'un paragraphe de corps de message.
@@ -2220,7 +2219,7 @@ TASKMAIL.UIDrag= {
 	},
 	
 	onDropTask : function(event,taskId) {		
-//		TASKMAIL.consoleService.logStringMessage("onDropTask" + event.dataTransfer.types);
+		TASKMAIL.log("onDropTask" + event.dataTransfer.types);
 		var isMessage = event.dataTransfer.types.contains("text/x-moz-message") ||
 		                event.dataTransfer.types.contains("text/_moz_htmlcontext");
   	if (isMessage) {
@@ -2243,7 +2242,7 @@ TASKMAIL.UIDrag= {
 	onOverMail : function (event) {
 		var isTask = event.dataTransfer.types.contains("application/taskmail");
   	if (isTask) {
-//  		TASKMAIL.consoleService.logStringMessage("onOverMail , is a task");
+  		TASKMAIL.log("onOverMail , is a task");
   		event.preventDefault();
   	}
 	},
