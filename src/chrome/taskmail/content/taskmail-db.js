@@ -64,14 +64,17 @@ TASKMAIL = {
 	},
 
 	consoleService : Components.classes["@mozilla.org/consoleservice;1"]
-			.getService(Components.interfaces.nsIConsoleService)
+	.getService(Components.interfaces.nsIConsoleService),
+			
+	log : function (message) {
+		if (false) {
+			this.consoleService.logStringMessage(message);
+		}
+	}
 }
 
 TASKMAIL.DB = {
 
-	consoleService : Components.classes["@mozilla.org/consoleservice;1"]
-			.getService(Components.interfaces.nsIConsoleService),
-			
 	getTaskListWhereClause : function (stateFilter, viewFilter, folderMsg, mailId, folder, text) {
 		var sql = "";
     if (viewFilter == TASKMAIL.UI.VIEW_FILTER_HOTLIST) {
@@ -147,7 +150,7 @@ TASKMAIL.DB = {
 	 * @return array[Task]
 	 */
 	getTaskListSQLite : function(folderMsg, mailId, folder, stateFilter, viewFilter, text) {
-//		TASKMAIL.consoleService.logStringMessage("getTaskListSQLite");
+		TASKMAIL.log("getTaskListSQLite");
 		var result = new Array();
 		try {
 			var sql = "select tasks.rowid, title, state, desc, priority, createDate, dueDate, completeDate, tasks.folderURI ";
@@ -187,7 +190,7 @@ TASKMAIL.DB = {
 	},
 	
 	getTaskDetailSQLite : function(pk) {
-		TASKMAIL.consoleService.logStringMessage("getTaskDetailSQLite");
+		TASKMAIL.log("getTaskDetailSQLite");
 		var result = null;
 		try {
 			var stat = this.dbConnection
@@ -216,7 +219,7 @@ TASKMAIL.DB = {
 	 * La date de création est celle de la base.
 	 */
 	addTaskSQLite : function(aTask) {
-		TASKMAIL.consoleService.logStringMessage("addTaskSQLite");
+		TASKMAIL.log("addTaskSQLite");
 		var folderURI = aTask.folderURI;
 		var stat = this.dbConnection
 				.createStatement("insert into tasks (title, state, desc, folderURI, priority, createDate, dueDate, completeDate) values (:titleInput, :stateInput, :desc, :folderURI, :priority, current_date, :dueDate, :completeDate)");
@@ -234,7 +237,7 @@ TASKMAIL.DB = {
 	 * La date de création n'est pas modifiée.
 	 */
 	updateTaskSQLite : function(aTask) {
-		TASKMAIL.consoleService.logStringMessage("updateTaskSQLite");
+		TASKMAIL.log("updateTaskSQLite");
 		var stat = this.dbConnection
 				.createStatement("update tasks set title = :title, state = :state, desc = :desc, priority = :priority, dueDate = :due_d, completeDate = :complete_d where rowid = :pk");
 		var dueDate = this.convertDateToSQLite(aTask.dueDate);
@@ -250,7 +253,7 @@ TASKMAIL.DB = {
 	},
 
 	updateTaskProritySQLite : function(taskIdArray, priority) {
-		TASKMAIL.consoleService.logStringMessage("updateTaskProritySQLite");
+		TASKMAIL.log("updateTaskProritySQLite");
 		try {
 			var stat = this.dbConnection
 				.createStatement("update tasks set priority = :p where rowid = :pk");
@@ -269,7 +272,7 @@ TASKMAIL.DB = {
 	},
 	
 	incrementTaskProritySQLite : function(taskIdArray) {
-		TASKMAIL.consoleService.logStringMessage("incrementTaskProritySQLite");
+		TASKMAIL.log("incrementTaskProritySQLite");
 		try {
 			var stat = this.dbConnection
 				.createStatement("update tasks set priority = priority  + 1 where rowid = :pk and priority < 9");
@@ -287,7 +290,7 @@ TASKMAIL.DB = {
 	},
 	
 	decrementTaskProritySQLite : function(taskArray) {
-		TASKMAIL.consoleService.logStringMessage("decrementTaskProritySQLite");
+		TASKMAIL.log("decrementTaskProritySQLite");
 		try {
 			var stat = this.dbConnection
 				.createStatement("update tasks set priority = priority  - 1 where rowid = :pk and priority > 0");
@@ -310,7 +313,7 @@ TASKMAIL.DB = {
 	 * @param state int state code
 	 */
 	updateStateTaskSQLite : function (taskIdArray, state) {
-		TASKMAIL.consoleService.logStringMessage("updateStateTaskSQLite");
+		TASKMAIL.log("updateStateTaskSQLite");
 		try {
 			this.dbConnection.beginTransaction();
 			var statState = this.dbConnection
@@ -335,7 +338,7 @@ TASKMAIL.DB = {
 	},
 
 	removeTaskAndLinkSQLite : function(taskId) {
-		TASKMAIL.consoleService.logStringMessage("removeTaskAndLinkSQLite");
+		TASKMAIL.log("removeTaskAndLinkSQLite");
 		var stat = this.dbConnection
 				.createStatement("delete from tasks where rowid = :taskId");
 		stat.bindInt32Parameter(0, taskId);
@@ -350,7 +353,7 @@ TASKMAIL.DB = {
 	 * @param msg nsIMsgDBHdr a message.
 	 */
 	linkTaskSQLite : function(taskId, msg) {
-		TASKMAIL.consoleService.logStringMessage("linkTaskSQLite");
+		TASKMAIL.log("linkTaskSQLite");
    	var messageId = msg.folder.GetMessageHeader(msg.messageKey).messageId;
    	var stat = TASKMAIL.DB.dbConnection
 				.createStatement("insert into links (folderURI, messageId, taskId) values (:folderURI, :mailId, :taskId)");
@@ -370,7 +373,7 @@ TASKMAIL.DB = {
 	 * @return
 	 */
 	unlinkTaskSQLite : function(msg, taskId) {
-//   	TASKMAIL.consoleService.logStringMessage("unlinkTaskSQLite");
+	TASKMAIL.log("unlinkTaskSQLite");
    	var messageId = msg.folder.GetMessageHeader(msg.messageKey).messageId; 
    	var stat = this.dbConnection
 				.createStatement("delete from links where folderURI = :folderURI and messageId = :MAIL_ID and taskId = :TASK_ID");
@@ -385,7 +388,7 @@ TASKMAIL.DB = {
 	 * (folder, subfolders, all folders). 
 	 */
 	getLinkSQLite : function(msgFolder, taskFolder, viewFilter) {
-//		TASKMAIL.consoleService.logStringMessage("getLinkSQLite,msgFolderName="+msgFolder.URI+"taskFolderName="+taskFolder.URI);
+		TASKMAIL.log("getLinkSQLite,msgFolderName="+msgFolder.URI+"taskFolderName="+taskFolder.URI);
 		try {
 			// remonte tous les liens avec les messages en cours (ceux du folder)
 			// et remonte tous les liens avec les tâche visualisées.
@@ -408,7 +411,7 @@ TASKMAIL.DB = {
 					var message = folderDB.msgDatabase.getMsgHdrForMessageID(messageId);
 					var messageKey = message.messageKey;
 					var threadKey = message.threadId;
-					//TASKMAIL.consoleService.logStringMessage("messageId=" + messageId + "messageKey=" + messageKey);
+					TASKMAIL.log("messageId=" + messageId + "messageKey=" + messageKey);
 				} catch (err) {
 					Components.utils.reportError("getLinkSQLite, problème récup messageId=" + messageId + 
 						", links.folderURI=" + messageFolderURI + ", taskId="+stat.getInt32(2));   
@@ -420,21 +423,21 @@ TASKMAIL.DB = {
 //          Components.utils.reportError("getLinkSQLite, Purge réalisée");   
           continue;
 				}
-//				TASKMAIL.consoleService.logStringMessage("getLinkSQLite:" + messageFolderURI + "," + messageId + "," + stat.getInt32(2)
-//					+ "," + stat.getInt32(2));				
+				TASKMAIL.log("getLinkSQLite:" + messageFolderURI + "," + messageId + "," + stat.getInt32(2)
+					+ "," + stat.getInt32(2));				
 				TASKMAIL.Link.addLink(messageFolderURI,
 				                      messageKey,
 				                      threadKey,
 				                      stat.getInt32(2));
 			}
-//			TASKMAIL.consoleService.logStringMessage("getLinkSQLite,result count="+TASKMAIL.Link.nbLinks);
+			TASKMAIL.log("getLinkSQLite,result count="+TASKMAIL.Link.nbLinks);
 		} catch (err) {
 			Components.utils.reportError("getLinkSQLite, folder=" + folder == null ? "null" : folderURI + ", erreur=" + err);
 		}
 	},
 
 	renameFolderSQLite : function(aOrigFolder, aNewFolder) {
-//		TASKMAIL.consoleService.logStringMessage("renameFolderSQLite");
+		TASKMAIL.log("renameFolderSQLite");
 		// rename folder then rename subFolders
 		try {
 			this.dbConnection.beginTransaction();
@@ -474,12 +477,12 @@ TASKMAIL.DB = {
 	 * folder car l'event folderDeleted est appelé plusieurs fois
 	 */
 	deleteFolderSQLite : function(aFolder) {
-		TASKMAIL.consoleService.logStringMessage("deleteFolderSQLite");
+		TASKMAIL.log("deleteFolderSQLite");
 		try {
 			this.dbConnection.beginTransaction();
 
 			var folderURI = aFolder.URI;
-			TASKMAIL.consoleService.logStringMessage("deleteFolderSQLite"
+			TASKMAIL.log("deleteFolderSQLite"
 					+ folderURI);
 
 			var sql = "delete from tasks where folderURI = :URI";
@@ -504,7 +507,7 @@ TASKMAIL.DB = {
 	 * pas d'event pour les sous-folders
 	 */
 	moveFolderSQLite : function(aSrcFolder, aDestFolder) {
-		TASKMAIL.consoleService.logStringMessage("moveFolderSQLite");
+		TASKMAIL.log("moveFolderSQLite");
 		try {
 			var oldParentURI = aSrcFolder.parent != null
 					? aSrcFolder.parent.URI
@@ -541,7 +544,7 @@ TASKMAIL.DB = {
 	 * @param aMsgs An array of the message headers about to be deleted
 	 */
 	msgsDeletedSQLite : function(aMsgs) {
-		TASKMAIL.consoleService.logStringMessage("msgsDeletedSQLite");
+		TASKMAIL.log("msgsDeletedSQLite");
 		try {
 			this.dbConnection.beginTransaction();
 			var TASK_SQL = "delete from tasks where rowid in (select taskId from links where folderURI = :URI and messageId = :ID) and folderURI = :TASK_FOLDER_URI";
@@ -553,7 +556,7 @@ TASKMAIL.DB = {
 				// folder = xxx/Trash.
 				var folderURI = msg.folder.URI;
 				var messageId = msg.folder.GetMessageHeader(msg.messageKey).messageId;
-				TASKMAIL.consoleService.logStringMessage("msgsDeletedSQLite" + folderURI + "," + msgKey + "," + messageId);
+				TASKMAIL.log("msgsDeletedSQLite" + folderURI + "," + msgKey + "," + messageId);
 				var stat = this.dbConnection.createStatement(TASK_SQL);
 				stat.bindStringParameter(0, folderURI);
 				stat.bindStringParameter(1, messageId);
@@ -581,7 +584,7 @@ TASKMAIL.DB = {
 	 *                    target message headers.
 	 */
 	msgsMoveCopyCompletedSQLite : function(aSrcMsgs, aDestFolder, aDestMsgs) {
-		TASKMAIL.consoleService.logStringMessage("msgsMoveCopyCompletedSQLite");
+		TASKMAIL.log("msgsMoveCopyCompletedSQLite");
 		try {
 			var TASK_SQL = "update tasks set folderURI = :NEW_URI where rowid in (select taskId from links where folderURI = :OLD_URI and messageId = :OLD_MSG_KEY) and folderURI = :TASK_FOLDER_URI";
 			var LINK_SQL = "update links set folderURI = :NEW_URI where folderURI = :OLD_URI and messageId = :OLD_MSG_KEY";
@@ -591,12 +594,12 @@ TASKMAIL.DB = {
 
 			while (srcEnum.hasMoreElements()) {
 				var srcMsg = srcEnum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
-				TASKMAIL.consoleService.logStringMessage(srcMsg.messageKey);
+				TASKMAIL.log(srcMsg.messageKey);
 				var destMsg = destEnum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
-				TASKMAIL.consoleService.logStringMessage(destMsg.messageKey);
+				TASKMAIL.log(destMsg.messageKey);
 				var messageId = destMsg.folder.GetMessageHeader(destMsg.messageKey).messageId;
 				
-				TASKMAIL.consoleService.logStringMessage("msgsMoveCopyCompletedSQLite"
+				TASKMAIL.log("msgsMoveCopyCompletedSQLite"
 								+ destMsg.folder.URI + "," + srcMsg.folder.URI + "," + srcMsg.messageKey
 								+ "," + messageId);
 
@@ -630,15 +633,13 @@ TASKMAIL.DB = {
 	 *       plusieurs taches
 	 */
 	taskMoveSQLite : function(aTaskID, aDestFolder) {
-		TASKMAIL.consoleService.logStringMessage("taskMoveSQLite");
+		TASKMAIL.log("taskMoveSQLite");
 		var SQL = "update tasks set folderURI = :NEW_URI where rowid = :TASK_ID";
 		var stat = this.dbConnection.createStatement(SQL);
 		stat.bindStringParameter(0, aDestFolder.URI);
 		stat.bindStringParameter(1, aTaskID);
 		stat.execute();
-		// TASKMAIL.consoleService.logStringMessage("taskMoveSQLite " + aTaskID
-		// + " dans "
-		// + aDestFolder.URI);
+		TASKMAIL.log("taskMoveSQLite " + aTaskID + " dans " + aDestFolder.URI);
 	},
 
 	onLoad : function() {
@@ -761,7 +762,7 @@ TASKMAIL.DB = {
 	},
 	
 	dbUpgrade6 : function() {
-		TASKMAIL.consoleService.logStringMessage("update messageKey into messageId");
+		TASKMAIL.log("update messageKey into messageId");
 		var statAlter = this.dbConnection
 				.createStatement("alter table links add column messageId TEXT");
 		statAlter.execute();
@@ -776,7 +777,7 @@ TASKMAIL.DB = {
 	},
 	
 	dbUpgrade6Folder : function(folder) {
-		TASKMAIL.consoleService.logStringMessage(folder.prettiestName);
+		TASKMAIL.log(folder.prettiestName);
 	  var stat = this.dbConnection
 			.createStatement("select mailId from links where folderURI = :FOLDER_URI");
 		stat.params.FOLDER_URI = folder.URI;
@@ -785,7 +786,7 @@ TASKMAIL.DB = {
 	  	try {
 	  		var messageHdr = folder.GetMessageHeader(messageKey);
 	  		var messageId = messageHdr.messageId;
-//		  	TASKMAIL.consoleService.logStringMessage("key="+messageKey+"Id trouv�=" + messageId);
+		  	TASKMAIL.log("key="+messageKey+"Id trouv�=" + messageId);
 		  	var statUpdate = this.dbConnection
 				.createStatement("update links set messageId = :id where folderURI = :folderURI and mailId = :key");
 				statUpdate.params.id = messageId;
@@ -793,7 +794,7 @@ TASKMAIL.DB = {
 				statUpdate.params.key = messageKey;
 				statUpdate.execute();
 	  	} catch (err) {
-	  		TASKMAIL.consoleService.logStringMessage("messageKey introuvable, key=" + messageKey);
+	  		TASKMAIL.log("messageKey introuvable, key=" + messageKey);
 	  		var statDelete = this.dbConnection
 				.createStatement("delete from links where folderURI = :FOLDER_URI and mailId = :MAIL_ID");
 				statDelete.params.FOLDER_URI = folder.URI;
@@ -837,8 +838,7 @@ TASKMAIL.DB = {
 				.createStatement("insert into model_version values (:version)");
 		stat.bindInt32Parameter(0, this.targetVersion);
 		stat.execute();
-		this.consoleService
-				.logStringMessage("Database initialisation successful.");
+		TASKMAIL.log("Database initialisation successful.");
 	},
 
 	/**
