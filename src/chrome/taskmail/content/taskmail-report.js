@@ -26,7 +26,7 @@ TASKMAIL.Report = {
 				var prefs = Components.classes["@mozilla.org/preferences-service;1"]
 				.getService(Components.interfaces.nsIPrefService)
 				.getBranch("extensions.taskmail.report.");
-				prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
+				prefs.QueryInterface(Components.interfaces.nsIPrefBranch);
 				var to = prefs.getCharPref("to");
 				var cc = prefs.getCharPref("cc");
 				var subject = prefs.getCharPref("subject");
