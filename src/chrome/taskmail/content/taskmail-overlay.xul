@@ -313,7 +313,7 @@
 							  	<row>
 									  <label value="&createDate; :"/>
 									  <spacer/>
-									  <datepicker id="taskmail-taskCreateDate" disabled="true"/>
+									  <datepicker id="taskmail-taskCreateDate" type="popup"/>
 							  	</row>
 							  	<row>
 									  <label value="&dueDate; :"/>

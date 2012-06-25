@@ -87,15 +87,15 @@ TASKMAIL.UI = {
 	 */
 	getDate : function (anId) {
 	  var result = null;
-	  if (document.getElementById(anId + "Chk").checked) {
-      result = document.getElementById(anId).value;
-      if (typeof result != "object") {
-        // when lightning is not installed (value returns a string and 
-        // not an object)
-        result = document.getElementById(anId).dateValue;
-      }
-    }
-    return result;
+	  if (anId == "taskmail-taskCreateDate" || document.getElementById(anId + "Chk").checked) {
+		  result = document.getElementById(anId).value;
+		  if (typeof result != "object") {
+			  // when lightning is not installed (value returns a string and 
+			  // not an object)
+			  result = document.getElementById(anId).dateValue;
+		  }
+	  }
+	  return result;
   },
   
   saveTask : function() {
@@ -104,6 +104,7 @@ TASKMAIL.UI = {
 		var stateInput = document.getElementById("taskmail-taskState").selectedItem.value;
 		var desc = document.getElementById("taskmail-taskDesc").value;
 		var prio = document.getElementById("taskmail-taskPriority").selectedIndex;
+		var createDate   = this.getDate("taskmail-taskCreateDate");
 		var dueDate      = this.getDate("taskmail-taskDueDate");
 		var completeDate = this.getDate("taskmail-taskCompleteDate");
 		// always save task into current folder.
@@ -112,7 +113,7 @@ TASKMAIL.UI = {
 		if (this.taskDetailPK == -1) {
 			TASKMAIL.DB.addTaskSQLite(new TASKMAIL.Task(idInput,
 					currentMsgFolder.URI, currentMsgFolder.prettyName, titleInput, desc, stateInput,
-					prio, null, dueDate, completeDate));
+					prio, createDate, dueDate, completeDate));
 			if (this.addWithLink) {
 				var taskId = TASKMAIL.DB.dbConnection.lastInsertRowID;
 				var selectedMessages = gFolderDisplay.selectedMessages;
@@ -122,7 +123,7 @@ TASKMAIL.UI = {
 			}
 		} else {
 			TASKMAIL.DB.updateTaskSQLite(new TASKMAIL.Task(idInput, null, null,
-					titleInput, desc, stateInput, prio, null, dueDate, completeDate));
+					titleInput, desc, stateInput, prio, createDate, dueDate, completeDate));
 		}
 		this.refreshTaskList();
 		this.cancelSaveTask();
@@ -420,7 +421,7 @@ TASKMAIL.UI = {
 		document.getElementById("taskmail-taskId").value = aTask.id;
 
 		this.fillDate("taskmail-taskCreateDate", aTask.createDate);
-    document.getElementById("taskmail-taskDueDateChk").checked = aTask.dueDate != null;			
+		document.getElementById("taskmail-taskDueDateChk").checked = aTask.dueDate != null;			
 		this.fillDate("taskmail-taskDueDate", aTask.dueDate);
 		document.getElementById("taskmail-taskCompleteDateChk").checked = aTask.completeDate != null;
 		this.fillDate("taskmail-taskCompleteDate", aTask.completeDate);

@@ -222,14 +222,15 @@ TASKMAIL.DB = {
 		TASKMAIL.log("addTaskSQLite");
 		var folderURI = aTask.folderURI;
 		var stat = this.dbConnection
-				.createStatement("insert into tasks (title, state, desc, folderURI, priority, createDate, dueDate, completeDate) values (:titleInput, :stateInput, :desc, :folderURI, :priority, current_date, :dueDate, :completeDate)");
+				.createStatement("insert into tasks (title, state, desc, folderURI, priority, createDate, dueDate, completeDate) values (:titleInput, :stateInput, :desc, :folderURI, :priority, :createDate, :dueDate, :completeDate)");
 		stat.bindStringParameter(0, aTask.title);
 		stat.bindStringParameter(1, aTask.state);
 		stat.bindStringParameter(2, aTask.desc);
 		stat.bindStringParameter(3, aTask.folderURI);
 		stat.bindInt32Parameter (4, aTask.priority);
-		if (aTask.dueDate != null) stat.bindStringParameter(5, this.convertDateToSQLite(aTask.dueDate));
-		if (aTask.completeDate != null) stat.bindStringParameter(6, this.convertDateToSQLite(aTask.completeDate));
+		if (aTask.createDate != null) stat.bindStringParameter(5, this.convertDateToSQLite(aTask.createDate));
+		if (aTask.dueDate != null) stat.bindStringParameter(6, this.convertDateToSQLite(aTask.dueDate));
+		if (aTask.completeDate != null) stat.bindStringParameter(7, this.convertDateToSQLite(aTask.completeDate));
 		stat.execute();
 	},
 
@@ -239,16 +240,18 @@ TASKMAIL.DB = {
 	updateTaskSQLite : function(aTask) {
 		TASKMAIL.log("updateTaskSQLite");
 		var stat = this.dbConnection
-				.createStatement("update tasks set title = :title, state = :state, desc = :desc, priority = :priority, dueDate = :due_d, completeDate = :complete_d where rowid = :pk");
+				.createStatement("update tasks set title = :title, state = :state, desc = :desc, priority = :priority, createDate = :create_d, dueDate = :due_d, completeDate = :complete_d where rowid = :pk");
+		var createDate = this.convertDateToSQLite(aTask.createDate);
 		var dueDate = this.convertDateToSQLite(aTask.dueDate);
 		var completeDate = this.convertDateToSQLite(aTask.completeDate);				
 		stat.bindStringParameter(0, aTask.title);
 		stat.bindStringParameter(1, aTask.state);
 		stat.bindStringParameter(2, aTask.desc);
 		stat.bindInt32Parameter (3, aTask.priority);
-		if (dueDate != null) stat.bindStringParameter(4, dueDate);
-		if (completeDate != null) stat.bindStringParameter(5, completeDate);
-		stat.bindInt32Parameter (6, aTask.id);
+		if (createDate != null) stat.bindStringParameter(4, createDate);
+		if (dueDate != null) stat.bindStringParameter(5, dueDate);
+		if (completeDate != null) stat.bindStringParameter(6, completeDate);
+		stat.bindInt32Parameter (7, aTask.id);
 		stat.execute();
 	},
 
