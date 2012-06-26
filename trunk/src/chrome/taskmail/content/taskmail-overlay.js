@@ -2210,7 +2210,7 @@ TASKMAIL.UIDrag= {
 	onOverTask : function (event) {
 		TASKMAIL.log("onOverTask");
 //		for(var i=0; i<event.dataTransfer.types.length; i++) {
-			TASKMAIL.log(event.dataTransfer.types[i]);
+//			TASKMAIL.log(event.dataTransfer.types[i]);
 //		}
 		var isMail = event.dataTransfer.types.contains("text/x-moz-message") ||
 								 // autorise le drag d'un paragraphe de corps de message.
