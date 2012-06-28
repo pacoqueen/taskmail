@@ -569,17 +569,21 @@ TASKMAIL.UI = {
 		// pas de refresh sur un voir les messages liés
 		var sticky = document.getElementById("taskmail-sticky-view").checked;
 		var currentView = document.getElementById("taskmail-viewFilter").selectedItem.value;
+		
+		if ((!sticky))
+		{
+			// save current folder to manage task action when view is sticky.
+			// before refrehsing view. Inside IF to save only when refreshing view.
+			TASKMAIL.log("folder saving : " + folder.URI);
+			TASKMAIL.UI.viewedFolder = folder;
+		}
+		
 		if (     (currentView != TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
 		       && currentView != TASKMAIL.UI.VIEW_FILTER_HOTLIST
 		       && !sticky
 		       && !TASKMAIL.UILink.dontRefreshTaskPane)
 		    || TASKMAIL.UI.thunderbirdInit)
 		{
-			// save current folder to manage task action when view is sticky.
-			// before refrehsing view. Inside IF to save only when refreshing view.
-			TASKMAIL.log("folder saving : " + folder.URI);
-			TASKMAIL.UI.viewedFolder = folder;
-			
 			TASKMAIL.UI.refreshTaskList();
 		}
 		TASKMAIL.UI.refreshTaskFolderIcon();
@@ -981,6 +985,9 @@ TASKMAIL.UI = {
 	// the previous view before changing to 'all folder' view to restore.
 	savedFolderView : 1,
 
+	/*
+	 * Appelé sur un changement de scope.
+	 */
 	onViewChange : function() {
   		TASKMAIL.log("onViewChange");
 		var viewFilter = document.getElementById("taskmail-viewFilter").selectedItem.value;
