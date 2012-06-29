@@ -475,22 +475,28 @@ TASKMAIL.UI = {
 	viewedFolder : null,
 	
 	onFolderSelect : function() {
+		// refresh task list when view is not 'all folder' and view is not sticky.		
+		// View can be changed at the begin of this method.
+		// si init thunderbird, même si vue all_folder, on charge la liste des tâches.
+		// pas de refresh sur un voir les messages liés (dontRefreshTaskPane)
 		TASKMAIL.log("onFolderSelect");
 		
 		var prefserv = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
-	  var transientScope = prefserv.getBoolPref("extensions.taskmail.transientScope");
+		var transientScope = prefserv.getBoolPref("extensions.taskmail.transientScope");
+		var sticky = document.getElementById("taskmail-sticky-view").checked;
 
 		// si la vue n'est pas figée et en 'vue multi folder', on repasse en vue 'folder'.
 		// si init thunderbird, on ne change pas la vue et conserve celle persistée
 		var currentView = document.getElementById("taskmail-viewFilter").selectedItem.value;
 		if (     (currentView == TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
 		       || currentView == TASKMAIL.UI.VIEW_FILTER_HOTLIST)
-				&& !document.getElementById("taskmail-sticky-view").checked
+				&& !sticky
 				&& !TASKMAIL.UI.thunderbirdInit
 				&& transientScope
 				&& !TASKMAIL.UILink.dontRefreshTaskPane)
 		{
 			document.getElementById("taskmail-viewFilter").value =  TASKMAIL.UI.savedFolderView;
+			currentView = TASKMAIL.UI.savedFolderView;
 		} 
 		
 		var stickyText = document.getElementById("taskmail-sticky-text").checked;
@@ -498,18 +504,40 @@ TASKMAIL.UI = {
 			document.getElementById("taskmail-search").reset();
 		}
 		
-		var folder = GetSelectedMsgFolders()[0];
-		TASKMAIL.UI.refreshTaskPane(folder);
+		if (!sticky) {
+			var folder = GetSelectedMsgFolders()[0];
+			TASKMAIL.UI.viewedFolder = folder;
+		} 
+
+		if (    (    currentView != TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
+			     && currentView != TASKMAIL.UI.VIEW_FILTER_HOTLIST
+				 && !sticky
+				 && !TASKMAIL.UILink.dontRefreshTaskPane)
+			||   TASKMAIL.UI.thunderbirdInit) 
+		{
+			TASKMAIL.UI.refreshTaskList();
+		} else {
+			TASKMAIL.UI.refreshTaskFolderIcon();
+			TASKMAIL.UI.refreshTaskLink();
+		} 
+
+		// to refresh folder viewed icon in folder tree. 
+		document.getElementById("folderTree").treeBoxObject.invalidate();
+		
+		TASKMAIL.UI.thunderbirdInit = false;
 	},
 	
 	onViewFolder : function () {
 		TASKMAIL.log("onViewFolder");
 		var currentView = document.getElementById("taskmail-viewFilter").selectedItem.value;
+		var sticky = document.getElementById("taskmail-sticky-view").checked;
 		if (currentView != TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
-		    && currentView != TASKMAIL.UI.VIEW_FILTER_HOTLIST)
+		    && currentView != TASKMAIL.UI.VIEW_FILTER_HOTLIST
+		    && !sticky)
 		{
 			var folder = GetSelectedMsgFolders()[0];
-			TASKMAIL.UI.refreshTaskPane(folder);
+			TASKMAIL.UI.viewedFolder = folder;
+			TASKMAIL.UI.refreshTaskList();
 		}
 	},
 	
@@ -559,40 +587,14 @@ TASKMAIL.UI = {
 	},
 
 	// is thunderbird starting ? used to refresh task list.
+	// throught onFolderSelect (and not twice using onload 1 for load and 1 for select).
 	thunderbirdInit : true,
 	
-	refreshTaskPane : function (folder) {
-	  TASKMAIL.log("refreshTaskPane");		
-	  // refresh task list when view is not 'all folder' and view is not sticky.		
-		// View can be changed at the begin of this method.
-		// si init thunderbird, même si vue all_folder, on charge la liste des tâches.
-		// pas de refresh sur un voir les messages liés
-		var sticky = document.getElementById("taskmail-sticky-view").checked;
-		var currentView = document.getElementById("taskmail-viewFilter").selectedItem.value;
-		
-		if ((!sticky))
-		{
-			// save current folder to manage task action when view is sticky.
-			// before refrehsing view. Inside IF to save only when refreshing view.
-			TASKMAIL.log("folder saving : " + folder.URI);
-			TASKMAIL.UI.viewedFolder = folder;
-		}
-		
-		if (     (currentView != TASKMAIL.UI.VIEW_FILTER_ALL_FOLDERS
-		       && currentView != TASKMAIL.UI.VIEW_FILTER_HOTLIST
-		       && !sticky
-		       && !TASKMAIL.UILink.dontRefreshTaskPane)
-		    || TASKMAIL.UI.thunderbirdInit)
-		{
-			TASKMAIL.UI.refreshTaskList();
-		}
-		TASKMAIL.UI.refreshTaskFolderIcon();
-		// to refresh folder viewed icon in folder tree. 
-		document.getElementById("folderTree").treeBoxObject.invalidate();
-		
-		TASKMAIL.UI.thunderbirdInit = false;
-	},
-	
+	/**
+	 * Rafrafichie la liste des tâches
+	 * Dépend du scope, des états, des filtre ET du folder à afficher (pas forcement le folder courant).
+	 * Ne fait aucune modification sur l'IHM.
+	 */
 	refreshTaskList : function() {
 		TASKMAIL.log("refreshTaskList");
 		// le refresh du folder est lancé avant l'handler de la colonne des
@@ -1013,7 +1015,8 @@ TASKMAIL.UI = {
 		var sticky = document.getElementById("taskmail-sticky-view").checked;
 		if (!sticky) {
 			var folder = GetSelectedMsgFolders()[0];
-			TASKMAIL.UI.refreshTaskPane(folder);
+			TASKMAIL.UI.viewedFolder = folder;
+			TASKMAIL.UI.refreshTaskList();
 		}
 		// to refresh folder viewed icon in folder tree. 
 		document.getElementById("folderTree").treeBoxObject.invalidate();
@@ -1616,10 +1619,14 @@ TASKMAIL.UILink = {
 					// Change la vue sur le folder de la tâche si nécessaire
 					var task = TASKMAIL.DB.getTaskDetailSQLite(nextTaskId);
 					var taskFolderURI = task.folderURI;
-					var currentFolderURI = TASKMAIL.UI.viewedFolder.URI; 
-					if (taskFolderURI != currentFolderURI) {
+					var currentFolderURI = TASKMAIL.UI.viewedFolder.URI;
+					var sticky = document.getElementById("taskmail-sticky-view").checked;
+					if (taskFolderURI != currentFolderURI && !sticky) {
 						var folderDB = GetMsgFolderFromUri(taskFolderURI, false);
-						TASKMAIL.UI.refreshTaskPane(folderDB);
+						TASKMAIL.UI.viewedFolder = folderDB;
+						TASKMAIL.UI.refreshTaskList();
+						// to refresh folder viewed icon in folder tree. 
+						document.getElementById("folderTree").treeBoxObject.invalidate();
 					}
 					// si on est en vue folder, on voit les tâches de toutes les folders.
 					// change le filtrage pour rajouter l'état de la tâche s'il n'est pas coché
@@ -1654,6 +1661,12 @@ TASKMAIL.UILink = {
 		}
 	},
 
+	/**
+	 * Utilisé pour bloquer le rafraichissement du taskPane
+	 * sur un changement de folder qui serait provoqué
+	 * par un showMessage et qui pourrait donc faire perdre
+	 * la tâche en cours.
+	 */
 	dontRefreshTaskPane : false,
 	
 	/**
