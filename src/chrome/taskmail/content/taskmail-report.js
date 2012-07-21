@@ -9,8 +9,7 @@ TASKMAIL.Report = {
 	composeReport : function () {
 		var msgComposeType = Components.interfaces.nsIMsgCompType;
 		var msgComposFormat = Components.interfaces.nsIMsgCompFormat;
-		var msgComposeService = Components.classes['@mozilla.org/messengercompose;1'].getService();
-		msgComposeService = msgComposeService.QueryInterface(Components.interfaces.nsIMsgComposeService);
+		var aMsgCompoSrv = Components.classes['@mozilla.org/messengercompose;1'].getService(Components.interfaces.nsIMsgComposeService);
 	
 		gAccountManager = Components.classes['@mozilla.org/messenger/account-manager;1'].
 		getService(Components.interfaces.nsIMsgAccountManager);
@@ -56,7 +55,7 @@ TASKMAIL.Report = {
 				composeFields.subject = subject;
 				composeFields.body = body;
 				params.composeFields = composeFields;
-				msgComposeService.OpenComposeWindowWithParams(null, params);
+				aMsgCompoSrv.OpenComposeWindowWithParams(null, params);
 			}
 		}
 	},
