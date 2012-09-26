@@ -10,13 +10,13 @@ TASKMAIL.QFB = {
 	  name: "message task linked term",
 	  getEnabled: function(scope, op)
 	    {
-	      return scope == Components.interfaces.nsMsgSearchScope.offlineMail &&
-	             op == Components.interfaces.nsMsgSearchOp::Is
+	      return (scope == Components.interfaces.nsMsgSearchScope.offlineMail) &&
+	             (op == Components.interfaces.nsMsgSearchOp::Is);
 	    },
 	  getAvailable: function(scope, op)
 	    {
-	      return scope == Components.interfaces.nsMsgSearchScope.offlineMail &&
-	             op == Components.interfaces.nsMsgSearchOp::Is
+	      return (scope == Components.interfaces.nsMsgSearchScope.offlineMail) &&
+	             (op == Components.interfaces.nsMsgSearchOp::Is);
 	    },
 	  getAvailableOperators: function(scope, length)
 	    {
@@ -49,13 +49,13 @@ TASKMAIL.QFB = {
 	  name: "thread task linked term",
 	  getEnabled: function(scope, op)
 	    {
-	      return scope == Components.interfaces.nsMsgSearchScope.offlineMail &&
-	             op == Components.interfaces.nsMsgSearchOp::Is
+	      return (scope == Components.interfaces.nsMsgSearchScope.offlineMail) &&
+	             (op == Components.interfaces.nsMsgSearchOp::Is);
 	    },
 	  getAvailable: function(scope, op)
 	    {
-	      return scope == Components.interfaces.nsMsgSearchScope.offlineMail &&
-	             op == Components.interfaces.nsMsgSearchOp::Is
+	      return (scope == Components.interfaces.nsMsgSearchScope.offlineMail) &&
+	             (op == Components.interfaces.nsMsgSearchOp::Is);
 	    },
 	  getAvailableOperators: function(scope, length)
 	    {
