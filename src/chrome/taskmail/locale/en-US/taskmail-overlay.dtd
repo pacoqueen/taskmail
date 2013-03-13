@@ -65,7 +65,7 @@
 <!ENTITY mailViewTTP           "Only tasks linked to current message">
 <!ENTITY hotListViewFilterTTP  "The most important tasks">
 <!ENTITY addTask               "Add a task">
-<!ENTITY header.subfolder      "Does task is outside the current subfolder">
+<!ENTITY header.subfolder      "Is task outside the current subfolder">
 <!ENTITY msgColHeadLink        "Task link">
 <!ENTITY taskColHeadLink       "Message link">
 <!ENTITY taskColHeadSubfolder  "In Subfolder">
