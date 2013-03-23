@@ -65,7 +65,7 @@
 <!ENTITY mailViewTTP           "Nur mit der aktuellen nachricht verknüpfte Aufgaben">
 <!ENTITY hotListViewFilterTTP  "Die wichtigsten Aufgaben">
 <!ENTITY addTask               "Aufgabe hinzufügen">
-<!ENTITY header.subfolder      "Is task outside the current subfolder">
+<!ENTITY header.subfolder      "Does task is outside the current subfolder">
 <!ENTITY msgColHeadLink        "Verknüpfung mit Aufgabe">
 <!ENTITY taskColHeadLink       "Verknüpfung mit Nachricht">
 <!ENTITY taskColHeadSubfolder  "Im Unterordner">

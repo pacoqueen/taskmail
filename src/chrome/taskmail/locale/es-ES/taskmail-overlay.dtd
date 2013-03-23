@@ -65,7 +65,7 @@
 <!ENTITY mailViewTTP           "Sólo tareas enlazadas al correo actual">
 <!ENTITY hotListViewFilterTTP  "Las tareas más importantes">
 <!ENTITY addTask               "Añadir tarea">
-<!ENTITY header.subfolder      "La tarea está fuera de la actual subcarpeta">
+<!ENTITY header.subfolder      "La tarea está fuera de la actual subcarpeta"> <!-- Mal redactado?: Does task is outside the current subfolder-->
 <!ENTITY msgColHeadLink        "Enlace a tarea">
 <!ENTITY taskColHeadLink       "Enlace a correo">
 <!ENTITY taskColHeadSubfolder  "En subcarpeta">
