@@ -2311,12 +2311,11 @@ TASKMAIL.UIDrag= {
     },
     
     onOverMail : function (event) {
-	var isTask = event.dataTransfer.types.contains("application/taskmail");
-	var isLink = event.dataTransfer.types.contains("text/plain");
-	if (isTask || isLink) {
-	    TASKMAIL.log("onOverMail , is a task");
-	    event.preventDefault();
-	}
+		var isTask = event.dataTransfer.types.contains("application/taskmail");
+		var isLink = event.dataTransfer.types.contains("text/plain");
+		if (isTask || isLink) {
+			event.preventDefault();
+		}
     },
     
     onDropMail : function (event) {
