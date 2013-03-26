@@ -51,6 +51,7 @@
 			<menupopup id="menu_GoPopup" onpopupshowing="TASKMAIL.UI.adjustGoMenu();">
 				<menuseparator/>
 				<menuitem label="&menuGoNextTaskMail;"   accesskey="A" oncommand="TASKMAIL.UILink.showLinked()" id="taskmail-menu-goNextMail" key="taskmail-show-linked" class="menuitem-iconic"/>
+				<menuitem label="open external"   accesskey="X" oncommand="TASKMAIL.UILink.showLinkedExternal()" id="taskmail-menu-goExternal" class="menuitem-iconic"/>
 			</menupopup>
 		</menu>
   		<menu id="taskmail-menu" label="Tasks &amp; Mails" accesskey="T" insertbefore="tasksMenu">

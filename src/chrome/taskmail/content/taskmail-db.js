@@ -604,7 +604,7 @@ TASKMAIL.DB = {
 		this.dbConnection = dbConnection;
 	},
 
-	targetVersion : 7,
+	targetVersion : 8,
 	
 	dbUpgrade : function() {
 		try {
@@ -646,6 +646,9 @@ TASKMAIL.DB = {
 			} 
 			if (currentVersion < 7) {
 				this.dbUpgrade7();
+			} 
+			if (currentVersion < 8) {
+				this.dbUpgrade8();
 			} 
 			if (currentVersion < this.targetVersion) {
 				stat = this.dbConnection
@@ -737,6 +740,13 @@ TASKMAIL.DB = {
 		this.dbConnection.executeSimpleSQL("alter table tasks add column completeDate TEXT");
 		this.dbConnection.executeSimpleSQL("update tasks set createDate = current_date");
 		this.dbConnection.executeSimpleSQL("update tasks set completeDate = current_date where state = '" + TASKMAIL.done_state + "'");
+	},
+	
+	/**
+	 * rajout dates avec initilisation
+	 */
+	dbUpgrade8 : function() {
+		this.dbConnection.executeSimpleSQL("alter table links add column url TEXT");
 	},
 	
 	_dbCreate : function(aDBService, aDBFile) {

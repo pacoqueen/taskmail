@@ -1599,6 +1599,32 @@ TASKMAIL.UILink = {
 	 * depuis  showLinkedTask.
 	 */
 	noStatusBarRefresh : false,
+	
+	showLinkedExternal : function() {
+		TASKMAIL.log("showLinkedExternal");
+		try {
+			// récupére la key du 1° email selectionné
+			var mailKey = gDBView.keyForFirstSelectedMessage;
+			// recupére les ID de taches liées au mail
+			var tasks = TASKMAIL.Link.getTasksFromMailID(gDBView.msgFolder.URI, mailKey);
+			if (tasks.length > 0) {
+				TASKMAIL.log("showLinkedExternal=>open");
+				// first construct an nsIURI object using the ioservice
+				var ioservice = Components.classes["@mozilla.org/network/io-service;1"]
+										  .getService(Components.interfaces.nsIIOService);
+				
+				var uriToOpen = ioservice.newURI(tasks[0].url, null, null);
+				
+				var extps = Components.classes["@mozilla.org/uriloader/external-protocol-service;1"]
+									  .getService(Components.interfaces.nsIExternalProtocolService);
+				
+				// now, open it!
+				extps.loadURI(uriToOpen, null);
+			}
+		} catch (err) {
+			Components.utils.reportError("showLinkedExternal " + err);
+		}
+	},
 
 	/**
 	 * Sélectionne les tâches liées aux emails sélectionnés.
@@ -1861,7 +1887,7 @@ TASKMAIL.Link = {
 	
 	addLink : function(aFolderURI, aMailKey, aThreadKey, aTaskId, url) {
 		var l = this.nbLinks;
-		var aLink = new TASKMAIL.Link.Link(aFolderURI, aMailKey, aThreadKey, aTaskId);
+		var aLink = new TASKMAIL.Link.Link(aFolderURI, aMailKey, aThreadKey, aTaskId, url);
 		this.links[l] = aLink;
 		this.nbLinks++;
 	},
@@ -1923,14 +1949,12 @@ TASKMAIL.Link = {
 	 * @return 4 = lien externe, 3 = lien grisé, 2 = lien surligné, 1 = lien, 0 = pas de lien
 	 */
 	getMailLinkType : function(taskID, aFolderURI, selectedMailKey) {
-	    TASKMAIL.log("getMailLinkType");
 	    // taskID à -1 si pas de tache sélectionnée
 	    var direct = false;
 	    var undirect = false;
 	    var externalLink = false;
 	    var oneTaskVisible = false;
 	    for (var j = 0; j < this.nbLinks; j++) {
-		TASKMAIL.log(this.links[j].url);
 		if (aFolderURI == this.links[j].folderURI && selectedMailKey == this.links[j].key) {
 		    if (taskID.indexOf(this.links[j].taskId) > -1) {
 			direct = true;
