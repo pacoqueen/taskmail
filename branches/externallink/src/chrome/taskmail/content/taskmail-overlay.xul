@@ -8,6 +8,7 @@
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	
 	<script type='application/x-javascript'  src="chrome://taskmail/content/taskmail-db.js"/>
+	<script type='application/x-javascript'  src="chrome://taskmail/content/taskmail-db-link.js"/>
 	<script type='application/x-javascript'  src="chrome://taskmail/content/taskmail-overlay.js"/>
 	<script type='application/x-javascript'  src="chrome://taskmail/content/taskmail-report.js"/>
 	<script type='application/x-javascript'  src='chrome://taskmail/content/taskmail-column.js'/>

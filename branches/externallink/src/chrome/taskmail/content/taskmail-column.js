@@ -32,7 +32,9 @@ TASKMAIL.COLUMN = {
 	    var type = 0;
     	type = TASKMAIL.Link.getMailLinkType(selectedTaskKeys, gDBView.msgFolder.URI, mailKey);
 	    var linkURI = null;
-	    if (type == 3) {
+	    if (type == 4) {
+	    	linkURI = "chrome://taskmail/skin/link_task_external.png";
+	    } else if (type == 3) {
 	    	linkURI = "chrome://taskmail/skin/link_task_grey.png";
 	    } else if (type == 2) {
 	    	linkURI = "chrome://taskmail/skin/link_task_hilight.png";
