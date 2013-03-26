@@ -39,7 +39,7 @@ TASKMAIL.QFB = {
 	      	result = TASKMAIL.Link.isMessageLinked(msgHdr.folder.URI, msgHdr.messageKey);
 	        break;
 	    }
-	    TASKMAIL.log("TaskMail#TermName.match("+msgHdr.messageId+","+searchValue+","+searchOp+")="+result);
+	    //TASKMAIL.log("TaskMail#TermName.match("+msgHdr.messageId+","+searchValue+","+searchOp+")="+result);
 	    return result;
 	  }
 	},

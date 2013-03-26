@@ -38,7 +38,7 @@ TASKMAIL.DBLINK = {
                     var message = folderDB.msgDatabase.getMsgHdrForMessageID(messageId);
                     var messageKey = message.messageKey;
                     var threadKey = message.threadId;
-                    TASKMAIL.log("messageId=" + messageId + "messageKey=" + messageKey);
+                    //TASKMAIL.log("messageId=" + messageId + "messageKey=" + messageKey);
                 } catch (err) {
                     Components.utils.reportError("getLinkSQLite, problème récup messageId=" + messageId + 
                             ", links.folderURI=" + messageFolderURI + ", taskId="+stat.getInt32(2));   
@@ -50,8 +50,8 @@ TASKMAIL.DBLINK = {
 //                                  Components.utils.reportError("getLinkSQLite, Purge réalisée");   
                     continue;
                 }
-                TASKMAIL.log("getLinkSQLite:" + messageFolderURI + "," + messageId + "," + stat.getInt32(2)
-                            + "," + taskId + "," + url);				
+                //TASKMAIL.log("getLinkSQLite:" + messageFolderURI + "," + messageId + "," + stat.getInt32(2)
+                //            + "," + taskId + "," + url);				
                 TASKMAIL.Link.addLink(messageFolderURI, messageKey, threadKey, taskId, url);
             }
             TASKMAIL.log("getLinkSQLite,result count="+TASKMAIL.Link.nbLinks);

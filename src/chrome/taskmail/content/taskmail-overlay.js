@@ -791,7 +791,7 @@ TASKMAIL.UI = {
 			}
 			i++;
 		}
-		TASKMAIL.log("getTaskIndexesFromTaskID result="+result);
+		//TASKMAIL.log("getTaskIndexesFromTaskID result="+result);
 		return result;
 	},
 
@@ -1608,13 +1608,13 @@ TASKMAIL.UILink = {
 			// recupére les ID de taches liées au mail
 			var tasks = TASKMAIL.Link.getTasksFromMailID(gDBView.msgFolder.URI, mailKey);
 			if (tasks.length > 0) {
-				TASKMAIL.log("showLinkedExternal=>open");
 				var tabmail = document.getElementById("tabmail");
 				var args = {background: false,
 				            type: "chromeTab",
 				            chromePage: tasks[0].url
 				};
-				var tab = tabmail.openTab(args.type, args);				
+				TASKMAIL.log("showLinkedExternal=>open url=" + tasks[0].url);
+				var tab = tabmail.openTab(args.type, args);
 			}
 		} catch (err) {
 			Components.utils.reportError("showLinkedExternal " + err);
