@@ -1608,13 +1608,18 @@ TASKMAIL.UILink = {
 			// recupére les ID de taches liées au mail
 			var tasks = TASKMAIL.Link.getTasksFromMailID(gDBView.msgFolder.URI, mailKey);
 			if (tasks.length > 0) {
-				var tabmail = document.getElementById("tabmail");
-				var args = {background: false,
-				            type: "chromeTab",
-				            chromePage: tasks[0].url
-				};
+				// first construct an nsIURI object using the ioservice
+				var ioservice = Components.classes["@mozilla.org/network/io-service;1"]
+										  .getService(Components.interfaces.nsIIOService);
+				
+				var uriToOpen = ioservice.newURI(tasks[0].url, null, null);
+				
+				var extps = Components.classes["@mozilla.org/uriloader/external-protocol-service;1"]
+									  .getService(Components.interfaces.nsIExternalProtocolService);
+				
+				// now, open it!
 				TASKMAIL.log("showLinkedExternal=>open url=" + tasks[0].url);
-				var tab = tabmail.openTab(args.type, args);
+				extps.loadURI(uriToOpen, null);
 			}
 		} catch (err) {
 			Components.utils.reportError("showLinkedExternal " + err);
