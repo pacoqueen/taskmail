@@ -369,5 +369,12 @@
                          crop="none" minwidth="16"
                          label="&qfb-task-thread;" tooltiptext="&qfb-task-threadTTP;"
                          oncommand="TASKMAIL.QFB.onCommandSubFilter();"/>
-	</hbox>	
+	</hbox>
+	
+	<menupopup id="appmenu_GoPopup">
+		<menuitem label="open external"
+		          accesskey="X"
+		          oncommand="TASKMAIL.UILink.showLinkedExternal();"
+		          id="taskmail-appmenu-goExternal"/>
+	</menupopup>		
 </overlay>
