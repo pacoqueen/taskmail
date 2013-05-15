@@ -10,13 +10,17 @@ TASKMAIL.QFB = {
 	  name: "message task linked term",
 	  getEnabled: function(scope, op)
 	    {
-	      return (scope == Components.interfaces.nsMsgSearchScope.offlineMail) &&
+	      var result = false;
+	      result = (scope == Components.interfaces.nsMsgSearchScope.offlineMail) && 
 	             (op == Components.interfaces.nsMsgSearchOp::Is);
+	      return result;
 	    },
 	  getAvailable: function(scope, op)
 	    {
-	      return (scope == Components.interfaces.nsMsgSearchScope.offlineMail) &&
+	      var result = false;
+	      result = (scope == Components.interfaces.nsMsgSearchScope.offlineMail) &&
 	             (op == Components.interfaces.nsMsgSearchOp::Is);
+	      return result;
 	    },
 	  getAvailableOperators: function(scope, length)
 	    {
@@ -49,13 +53,15 @@ TASKMAIL.QFB = {
 	  name: "thread task linked term",
 	  getEnabled: function(scope, op)
 	    {
-	      return (scope == Components.interfaces.nsMsgSearchScope.offlineMail) &&
+	      var result = (scope == Components.interfaces.nsMsgSearchScope.offlineMail) &&
 	             (op == Components.interfaces.nsMsgSearchOp::Is);
+	      return result;
 	    },
 	  getAvailable: function(scope, op)
 	    {
-	      return (scope == Components.interfaces.nsMsgSearchScope.offlineMail) &&
+	      var result = (scope == Components.interfaces.nsMsgSearchScope.offlineMail) &&
 	             (op == Components.interfaces.nsMsgSearchOp::Is);
+	      return result;
 	    },
 	  getAvailableOperators: function(scope, length)
 	    {
