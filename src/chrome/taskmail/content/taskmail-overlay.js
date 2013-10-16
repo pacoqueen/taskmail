@@ -1119,12 +1119,12 @@ TASKMAIL.UI = {
 		prefs.addObserver("", this, false);
 
 		// charge les états pour la liste de tâches et le détail d'une tâche.
-    this.getStatesFromPref();
+		this.getStatesFromPref();
     
-    this.initialiseOrder();
+		this.initialiseOrder();
     
-    // replace default getCellProperties.
-    this.oldGetCellProperties = gFolderTreeView.getCellProperties;
+		// replace default getCellProperties.
+		this.oldGetCellProperties = gFolderTreeView.getCellProperties;
 		gFolderTreeView.getCellProperties = TASKMAIL.UI.new_getCellProperties;
 	},
 	
@@ -1482,22 +1482,24 @@ TASKMAIL.UI = {
    */
   new_getCellProperties : function (row,col,props) {
 	//TASKMAIL.log("new_getCellProperties, row=" + row);
-    gFolderTreeView._rowMap[row].getProperties(props,col);
-    if (col.id == "folderNameCol") {
-    	var sticky = document.getElementById("taskmail-sticky-view").checked;
-    	var viewedFolder = TASKMAIL.UI.viewedFolder != null ? TASKMAIL.UI.viewedFolder.URI : null;
-    	var currentFolder = gDBView != null ? gDBView.msgFolder.URI : null;
-      if (gFolderTreeView._rowMap[row]._folder.URI == viewedFolder
-			    && (sticky || TASKMAIL.UI.viewedFolder.URI != currentFolder)) {
-	      var acAtomServ = Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService);
-	      props.AppendElement(acAtomServ.getAtom("taskmail-viewedFolder"));
-      }      
-    }
-    // Call old version. Make color folder extension works with Tasks & mails.
-    //TASKMAIL.log("new_getCellProperties, appel ancetre");
-    gFolderTreeView.getCellProperties = TASKMAIL.UI.oldGetCellProperties;
-    gFolderTreeView.getCellProperties(row,col,props);
-    gFolderTreeView.getCellProperties = TASKMAIL.UI.new_getCellProperties;
+	//gFolderTreeView._rowMap[row].getProperties(props,col);
+	// Call old version. Make color folder extension works with Tasks & mails.
+	//TASKMAIL.log("new_getCellProperties, appel ancetre");
+	gFolderTreeView.getCellProperties = TASKMAIL.UI.oldGetCellProperties;
+	var result = gFolderTreeView.getCellProperties(row,col,props);
+	gFolderTreeView.getCellProperties = TASKMAIL.UI.new_getCellProperties;
+	if (col.id == "folderNameCol") {
+		var sticky = document.getElementById("taskmail-sticky-view").checked;
+	    	var viewedFolder = TASKMAIL.UI.viewedFolder != null ? TASKMAIL.UI.viewedFolder.URI : null;
+		var currentFolder = gDBView != null ? gDBView.msgFolder.URI : null;
+	     if (gFolderTreeView._rowMap[row]._folder.URI == viewedFolder
+		    && (sticky || TASKMAIL.UI.viewedFolder.URI != currentFolder)) {
+			//var acAtomServ = Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService);
+		     //props.AppendElement(acAtomServ.getAtom("taskmail-viewedFolder"));
+			result += " taskmail-viewedFolder";
+		}      
+	}
+	return result;	
   }
 }
 
