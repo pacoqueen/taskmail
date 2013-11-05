@@ -19,7 +19,7 @@
 	    </Description>
     </em:targetApplication>
 
-    <em:homepageURL>http://tasksandmails.mozdev.org/</em:homepageURL>
+    <em:homepageURL>http://gorsini.free.fr/tasksandmails/</em:homepageURL>
     <em:optionsURL>chrome://taskmail/content/taskmail-prefs.xul</em:optionsURL>
     <em:aboutURL/>
     <em:iconURL>chrome://taskmail/skin/taskmail_icon.png</em:iconURL>
