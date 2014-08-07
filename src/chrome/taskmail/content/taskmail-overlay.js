@@ -1,3 +1,5 @@
+Components.utils.import("resource:///modules/MailUtils.js");
+
 if (!TASKMAIL)
 	var TASKMAIL = {};
 if (!TASKMAIL.UI)
@@ -1642,7 +1644,7 @@ TASKMAIL.UILink = {
 					var currentFolderURI = TASKMAIL.UI.viewedFolder.URI;
 					var sticky = document.getElementById("taskmail-sticky-view").checked;
 					if (taskFolderURI != currentFolderURI && !sticky) {
-						var folderDB = GetMsgFolderFromUri(taskFolderURI, false);
+						var folderDB = MailUtils.getFolderForURI(taskFolderURI, false);
 						TASKMAIL.UI.viewedFolder = folderDB;
 						TASKMAIL.UI.refreshTaskList();
 						// to refresh folder viewed icon in folder tree. 
