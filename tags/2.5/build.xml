@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     18 mars 2012 19:38:11                                                        
+
+     Tasks & Mails    
+     Thunderbird extension
+                   
+     gnn                                                                
+     ====================================================================== -->
+<project name="TasksAndMails" default="default">
+    <description>
+            Thunderbird extension
+    </description>
+
+		<xmlproperty file="src/install.rdf" keeproot="false"/>
+	
+		<!-- ================================= 
+          target: default              
+         ================================= -->
+    <target name="default" description="Thunderbird extension"
+    	depends="mozdev,mozilla">
+    </target>
+
+  <target name="mozdev" description="build archive for mozdev">
+		<zip destfile="build/mozdev/tasksandmails-${Description.em:version}.xpi">
+			<fileset dir="src/"/>
+  	</zip>
+  </target>
+
+	<target name="mozilla" depends="mozilla_install" description="build archive for mozilla">
+  	<zip destfile="build/mozilla.org/tasksandmails-${Description.em:version}.xpi">
+			<fileset dir="src/" excludes="install.rdf"/>
+  		<fileset dir="build/mozilla.org/" includes="install.rdf"/>
+  	</zip>
+  </target>
+
+	<target name="mozilla_install" description="make install.rdf for mozilla.org">
+		<copy file="src/install.rdf" tofile="build/mozilla.org/install.rdf">
+			<filterchain>
+					<linecontains negate="true">
+						<contains value="em:hidden"/>
+					</linecontains>
+					<linecontains negate="true">
+						<contains value="em:updateURL"/>
+					</linecontains>
+			</filterchain>
+		</copy>
+  </target>
+
+</project>
