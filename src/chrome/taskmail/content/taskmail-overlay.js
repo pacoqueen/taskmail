@@ -508,7 +508,8 @@ TASKMAIL.UI = {
 			document.getElementById("taskmail-search").reset();
 		}
 		
-		if (!sticky) {
+		// BUG #8, on set viewed car si démarrage TB avec sticky, on aurait pas la vue correcte.
+        if (!sticky || TASKMAIL.UI.thunderbirdInit) {
 			var folder = GetSelectedMsgFolders()[0];
 			TASKMAIL.UI.viewedFolder = folder;
 		} 
