@@ -69,7 +69,7 @@ TASKMAIL = {
 	.getService(Components.interfaces.nsIConsoleService),
 			
 	log : function (message) {
-		if (true) {
+		if (false) {
 			this.consoleService.logStringMessage(message);
 		}
 	}
@@ -605,7 +605,9 @@ TASKMAIL.DB = {
 								+ "," + messageId);
 
 				
-				var stat = this.dbConnection.createStatement(TASK_SQL);
+				// when move a message between 2 imap accounts, aDestMsgs is not defined,
+                // so we always use aDestFolder.URI
+                var stat = this.dbConnection.createStatement(TASK_SQL);
 				stat.bindStringParameter(0, aDestFolder.URI);
 				stat.bindStringParameter(1, srcMsg.folder.URI);
 				stat.bindStringParameter(2, messageId);
