@@ -595,29 +595,25 @@ TASKMAIL.DB = {
 			var LINK_SQL = "update links set folderURI = :NEW_URI where folderURI = :OLD_URI and messageId = :OLD_MSG_KEY";
 
 			var srcEnum = aSrcMsgs.enumerate();
-			var destEnum = aDestMsgs.enumerate();
-
+			
 			while (srcEnum.hasMoreElements()) {
 				var srcMsg = srcEnum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
-				TASKMAIL.log(srcMsg.messageKey);
-				var destMsg = destEnum.getNext().QueryInterface(Components.interfaces.nsIMsgDBHdr);
-				TASKMAIL.log(destMsg.messageKey);
-				var messageId = destMsg.folder.GetMessageHeader(destMsg.messageKey).messageId;
+				var messageId = srcMsg.messageId;
 				
 				TASKMAIL.log("msgsMoveCopyCompletedSQLite"
-								+ destMsg.folder.URI + "," + srcMsg.folder.URI + "," + srcMsg.messageKey
+								+ aDestFolder.URI + "," + srcMsg.folder.URI + "," + srcMsg.messageKey
 								+ "," + messageId);
 
 				
 				var stat = this.dbConnection.createStatement(TASK_SQL);
-				stat.bindStringParameter(0, destMsg.folder.URI);
+				stat.bindStringParameter(0, aDestFolder.URI);
 				stat.bindStringParameter(1, srcMsg.folder.URI);
 				stat.bindStringParameter(2, messageId);
 				stat.bindStringParameter(3, srcMsg.folder.URI);
 				stat.execute();
 
 				var stat2 = this.dbConnection.createStatement(LINK_SQL);
-				stat2.bindStringParameter(0, destMsg.folder.URI);
+				stat2.bindStringParameter(0, aDestFolder.URI);
 				stat2.bindStringParameter(1, srcMsg.folder.URI);
 				stat2.bindStringParameter(2, messageId);
 				stat2.execute();
