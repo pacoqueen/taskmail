@@ -599,6 +599,7 @@ TASKMAIL.UI = {
 	
 	/**
 	 * Rafrafichie la liste des tâches
+	 * (recupère les liens en même temps).
 	 * Dépend du scope, des états, des filtre ET du folder à afficher (pas forcement le folder courant).
 	 * Ne fait aucune modification sur l'IHM.
 	 */
