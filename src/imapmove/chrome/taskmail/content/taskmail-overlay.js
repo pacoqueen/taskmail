@@ -1141,9 +1141,21 @@ TASKMAIL.UI = {
 		  OnItemBoolPropertyChanged: function(item, property, oldValue, newValue) {TASKMAIL.log("folderListener.4");},
 		  OnItemUnicharPropertyChanged: function(item, property, oldValue, newValue) {TASKMAIL.log("folderListener.5");},
 		  OnItemPropertyFlagChanged: function(item, property, oldFlag, newFlag) {TASKMAIL.log("folderListener.OnItemPropertyFlagChanged");},
-		  OnItemEvent: function(item, event)  {var eventType = event.toString();TASKMAIL.log("folderListener.OnItemEvent,eventType="+eventType);},
-		  OnFolderLoaded: function(aFolder)  {TASKMAIL.log("folderListener.8");},
-		  OnDeleteOrMoveMessagesCompleted: function( aFolder)  {TASKMAIL.log("folderListener.9");}
+		  OnDeleteOrMoveMessagesCompleted: function( aFolder)  {TASKMAIL.log("folderListener.9");},
+		  OnFolderLoaded: function(aFolder)  {TASKMAIL.log("folderListener.OnFolderLoaded");},
+		  OnItemEvent: function(aFolder, event)  {
+			var eventType = event.toString();
+			TASKMAIL.log("folderListener.OnItemEvent,eventType="+eventType);
+			if (eventType == "FolderLoaded") {
+				var folderURI = aFolder.URI;
+				TASKMAIL.log("folderListener.OnItemEvent,eventType="+eventType+",folderURI="+folderURI);				
+				if (TASKMAIL.UI.needRefresh != null && TASKMAIL.UI.needRefresh.indexOf(folderURI)>-1) {
+					TASKMAIL.log("folderListener.OnItemEvent.FolderLoaded,needRefresh contains " + folderURI);
+					//TASKMAIL.UI.refreshTaskList();
+					TASKMAIL.UI.needRefresh = null;
+				}				
+			}
+		  }
 		};
 		
 		let mailSession = Cc["@mozilla.org/messenger/services/session;1"]
@@ -1151,6 +1163,8 @@ TASKMAIL.UI = {
 					 
 		mailSession.AddFolderListener(folderListener, Ci.nsIFolderListener.all);
 	},
+	
+	needRefresh : null,
 	
 	/**
 	 * migrate preferences from taskmail. to extensions.taskmail.
@@ -2144,6 +2158,21 @@ TASKMAIL.Link = {
 	},
 
 	/**
+	 * is the specified message has a link with a task ?
+	 */
+	isFolderLinked : function (aFolderURI) {
+		var result = false;
+		for(var i=0; i<this.nbLinks; i++) {
+			if (this.links[i].folderURI == aFolderURI) {
+				result = true;
+				break;
+			}
+		}
+		TASKMAIL.log("isFolderLinked" + aFolderURI + ",result=" + result);
+		return result;
+	},
+
+	/**
 	 * is the specified message as a link with the specified task ?
 	 */
 	isMessageLinkedWith : function (aFolderURI, aMessageKey, aTaskId) {
@@ -2255,6 +2284,15 @@ TASKMAIL.MailListener = {
 	msgsMoveCopyCompleted : function(aMove, aSrcMsgs, aDestFolder, aDestMsgs) {
 		if (aMove) {
 			TASKMAIL.DB.msgsMoveCopyCompletedSQLite(aSrcMsgs, aDestFolder, aDestMsgs);
+			if (/*TASKMAIL.Link.isFolderLinked(aDestFolder.URI)*/true) {
+				var destServerType = aDestFolder.server.type;
+				if (destServerType == "imap") {
+					if (TASKMAIL.UI.needRefresh == null) {
+						TASKMAIL.UI.needRefresh = new Array(0);
+					}
+					TASKMAIL.UI.needRefresh.push(aDestFolder.URI);
+				}
+			}
 			TASKMAIL.UI.refreshTaskList();
 		}
 	},
@@ -2274,6 +2312,7 @@ TASKMAIL.MailListener = {
 	
 	msgAdded: function(item) {
 		TASKMAIL.log("msgAdded,item.messageId="+item.messageId + ",messageKey=" + item.messageKey);
+		TASKMAIL.UI.refreshTaskList();
 	}
 }
 
